@@ -1,6 +1,6 @@
 # Bildquellen
 
-- `public/home/frontpage-visual-fitnessliebe*.webp`, `fotoflirt.webp`, `fragenflirt.webp`, `videodate.webp`,
+- `public/home/frontpage-visual-fitnessliebe.webp`, `fotoflirt.webp`, `fragenflirt.webp`, `videodate.webp`,
   `erfolgsgeschichten.webp`: ICONY-Startseite von fitness-liebe.de (static2.icony-hosting.de)
 - `public/home/sidebar-paar-training.webp`, `public/home/sidebar-yoga.webp`: ICONY-CMS der Seite
   fitness-liebe.de/partnersuche/ – Originale von Pixabay

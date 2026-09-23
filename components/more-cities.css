@@ -82,7 +82,7 @@
 .more-cities-tile-plain {
   background:
     radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.22), transparent 45%),
-    linear-gradient(145deg, var(--brand) 0%, var(--brand-dark) 100%);
+    linear-gradient(145deg, #3a3f47 0%, var(--brand-dark) 100%);
 }
 
 .more-cities-tile-plain::before {
@@ -162,7 +162,7 @@
 
 .more-cities-tile:hover i,
 .more-cities-tile:focus-visible i {
-  background: var(--brand);
+  background: var(--charcoal);
   color: #fff;
   transform: translateX(2px);
 }

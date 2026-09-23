@@ -29,8 +29,8 @@
   color: #fff;
   background:
     radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.16), transparent 32%),
-    radial-gradient(circle at 8% 100%, rgba(224, 178, 0, 0.45), transparent 42%),
-    linear-gradient(135deg, #1f2328 0%, var(--brand) 48%, #f5a300 100%);
+    radial-gradient(circle at 8% 100%, rgba(251, 202, 8, 0.32), transparent 45%),
+    linear-gradient(135deg, #1f2328 0%, #2b2f36 55%, #3a3f47 100%);
   box-shadow: 0 26px 56px rgba(31, 35, 40, 0.24);
 }
 

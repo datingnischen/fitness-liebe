@@ -87,7 +87,6 @@ export default async function HomePage() {
 
       <section className="fl-hero">
         <picture className="fl-hero-media">
-          <source media="(max-width: 700px)" srcSet={staticAsset("/home/frontpage-visual-fitnessliebe-mobile.webp")} />
           <img src={HOME_HERO_IMAGE} alt="Sportliches Paar lacht nach dem Lauf am Flussufer" loading="eager" fetchPriority="high" decoding="async" />
         </picture>
         <div className="fl-hero-inner">

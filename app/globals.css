@@ -746,9 +746,8 @@ a.social-bubble:hover {
 
 .brand-logo-image {
   display: block;
-  width: auto;
-  height: 44px;
-  max-width: min(190px, 52vw);
+  width: min(210px, 40vw);
+  height: auto;
 }
 
 .brand-lockup-mark {
@@ -1338,7 +1337,7 @@ a.social-bubble:hover {
   grid-column: 1 / -1;
   padding: 18px 22px;
   border-color: transparent;
-  background: linear-gradient(135deg, #1f2328 0%, var(--brand) 60%, #f5a300 100%);
+  background: linear-gradient(135deg, #1f2328 0%, #2b2f36 60%, #3a3f47 100%);
   color: #fff;
 }
 
@@ -1801,7 +1800,7 @@ a.social-bubble:hover {
 
 .author-facts-socials a:hover {
   transform: translateY(-1px);
-  background: var(--brand);
+  background: var(--charcoal);
   color: #fff;
 }
 
@@ -2189,7 +2188,7 @@ a.social-bubble:hover {
 
 .author-box-socials a:hover {
   transform: translateY(-1px);
-  background: var(--brand);
+  background: var(--charcoal);
   color: #fff;
 }
 
@@ -2956,5 +2955,50 @@ body {
 
   .tips-item {
     grid-template-columns: 1fr;
+  }
+}
+
+.trust-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--brand-dark);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.trust-chip::before {
+  content: "✓";
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+
+.city-hero-media img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.city-hero-credit {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.brand-lockup-header {
+  flex-shrink: 0;
+}
+
+@media (max-width: 460px) {
+  .brand-logo-image {
+    width: 150px;
+    max-width: none;
+  }
+
+  .compact-header-actions .login-link {
+    display: none;
   }
 }
