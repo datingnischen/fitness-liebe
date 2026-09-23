@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 
-// Leer = Assets relativ vom selben Host. Sobald die Live-Domain nur Seitenrouten
-// an Vercel weiterreicht, NEXT_PUBLIC_ASSET_HOST auf den Vercel-Host setzen.
-const DEFAULT_ASSET_HOST = "";
+const DEFAULT_ASSET_HOST = "https://fitness-liebe.vercel.app";
 const DEFAULT_ASSET_PATH_PREFIX = "/app-assets";
 
 function trimTrailingSlash(value: string) {

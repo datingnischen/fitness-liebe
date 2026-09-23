@@ -27,8 +27,8 @@ steht in `lib/fitnesswelten.ts`; neue Beiträge landen per Titel-Stichwort autom
 
 ## Assets
 
-`NEXT_PUBLIC_ASSET_HOST` bleibt leer, solange die Seite komplett über Vercel läuft. Leitet der
-nginx der Live-Domain später nur Seitenrouten weiter, dort den Vercel-Host eintragen.
+Assets (`/_next/*`, `/app-assets/*`) kommen in Production von `https://fitness-liebe.vercel.app`
+(überschreibbar mit `NEXT_PUBLIC_ASSET_HOST`), damit die Live-Domain nur Seitenrouten weiterreichen muss.
 
 ## Befehle
 

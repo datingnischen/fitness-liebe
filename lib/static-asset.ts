@@ -1,4 +1,4 @@
-const DEFAULT_ASSET_HOST = "";
+const DEFAULT_ASSET_HOST = "https://fitness-liebe.vercel.app";
 const DEFAULT_ASSET_PATH_PREFIX = "/app-assets";
 
 function trimTrailingSlash(value: string) {
