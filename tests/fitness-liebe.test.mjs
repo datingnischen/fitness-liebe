@@ -1,0 +1,156 @@
+import assert from "node:assert/strict";
+import { readFile, readdir } from "node:fs/promises";
+import test from "node:test";
+import {
+  FITNESSWELTEN,
+  FITNESSWELT_MATCHES,
+  classifyFitnesswelt,
+  entriesForFitnesswelt,
+  findFitnessweltArticle,
+} from "../lib/fitnesswelten.ts";
+import { buildMagazineIndex } from "../lib/magazine-index.ts";
+import { getMarketCityPages, getMarketPartnersucheHub } from "../lib/market-partnersuche.ts";
+import { enhanceAudioSummary, getAudioSummarySource, relativizeInternalLinks } from "../lib/wordpress.ts";
+
+const repoRoot = new URL("../", import.meta.url);
+const read = (path) => readFile(new URL(path, repoRoot), "utf8");
+
+const EXPECTED_CITIES = [
+  "berlin",
+  "muenchen",
+  "hamburg",
+  "koeln",
+  "frankfurt",
+  "stuttgart",
+  "duesseldorf",
+  "dortmund",
+  "essen",
+  "bremen",
+  "mannheim",
+  "hannover",
+  "nuernberg",
+  "leipzig",
+  "dresden",
+];
+
+test("every curated article belongs to exactly one Fitnesswelt", () => {
+  const seen = new Map();
+  for (const world of FITNESSWELTEN) {
+    for (const slug of world.slugs) {
+      assert.ok(!seen.has(slug), `${slug} steht in ${seen.get(slug)} und ${world.id}`);
+      seen.set(slug, world.id);
+    }
+  }
+  for (const world of FITNESSWELTEN) {
+    for (const highlight of world.highlights) {
+      assert.equal(classifyFitnesswelt({ slug: highlight.slug, title: highlight.name }).id, world.id, highlight.slug);
+    }
+  }
+});
+
+test("new posts are classified by WP category first, then by title keywords", () => {
+  assert.equal(classifyFitnesswelt({ slug: "neu", title: "Proteinbowl", categories: [{ slug: "rezepte" }] }).id, "rezepte");
+  assert.equal(classifyFitnesswelt({ slug: "neu", title: "Flirten beim Spinning" }).id, "fitness-dating");
+  assert.equal(classifyFitnesswelt({ slug: "neu", title: "Kniebeugen richtig ausführen: 5 Übungen" }).id, "training");
+  assert.equal(classifyFitnesswelt({ slug: "neu", title: "Wie viel Eiweiß beim Essen?" }).id, "ernaehrung");
+  assert.equal(classifyFitnesswelt({ slug: "neu", title: "Irgendwas ganz anderes" }).id, "fitness-dating");
+});
+
+test("Fitnesswelt filtering and orientation links resolve", () => {
+  const posts = [
+    { slug: "cardio-training", title: "Cardio" },
+    { slug: "fit-bleiben-als-paar", title: "Paar" },
+    { slug: "kartoffelsalat-moggstar", title: "Salat" },
+  ];
+  assert.deepEqual(entriesForFitnesswelt("training", posts).map((post) => post.slug), ["cardio-training"]);
+  for (const match of FITNESSWELT_MATCHES) {
+    for (const slug of match.slugs) {
+      const known = findFitnessweltArticle(slug) || FITNESSWELTEN.some((world) => world.slugs.includes(slug));
+      assert.ok(known, `${slug} ist keiner Fitnesswelt zugeordnet`);
+    }
+  }
+});
+
+test("magazine index groups posts by Fitnesswelt and hides legal pages", () => {
+  const post = (slug, title) => ({ id: 0, slug, type: "post", title, excerpt: "", content: "", date: "2026-01-02", categories: [] });
+  const page = (slug, title) => ({ id: 0, slug, type: "page", title, excerpt: "", content: "", categories: [] });
+  const sections = buildMagazineIndex({
+    posts: [post("cardio-training", "Cardio"), post("gymder", "Gymder")],
+    pages: [page("christian", "Christian M. Haas – Dating-Experte"), page("impressum", "Impressum")],
+  });
+  assert.deepEqual(
+    sections.map((section) => section.id),
+    ["thema-fitness-dating", "thema-training", "autoren"],
+  );
+  assert.deepEqual(sections.at(-1).items.map((item) => item.label), ["Christian M. Haas"]);
+});
+
+test("publishes the 15 ICONY city pages with location attribution", () => {
+  const pages = getMarketCityPages("de");
+  assert.deepEqual(pages.map((page) => page.slug), EXPECTED_CITIES);
+  for (const page of pages) {
+    assert.equal(page.path, `/partnersuche/${page.slug}`);
+    assert.equal(new URL(page.sourceUrl).hostname, "fitness-liebe.de");
+    assert.match(page.icony.zip, /^\d{5}$/);
+    assert.equal(page.icony.platformId, "fitnessliebe");
+    assert.ok(page.registrationUrl.endsWith("/registration/?AID=location"));
+    assert.equal(new URL(page.searchUrl).searchParams.get("AID"), "location");
+    assert.ok(page.contentHtml.includes("<h2>"), `${page.slug} ohne Inhalt`);
+    assert.ok(!/tierisch|tierlieb/i.test(JSON.stringify(page)), `${page.slug} enthält Vorlagen-Reste`);
+  }
+  const hub = getMarketPartnersucheHub("de");
+  assert.equal(hub.cities.length, EXPECTED_CITIES.length);
+  assert.ok(hub.editorial.introParagraphs.length >= 2);
+});
+
+test("audio summaries become a styled card and never leak into excerpts", () => {
+  const html =
+    '<p><!-- audio-summary:start --></p>\n<h2>Artikel kurz anhören</h2>\n<p>Die wichtigsten Punkte.</p>\n<p><audio controls preload="none"><source src="https://fitness-liebe.de/magazin/wp-content/uploads/a.mp3" type="audio/mpeg">Dein Browser unterstützt das Audio-Element nicht.</audio><br />\n<!-- audio-summary:end --></p>\n<h2>Kurzantwort</h2><p>Text</p>';
+  assert.equal(getAudioSummarySource(html), "https://fitness-liebe.de/magazin/wp-content/uploads/a.mp3");
+  const enhanced = enhanceAudioSummary(html);
+  assert.match(enhanced, /class="audio-summary"/);
+  assert.doesNotMatch(enhanced, /<h2>Artikel kurz anhören<\/h2>/);
+  assert.match(enhanced, /<h2>Kurzantwort<\/h2>/);
+});
+
+test("internal WordPress links become relative, uploads stay absolute", () => {
+  const html =
+    '<a href="https://fitness-liebe.de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>';
+  assert.equal(
+    relativizeInternalLinks(html),
+    '<a href="/magazin/fitnessroutinen">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
+  );
+});
+
+test("ICONY trust and legal pages link absolutely to the live domain", async () => {
+  const sources = [await read("components/site-shell.tsx"), await read("lib/home-content.ts")].join("\n");
+  for (const path of [
+    "/sicherheit-und-datenschutz.html",
+    "/redaktionelle-kontrolle.html",
+    "/kostenlose-basis-mitgliedschaft.html",
+    "/unsere-erfolgsgeschichten.html",
+    "/datenschutz.html",
+    "/impressum.html",
+  ]) {
+    assert.ok(sources.includes(path), `${path} fehlt`);
+  }
+  const shell = await read("components/site-shell.tsx");
+  assert.match(shell, /platform\("\/redaktionelle-kontrolle\.html"/);
+  assert.doesNotMatch(shell, /href: "\/(?:sicherheit-und-datenschutz|redaktionelle-kontrolle|kostenlose-basis-mitgliedschaft)/);
+});
+
+test("no template leftovers from tierisch-verliebt in app code", async () => {
+  const roots = ["app", "components", "lib"];
+  const offenders = [];
+  async function walk(dir) {
+    for (const entry of await readdir(new URL(`${dir}/`, repoRoot), { withFileTypes: true })) {
+      const path = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) await walk(path);
+      else if (/\.(tsx?|css)$/.test(entry.name) && /tierisch|tierlieb|Tierwelt|Hunderass|Katzenrass/i.test(await read(path))) {
+        offenders.push(path);
+      }
+    }
+  }
+  for (const root of roots) await walk(root);
+  assert.deepEqual(offenders, []);
+});
