@@ -3,9 +3,7 @@ import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, DATING_TIPS_PATH } from "
 import { getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { getMarketCityPages } from "@/lib/market-partnersuche";
-import { SITE_URL, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
-
-const NOINDEX_PAGES = new Set(["datenschutz", "impressum"]);
+import { NOINDEX_MAGAZINE_PAGES, SITE_URL, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, pages, authors] = await Promise.all([getMagazinePosts(), getMagazinePages(), getKnownAuthorSlugs()]);
@@ -30,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     })),
     ...pages
-      .filter((page) => !NOINDEX_PAGES.has(page.slug))
+      .filter((page) => !NOINDEX_MAGAZINE_PAGES.has(page.slug))
       .map((page) => ({
         url: `${SITE_URL}/magazin/${page.slug}`,
         lastModified: page.modified || page.date,

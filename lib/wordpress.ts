@@ -251,6 +251,22 @@ export function formatGermanDate(dateString?: string) {
   }
 }
 
+// Magazin-Seiten ohne Index: Rechtstexte gehören der Plattform (datenschutz.html, impressum.html),
+// Gazis Profil bleibt draußen, solange die Kooperation nicht feststeht.
+export const NOINDEX_MAGAZINE_PAGES = new Set(["datenschutz", "impressum", "gazi-avakhti"]);
+
+// Smush liefert Bilder je nach Cache als Lazyload aus: echte URL in data-src, im src nur ein
+// SVG-Platzhalter. Ohne das Smush-Skript bliebe das Bild leer, deshalb die Attribute zurücktauschen.
+export function unwrapLazyImages(html = "") {
+  return html.replace(/<img\b[^>]*\bdata-src=["'][^"']+["'][^>]*>/gi, (tag) =>
+    tag
+      .replace(/\ssrc=(["'])data:[^"']*\1/i, "")
+      .replace(/\sdata-(src|srcset|sizes)=/gi, " $1=")
+      .replace(/(\sclass=["'][^"']*?)\s*\blazyload\b/i, "$1")
+      .replace(/\sstyle=(["'])--smush-placeholder[^"']*\1/i, ""),
+  );
+}
+
 function normalizeEntry(item: WpRestItem): MagazineEntry {
   const featured = item._embedded?.["wp:featuredmedia"]?.[0];
   const author = item._embedded?.author?.[0];
@@ -268,7 +284,7 @@ function normalizeEntry(item: WpRestItem): MagazineEntry {
     link: item.link,
     title: decodeHtmlEntities(item.title?.rendered || ""),
     excerpt: cleanExcerpt(item.excerpt?.rendered || ""),
-    content: item.content?.rendered || "",
+    content: unwrapLazyImages(item.content?.rendered || ""),
     featuredImage: featured?.source_url,
     featuredImageAlt: featured?.alt_text ? decodeHtmlEntities(featured.alt_text) : undefined,
     authorName: author?.name ? decodeHtmlEntities(author.name) : undefined,

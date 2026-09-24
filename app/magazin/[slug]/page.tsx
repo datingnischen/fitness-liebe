@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AuthorProfileFacts } from "@/components/author-profile-facts";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
+import { PublishedBookFeature } from "@/components/published-book-feature";
 import { authorSlugForProfilePage, getAuthorProfile } from "@/lib/author-profiles";
 import { staticAsset } from "@/lib/static-asset";
 import {
+  NOINDEX_MAGAZINE_PAGES,
   SITE_URL,
   decodeHtmlEntities,
   enhanceAudioSummary,
@@ -195,8 +197,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `${SITE_URL}/magazin/${slug}`,
     },
-    // Rechtstexte gehören der Plattform (datenschutz.html, impressum.html)
-    robots: slug === "datenschutz" || slug === "impressum" ? { index: false, follow: true } : undefined,
+    robots: NOINDEX_MAGAZINE_PAGES.has(slug) ? { index: false, follow: true } : undefined,
     openGraph: {
       title: entry.seoTitle || entry.title,
       description,
@@ -343,6 +344,12 @@ export default async function MagazineDetailPage({ params }: PageProps) {
       {isProfilePage && authorProfile ? (
         <section className="content-section">
           <AuthorProfileFacts profile={authorProfile} />
+        </section>
+      ) : null}
+
+      {slug === "christian" ? (
+        <section className="content-section">
+          <PublishedBookFeature />
         </section>
       ) : null}
 
