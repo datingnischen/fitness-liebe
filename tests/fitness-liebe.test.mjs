@@ -10,7 +10,7 @@ import {
 } from "../lib/fitnesswelten.ts";
 import { buildMagazineIndex } from "../lib/magazine-index.ts";
 import { getMarketCityPages, getMarketPartnersucheHub } from "../lib/market-partnersuche.ts";
-import { enhanceAudioSummary, getAudioSummarySource, relativizeInternalLinks } from "../lib/wordpress.ts";
+import { enhanceAudioSummary, getAudioSummarySource, relativizeInternalLinks, resolveAioseoMeta } from "../lib/wordpress.ts";
 
 const repoRoot = new URL("../", import.meta.url);
 const read = (path) => readFile(new URL(path, repoRoot), "utf8");
@@ -153,4 +153,18 @@ test("no template leftovers from tierisch-verliebt in app code", async () => {
   }
   for (const root of roots) await walk(root);
   assert.deepEqual(offenders, []);
+});
+
+test("AIOSEO titles and descriptions resolve smart tags and drop the site name", () => {
+  const item = (title, meta) => ({ title: { rendered: "Cardio Training &#8211; Alles" }, aioseo_meta_data: { title, description: meta } });
+  const description = "Was ist Cardio-Training? Welchen Nutzen bringt es?&nbsp;Wie lange und wie oft solltest du trainieren?";
+  assert.deepEqual(resolveAioseoMeta(item("Cardio Training | #site_title&nbsp;", description)), {
+    seoTitle: "Cardio Training",
+    seoDescription: "Was ist Cardio-Training? Welchen Nutzen bringt es? Wie lange und wie oft solltest du trainieren?",
+  });
+  assert.equal(resolveAioseoMeta(item("Die beste Zeit zum Trainieren#separator_sa #site_title", null)).seoTitle, "Die beste Zeit zum Trainieren");
+  assert.equal(resolveAioseoMeta(item("Fitness-Dating #separator_sa #site_title", null)).seoTitle, "Fitness-Dating");
+  assert.equal(resolveAioseoMeta(item("#post_title", null)).seoTitle, "Cardio Training – Alles");
+  assert.deepEqual(resolveAioseoMeta(item(null, "Impressum")), { seoTitle: undefined, seoDescription: undefined });
+  assert.deepEqual(resolveAioseoMeta({ title: { rendered: "X" }, aioseo_meta_data: null }), { seoTitle: undefined, seoDescription: undefined });
 });

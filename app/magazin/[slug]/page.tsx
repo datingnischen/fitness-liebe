@@ -42,6 +42,13 @@ const PROFILE_DESCRIPTIONS: Record<string, string> = {
   "gazi-avakhti": GAZI_PAGE_DESCRIPTION,
 };
 
+// Gepflegte AIOSEO-Beschreibung zuerst, sonst der Auszug – an einer Wortgrenze gekürzt.
+function metaDescription(entry: MagazineEntry) {
+  if (entry.seoDescription) return entry.seoDescription;
+  const text = stripHtml(entry.excerpt || entry.content);
+  return text.length > 155 ? `${text.slice(0, 154).replace(/\s+\S*$/, "")} …` : text;
+}
+
 function MagazineRadarCard() {
   return (
     <Link className="magazine-radar-card" href={REGISTRATION_URL}>
@@ -180,10 +187,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const entry = await getMagazineEntryBySlug(slug);
   if (!entry) return {};
 
-  const description = PROFILE_DESCRIPTIONS[slug] ?? stripHtml(entry.excerpt || entry.content).slice(0, 155);
+  const description = PROFILE_DESCRIPTIONS[slug] ?? metaDescription(entry);
 
   return {
-    title: entry.title,
+    title: entry.seoTitle || entry.title,
     description,
     alternates: {
       canonical: `${SITE_URL}/magazin/${slug}`,
@@ -191,7 +198,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // Rechtstexte gehören der Plattform (datenschutz.html, impressum.html)
     robots: slug === "datenschutz" || slug === "impressum" ? { index: false, follow: true } : undefined,
     openGraph: {
-      title: entry.title,
+      title: entry.seoTitle || entry.title,
       description,
       url: `${SITE_URL}/magazin/${slug}`,
       type: entry.type === "post" ? "article" : "website",
@@ -273,7 +280,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
               "@type": "BlogPosting",
               "@id": `${SITE_URL}/magazin/${slug}#article`,
               headline: entry.title,
-              description: stripHtml(entry.excerpt || entry.content).slice(0, 200),
+              description: metaDescription(entry),
               image: heroImage?.src,
               datePublished: entry.date,
               dateModified: entry.modified || entry.date,

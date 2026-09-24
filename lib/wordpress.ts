@@ -38,6 +38,10 @@ type WpRestItem = {
   title?: WpRendered;
   excerpt?: WpRendered;
   content?: WpRendered;
+  aioseo_meta_data?: {
+    title?: string | null;
+    description?: string | null;
+  } | null;
   _embedded?: {
     author?: WpAuthor[];
     "wp:featuredmedia"?: WpMedia[];
@@ -78,6 +82,10 @@ export type MagazineEntry = {
   authorName?: string;
   authorSlug?: string;
   categories: MagazineCategory[];
+  /** In AIOSEO gepflegter SEO-Titel, ohne Seitennamen (den ergänzt das Title-Template). */
+  seoTitle?: string;
+  /** In AIOSEO gepflegte Meta-Description. */
+  seoDescription?: string;
 };
 
 function decodeNamedEntities(text: string) {
@@ -190,6 +198,34 @@ function cleanExcerpt(html = "") {
     .trim();
 }
 
+// AIOSEO speichert Titel mit Smart-Tags: "Fit bleiben als Paar | #site_title", "#post_title".
+// Der Seitenname kommt über das Title-Template ("%s | fitness-liebe.de") dazu, also fällt er hier weg.
+const SITE_TITLE_SUFFIX = /\s*(?:[|–—-]|#separator_sa)?\s*#site_title\s*$/i;
+
+function cleanSmartTags(value: string, postTitle: string) {
+  return decodeHtmlEntities(value)
+    .replace(/ /g, " ")
+    .replace(SITE_TITLE_SUFFIX, "")
+    .replace(/#post_title/gi, postTitle)
+    .replace(/#separator_sa/gi, "–")
+    .replace(/#site_title/gi, "fitness-liebe.de")
+    .replace(/\s+/g, " ")
+    .replace(/\s*[|–—-]\s*$/, "")
+    .trim();
+}
+
+export function resolveAioseoMeta(item: Pick<WpRestItem, "title" | "aioseo_meta_data">) {
+  const postTitle = decodeHtmlEntities(item.title?.rendered || "");
+  const meta = item.aioseo_meta_data;
+  const seoTitle = meta?.title ? cleanSmartTags(meta.title, postTitle) : "";
+  const seoDescription = meta?.description ? cleanSmartTags(meta.description, postTitle) : "";
+  return {
+    seoTitle: seoTitle || undefined,
+    // Einzelne Wörter wie "Impressum" sind keine Beschreibung
+    seoDescription: seoDescription.length >= 50 ? seoDescription : undefined,
+  };
+}
+
 function normalizeCategory(term: WpTerm): MagazineCategory {
   return {
     id: term.id,
@@ -238,6 +274,7 @@ function normalizeEntry(item: WpRestItem): MagazineEntry {
     authorName: author?.name ? decodeHtmlEntities(author.name) : undefined,
     authorSlug: author?.slug,
     categories: categoryTerms,
+    ...resolveAioseoMeta(item),
   };
 }
 
