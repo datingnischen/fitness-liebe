@@ -80,25 +80,35 @@ function registrationHref(market: MarketCode, pathname: string) {
   return publicUrl(market, isCityPage(pathname) ? "/registration/?AID=location" : "/registration/?AID=magazin");
 }
 
-function Brand({ market, footer = false }: { market: MarketCode; footer?: boolean }) {
-  const content = footer ? (
-    <>
-      <span className="brand-lockup-mark">FL</span>
-      <span className="brand-lockup-copy">
-        <strong>fitness-liebe</strong>
-        <small>Wir verlieben sportliche Singles</small>
-      </span>
-    </>
-  ) : (
+function Brand({ market }: { market: MarketCode }) {
+  return localLink(
+    market,
+    "/",
     <img
       className="brand-logo-image"
       src={staticAsset("/brand/fitness-liebe-logo.svg")}
       alt="fitness-liebe.de Logo"
       width="216"
       height="31"
-    />
+    />,
+    "brand-lockup brand-lockup-header",
   );
-  return localLink(market, "/", content, footer ? "brand-lockup footer-brand-wordmark fl-brand-lockup" : "brand-lockup brand-lockup-header");
+}
+
+function PulseLine({ className, peakAt = 180 }: { className: string; peakAt?: number }) {
+  return (
+    <svg className={className} viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d={`M0 40h${peakAt}l18-26 22 52 20-62 22 70 16-34h${502 - peakAt}`} />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path d="M5 10.5l3.2 3.2L15 7" />
+    </svg>
+  );
 }
 
 export function SiteHeader({ market = "de" }: Props) {
@@ -134,55 +144,74 @@ export function SiteFooter({ market = "de" }: Props) {
   const register = registrationHref(market, pathname);
 
   return (
-    <footer className="site-footer-shell">
-      <section className="footer-cta footer-cta-soft" aria-label="Registrierung">
-        <div className="footer-cta-copy">
-          <p className="eyebrow">Partnervermittlung für Fitness-Fans</p>
-          <h2>Triff sportliche Singles, die deine Leidenschaft für Bewegung teilen.</h2>
-          <p>Über 750.000 Mitglieder, jedes Profil vom Supportteam geprüft – und der Start ist kostenlos.</p>
-        </div>
-        <a className="footer-cta-button" href={register}>Jetzt kostenlos starten</a>
-      </section>
-      <div className="footer-main footer-main-showcase">
-        <div className="footer-brand-panel footer-brand-panel-rich">
-          <div className="footer-brand-topline">
-            <Brand market={market} footer />
-            <span className="footer-brand-badge">Liebe mit Puls</span>
+    <footer className="fl-footer">
+      <div className="fl-footer-inner">
+        <section className="fl-footer-cta" aria-label="Registrierung">
+          <PulseLine className="fl-footer-cta-pulse" peakAt={400} />
+          <div className="fl-footer-cta-copy">
+            <p className="fl-footer-kicker">Partnervermittlung für Fitness-Fans</p>
+            <h2>Triff sportliche Singles, die deine Leidenschaft für Bewegung teilen.</h2>
+            <p>Über 750.000 Mitglieder, jedes Profil vom Supportteam geprüft – und der Start ist kostenlos.</p>
           </div>
-          <p className="footer-brand-intro">
-            fitness-liebe.de bringt Menschen zusammen, denen ein aktiver und gesunder Alltag wichtig ist – für eine ernsthafte,
-            langfristige Beziehung statt flüchtiger Flirts.
-          </p>
-          <ul className="footer-trust-list footer-trust-list-rich" aria-label="Vertrauensmerkmale">
-            <li>Über 20 Jahre Erfahrung im Online-Dating</li>
-            <li>Server in Deutschland</li>
-            <li>Keine versteckten Kosten</li>
-          </ul>
+          <a className="fl-footer-cta-button" href={register}>
+            Jetzt kostenlos starten
+            <span aria-hidden="true">→</span>
+          </a>
+        </section>
+
+        <div className="fl-footer-main">
+          <div className="fl-footer-brand">
+            {localLink(
+              market,
+              "/",
+              <img
+                src={staticAsset("/brand/fitness-liebe-logo-light.svg")}
+                alt="fitness-liebe.de Logo"
+                width="216"
+                height="31"
+              />,
+              "fl-footer-logo",
+            )}
+            <p className="fl-footer-claim">
+              <PulseLine className="fl-footer-claim-pulse" />
+              Liebe mit Puls
+            </p>
+            <p className="fl-footer-intro">
+              fitness-liebe.de bringt Menschen zusammen, denen ein aktiver und gesunder Alltag wichtig ist – für eine
+              ernsthafte, langfristige Beziehung statt flüchtiger Flirts.
+            </p>
+            <ul className="fl-footer-trust" aria-label="Vertrauensmerkmale">
+              <li><CheckIcon />Über 20 Jahre Erfahrung im Online-Dating</li>
+              <li><CheckIcon />Server in Deutschland</li>
+              <li><CheckIcon />Keine versteckten Kosten</li>
+            </ul>
+          </div>
+          <nav className="fl-footer-nav" aria-label="Footer Navigation">
+            {footerColumns.map((column) => (
+              <div className="fl-footer-column" key={column.title}>
+                <h2>{column.title}</h2>
+                <ul>
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      {link.external ? <a href={link.href}>{link.label}</a> : localLink(market, link.href, link.label)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
         </div>
-        <nav className="footer-link-grid footer-link-grid-rich" aria-label="Footer Navigation">
-          {footerColumns.map((column) => (
-            <div className="footer-column" key={column.title}>
-              <h2>{column.title}</h2>
-              <ul>
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    {link.external ? <a href={link.href}>{link.label}</a> : localLink(market, link.href, link.label)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-      </div>
-      <div className="sub-footer sub-footer-rich">
-        <span className="sub-footer-copy">© {new Date().getFullYear()} fitness-liebe.de</span>
-        <div className="sub-footer-links sub-footer-links-rich">
-          <a href={register}>Registrieren</a>
-          {localLink(market, "/magazin", "Magazin")}
-          <a href={publicUrl(market, "/agb.html")}>AGB</a>
-          <a href={publicUrl(market, "/datenschutz.html")}>Datenschutz</a>
-          <a href={publicUrl(market, "/impressum.html")}>Impressum</a>
-          <a href={publicUrl(market, "/barrierefreiheit.html")}>Barrierefreiheit</a>
+
+        <div className="fl-footer-bottom">
+          <span>© {new Date().getFullYear()} fitness-liebe.de · Wir verlieben sportliche Singles</span>
+          <div className="fl-footer-legal">
+            <a href={register}>Registrieren</a>
+            {localLink(market, "/magazin", "Magazin")}
+            <a href={publicUrl(market, "/agb.html")}>AGB</a>
+            <a href={publicUrl(market, "/datenschutz.html")}>Datenschutz</a>
+            <a href={publicUrl(market, "/impressum.html")}>Impressum</a>
+            <a href={publicUrl(market, "/barrierefreiheit.html")}>Barrierefreiheit</a>
+          </div>
         </div>
       </div>
     </footer>
