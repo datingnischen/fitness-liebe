@@ -10,7 +10,8 @@ import {
   NOINDEX_MAGAZINE_PAGES,
   decodeHtmlEntities,
   enhanceAudioSummary,
-  formatGermanDate,
+  formatUpdatedDate,
+  getUpdatedDate,
   getEntryCoverImage,
   getMagazineEntryBySlug,
   getMagazinePosts,
@@ -335,7 +336,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
               Von {authorProfile ? <Link href={authorProfile.profileUrl}>{authorProfile.name}</Link> : entry.authorName}
             </span>
           ) : null}
-          {entry.date && entry.type === "post" ? <span>{formatGermanDate(entry.date)}</span> : null}
+          {getUpdatedDate(entry) && entry.type === "post" ? <span>{formatUpdatedDate(entry)}</span> : null}
           {entry.type === "post" ? <span>{getReadingMinutes(entry.content)} Min. Lesezeit</span> : null}
           <Link className="button button-primary meta-row-cta" href={REGISTRATION_URL}>
             Kostenlos registrieren

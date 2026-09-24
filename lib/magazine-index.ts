@@ -50,7 +50,7 @@ export function buildMagazineIndex({
     href: `/magazin/thema/${world.id}`,
     items: posts
       .filter((post) => classifyFitnesswelt(post).id === world.id)
-      .map((post) => ({ label: post.title, href: `/magazin/${post.slug}`, meta: formatDate(post.date), children: [] })),
+      .map((post) => ({ label: post.title, href: `/magazin/${post.slug}`, meta: formatDate(post.modified || post.date), children: [] })),
   })).filter((section) => section.items.length);
 
   const editorialPages = pages

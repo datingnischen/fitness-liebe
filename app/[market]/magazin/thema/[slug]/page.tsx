@@ -7,7 +7,8 @@ import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { hasCityPages } from "@/lib/market-partnersuche";
 import { HIDDEN_CATEGORY_SLUGS, getMagazineTopic, getMagazineTopicLinks, topicEmoji } from "@/lib/magazine-topics";
 import {
-  formatGermanDate,
+  formatUpdatedDate,
+  getUpdatedDate,
   getEntryCoverImage,
   getReadingMinutes,
   stripHtml,
@@ -133,12 +134,6 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
             <strong>{posts.length}</strong>
             <span>Artikel</span>
           </li>
-          {featured?.date ? (
-            <li>
-              <strong>{new Intl.DateTimeFormat("de-DE", { month: "short", year: "numeric" }).format(new Date(featured.date))}</strong>
-              <span>Neuester Artikel</span>
-            </li>
-          ) : null}
           <li>
             <strong>0 €</strong>
             <span>Zum Start</span>
@@ -272,7 +267,7 @@ function PostMeta({ post, label }: { post: MagazineEntry; label?: string }) {
   return (
     <div className="thema-meta">
       {label ? <span className="thema-meta-label">{label}</span> : null}
-      {post.date ? <time dateTime={post.date}>{formatGermanDate(post.date)}</time> : null}
+      {getUpdatedDate(post) ? <time dateTime={getUpdatedDate(post)}>{formatUpdatedDate(post)}</time> : null}
       <span>{getReadingMinutes(post.content)} Min. Lesezeit</span>
     </div>
   );

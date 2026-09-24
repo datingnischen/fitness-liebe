@@ -252,6 +252,21 @@ export function formatGermanDate(dateString?: string) {
   }
 }
 
+// Artikel zeigen das Änderungsdatum statt des Veröffentlichungsdatums (Fallback: date).
+// Feste Seiten (type "page", Autoren, Hubs) zeigen gar kein Datum.
+export function formatUpdatedLabel(dateString?: string) {
+  const formatted = formatGermanDate(dateString);
+  return formatted ? `Aktualisiert am ${formatted}` : "";
+}
+
+export function getUpdatedDate(entry: { date?: string; modified?: string }) {
+  return entry.modified || entry.date;
+}
+
+export function formatUpdatedDate(entry: { date?: string; modified?: string }) {
+  return formatUpdatedLabel(getUpdatedDate(entry));
+}
+
 // Magazin-Seiten ohne Index: Rechtstexte gehören der Plattform (datenschutz.html, impressum.html),
 // Gazis Profil bleibt draußen, solange die Kooperation nicht feststeht.
 export const NOINDEX_MAGAZINE_PAGES = new Set(["datenschutz", "impressum", "gazi-avakhti"]);

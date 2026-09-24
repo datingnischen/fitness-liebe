@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { AUTHOR_PROFILE_PATHS, getAuthorPosts, getAuthorProfile, getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
-import { formatGermanDate, stripHtml } from "@/lib/wordpress";
+import { formatUpdatedDate, getUpdatedDate, stripHtml } from "@/lib/wordpress";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, marketUrl, type MarketCode } from "@/lib/markets";
 
@@ -209,7 +209,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
                 <h3>{latestPost.title}</h3>
                 <p>{stripHtml(latestPost.excerpt || latestPost.content).slice(0, 170)}…</p>
                 <div className="meta-row">
-                  {latestPost.date ? <span>{formatGermanDate(latestPost.date)}</span> : null}
+                  {getUpdatedDate(latestPost) ? <span>{formatUpdatedDate(latestPost)}</span> : null}
                   <Link href={`/magazin/${latestPost.slug}`}>Jetzt lesen</Link>
                 </div>
               </div>
@@ -237,7 +237,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
                 )}
                 <div className="author-post-card-body">
                   <div className="meta-row">
-                    {post.date ? <span>{formatGermanDate(post.date)}</span> : null}
+                    {getUpdatedDate(post) ? <span>{formatUpdatedDate(post)}</span> : null}
                     {post.categories[0] ? <span>{post.categories[0].name}</span> : null}
                   </div>
                   <h3>{post.title}</h3>

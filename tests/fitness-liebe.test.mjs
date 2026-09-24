@@ -10,7 +10,13 @@ import {
 } from "../lib/fitnesswelten.ts";
 import { buildMagazineIndex } from "../lib/magazine-index.ts";
 import { getMarketCityPages, getMarketPartnersucheHub } from "../lib/market-partnersuche.ts";
-import { enhanceAudioSummary, getAudioSummarySource, relativizeInternalLinks, resolveAioseoMeta } from "../lib/wordpress.ts";
+import {
+  enhanceAudioSummary,
+  formatUpdatedDate,
+  getAudioSummarySource,
+  relativizeInternalLinks,
+  resolveAioseoMeta,
+} from "../lib/wordpress.ts";
 
 const repoRoot = new URL("../", import.meta.url);
 const read = (path) => readFile(new URL(path, repoRoot), "utf8");
@@ -178,4 +184,21 @@ test("Städteübersicht verweist auf die individuelle Suche der Live-Domain", as
   assert.match(component, /Deine Stadt fehlt\?/);
   const hub = await read("app/[market]/partnersuche/page.tsx");
   assert.match(hub, /<CitySearchFallback \/>/);
+});
+
+test("articles show the modified date as 'Aktualisiert am', falling back to date", () => {
+  assert.equal(formatUpdatedDate({ date: "2025-11-12T10:00:00", modified: "2026-03-05T10:00:00" }), "Aktualisiert am 05. März 2026");
+  assert.equal(formatUpdatedDate({ date: "2025-11-12T10:00:00" }), "Aktualisiert am 12. November 2025");
+  assert.equal(formatUpdatedDate({}), "");
+});
+
+test("fixed pages show no visible date, articles use the update date", async () => {
+  const read = (path) => readFile(new URL(path, repoRoot), "utf8");
+  const author = await read("app/[market]/magazin/author/[slug]/page.tsx");
+  assert.ok(!author.includes("formatGermanDate"), "Autorenseite zeigt Veröffentlichungsdatum");
+  const detail = await read("app/[market]/magazin/[slug]/page.tsx");
+  assert.match(detail, /entry\.type === "post" \? <span>\{formatUpdatedDate\(entry\)\}/);
+  assert.match(detail, /datePublished: entry\.date/);
+  const thema = await read("app/[market]/magazin/thema/[slug]/page.tsx");
+  assert.ok(!thema.includes("<span>Neuester Artikel</span>") && !thema.includes("Intl.DateTimeFormat"), "Hub zeigt Datum des neuesten Artikels");
 });

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
-import { formatGermanDate, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
+import { formatUpdatedLabel, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
 import { buildMagazineIndex, countIndexLinks } from "@/lib/magazine-index";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
@@ -31,7 +31,7 @@ export default async function MagazineIndexPage({ params }: PageProps) {
   const siteUrl = marketUrl(market);
   const PAGE_URL = `${siteUrl}/magazin/inhalt`;
   const [posts, pages] = await Promise.all([getMagazinePosts(), getMagazinePages()]);
-  const sections = buildMagazineIndex({ posts, pages, formatDate: formatGermanDate });
+  const sections = buildMagazineIndex({ posts, pages, formatDate: formatUpdatedLabel });
   const total = countIndexLinks(sections);
 
   const breadcrumbGraph = {

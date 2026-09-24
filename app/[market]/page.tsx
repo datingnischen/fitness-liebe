@@ -8,7 +8,8 @@ import { getMarketCityPages } from "@/lib/market-partnersuche";
 import { REGISTRATION_URL, SITE_ORIGIN, getMarket, isMarketCode, marketAlternates, marketUrl, platformUrl, publicUrl, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
 import {
-  formatGermanDate,
+  formatUpdatedDate,
+  getUpdatedDate,
   getEntryCoverImage,
   getMagazinePosts,
   getReadingMinutes,
@@ -276,7 +277,7 @@ export default async function HomePage({ params }: PageProps) {
                     <span className="fl-post-media">{cover ? <img src={cover} alt="" loading="lazy" decoding="async" /> : null}</span>
                     <span className="fl-post-body">
                       <small>
-                        {post.date ? formatGermanDate(post.date) : null} · {getReadingMinutes(post.content)} Min.
+                        {getUpdatedDate(post) ? `${formatUpdatedDate(post)} · ` : null}{getReadingMinutes(post.content)} Min.
                       </small>
                       <strong>{post.title}</strong>
                       <span>{teaser(post, 130)}</span>

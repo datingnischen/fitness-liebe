@@ -7,7 +7,8 @@ import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { REGISTRATION_URL, marketAlternates, publicUrl } from "@/lib/markets";
 import {
   MAGAZINE_POSTS_PER_PAGE,
-  formatGermanDate,
+  formatUpdatedDate,
+  getUpdatedDate,
   getMagazinePages,
   getMagazinePostsPage,
   stripHtml,
@@ -82,7 +83,7 @@ export default async function MagazineOverviewPage() {
               <p>{stripHtml(featuredPost.excerpt || featuredPost.content).slice(0, 220)}…</p>
               <div className="meta-row editorial-feature-meta">
                 {featuredPost.authorName ? <span>Von {featuredPost.authorName}</span> : null}
-                {featuredPost.date ? <span>{formatGermanDate(featuredPost.date)}</span> : null}
+                {getUpdatedDate(featuredPost) ? <span>{formatUpdatedDate(featuredPost)}</span> : null}
               </div>
               <div className="button-row">
                 <Link className="button button-primary" href={`/magazin/${featuredPost.slug}`}>
@@ -154,7 +155,7 @@ export default async function MagazineOverviewPage() {
                 <div className="article-card-copy article-card-copy-magazine">
                   <div className="meta-row article-card-meta-magazine">
                     <span>{classifyFitnesswelt(post).shortName}</span>
-                    {post.date ? <span>{formatGermanDate(post.date)}</span> : null}
+                    {getUpdatedDate(post) ? <span>{formatUpdatedDate(post)}</span> : null}
                   </div>
                   <h3>{post.title}</h3>
                   <p>{stripHtml(post.excerpt || post.content).slice(0, 170)}…</p>
