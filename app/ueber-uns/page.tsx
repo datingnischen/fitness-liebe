@@ -24,7 +24,8 @@ const WHY = HOME_SECTIONS.find((section) => section.heading === "Warum Fitness-L
 const STORY = HOME_SECTIONS.filter((section) => section !== WHY).slice(0, 3);
 
 export default async function AboutOverviewPage() {
-  const [christian, gazi] = await Promise.all([getAuthorProfile("christian-m-haas"), getAuthorProfile("gazi")]);
+  // Gazi bleibt ausgeblendet, solange die Kooperation nicht feststeht (Profilseite ist noindex).
+  const christian = await getAuthorProfile("christian-m-haas");
 
   return (
     <main className="shell shell-narrow">
@@ -106,17 +107,6 @@ export default async function AboutOverviewPage() {
             eyebrow="Gründer & Datingexperte"
             title="Hinter fitness-liebe.de stehen reale Menschen mit Sportbiografie und Dating-Erfahrung – keine anonymen Platzhalter."
             primaryLabel="Zum Expertenprofil"
-          />
-        </section>
-      ) : null}
-
-      {gazi ? (
-        <section className="content-section">
-          <ExpertTrustCard
-            profile={gazi}
-            eyebrow="Unser Personaltrainer"
-            title="Trainingswissen aus über 14.000 Trainingsstunden – verständlich aufbereitet für das Magazin."
-            primaryLabel="Zum Trainerprofil"
           />
         </section>
       ) : null}
