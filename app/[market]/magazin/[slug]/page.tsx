@@ -5,7 +5,7 @@ import { AuthorProfileFacts } from "@/components/author-profile-facts";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { PublishedBookFeature } from "@/components/published-book-feature";
 import { RecipeCard, RecipeHeroFacts } from "@/components/recipe-card";
-import { authorSlugForProfilePage, getAuthorProfile } from "@/lib/author-profiles";
+import { authorSlugForProfilePage, getAuthorProfile, withChristianProfilePhoto } from "@/lib/author-profiles";
 import { staticAsset } from "@/lib/static-asset";
 import {
   NOINDEX_MAGAZINE_PAGES,
@@ -245,7 +245,8 @@ export default async function MagazineDetailPage({ params }: PageProps) {
   const bodyContent = enhanceAudioSummary(leadImage && !isProfilePage ? leadImage.content : entry.content);
   const faqItems = getMagazineFaqItems(bodyContent);
   const renderedContent = renderMagazineFaqSection(bodyContent, getMagazineFaqSubject(entry.title));
-  const content = relativizeInternalLinks(stripPublishedBookSchema(renderedContent), market);
+  const pageContent = slug === "christian" ? withChristianProfilePhoto(renderedContent) : renderedContent;
+  const content = relativizeInternalLinks(stripPublishedBookSchema(pageContent), market);
   const profileGraph = buildChristianBookProfileGraph({
     slug,
     christianSlug: "christian",

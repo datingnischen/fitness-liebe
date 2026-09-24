@@ -1,5 +1,19 @@
 import { cache } from "react";
+import { staticAsset } from "@/lib/static-asset";
 import { getMagazineEntryBySlug, getMagazinePosts } from "@/lib/wordpress";
+
+/** Christian vor dem Tennisplatz (freigestellt aus dem Porträt, Hintergrund gerendert). */
+export const CHRISTIAN_PROFILE_PHOTO = staticAsset("/images/authors/christian-m-haas-tennis-portrait.webp");
+
+/** Ersetzt das WordPress-Porträt im Profiltext durch das Tennisfoto, Größe und Ausrichtung bleiben. */
+export function withChristianProfilePhoto(html: string) {
+  return html.replace(/<img\s[^>]*Christian-M-Haas[^>]*>/i, (tag) =>
+    tag
+      .replace(/\s(?:srcset|sizes)="[^"]*"/gi, "")
+      .replace(/\ssrc="[^"]*"/i, ` src="${CHRISTIAN_PROFILE_PHOTO}"`)
+      .replace(/\salt="[^"]*"/i, ' alt="Christian M. Haas auf dem Tennisplatz"'),
+  );
+}
 
 // Christians und Gazis Autorenarchive sind nur Aliasse: sie kanonisieren auf ihre
 // Profilseiten im Magazin und bleiben noindex — deshalb gehoeren sie nicht in die Sitemap.
@@ -80,8 +94,6 @@ export const getAuthorProfile = cache(async (slug: string): Promise<AuthorProfil
   if (!authorPosts.length && !AUTHOR_PROFILE_PATHS[slug] && slug !== "redaktion") return null;
 
   if (slug === "christian-m-haas") {
-    const { imageUrl } = await profileImage("christian");
-
     return {
       slug,
       name: "Christian M. Haas",
@@ -111,7 +123,7 @@ export const getAuthorProfile = cache(async (slug: string): Promise<AuthorProfil
         "Sport begleitet Christian M. Haas seit seiner Kindheit. Mit fitness-liebe.de verbindet er seine sportliche Leidenschaft mit langjähriger Erfahrung im Aufbau spezialisierter Dating-Plattformen.",
       intro:
         "Christian M. Haas entwickelt seit vielen Jahren Angebote für themenspezifisches Online-Dating. Bei fitness-liebe.de bringt er dieses Know-how mit seiner eigenen Sportbiografie zusammen – für ein Magazin, das motiviert, ehrlich einordnet und Singles mit aktivem Lebensstil zusammenbringt.",
-      imageUrl,
+      imageUrl: CHRISTIAN_PROFILE_PHOTO,
       profileUrl: "/magazin/christian",
       facts: [
         "Langjährige Erfahrung mit Dating-Portalen und spezialisierten Communities",
