@@ -33,5 +33,11 @@ export function registrationUrl(aid = "magazin") {
   return publicUrl("de", `/registration/?AID=${aid}`);
 }
 
+/** Individuelle ICONY-Suche (Ort, Umkreis, Alter); nur auf der Live-Domain vorhanden. */
+export function searchUrl(aid = "location") {
+  return publicUrl("de", `/suche/?AID=${aid}`);
+}
+
 export const REGISTRATION_URL = registrationUrl("magazin");
 export const LOCATION_REGISTRATION_URL = registrationUrl("location");
+export const LOCATION_SEARCH_URL = searchUrl("location");

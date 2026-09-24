@@ -168,3 +168,13 @@ test("AIOSEO titles and descriptions resolve smart tags and drop the site name",
   assert.deepEqual(resolveAioseoMeta(item(null, "Impressum")), { seoTitle: undefined, seoDescription: undefined });
   assert.deepEqual(resolveAioseoMeta({ title: { rendered: "X" }, aioseo_meta_data: null }), { seoTitle: undefined, seoDescription: undefined });
 });
+
+test("Städteübersicht verweist auf die individuelle Suche der Live-Domain", async () => {
+  const { LOCATION_SEARCH_URL } = await import("../lib/markets.ts");
+  assert.equal(LOCATION_SEARCH_URL, "https://fitness-liebe.de/suche/?AID=location");
+  const component = await read("components/city-search-fallback.tsx");
+  assert.match(component, /href=\{LOCATION_SEARCH_URL\}/);
+  assert.match(component, /Deine Stadt fehlt\?/);
+  const hub = await read("app/partnersuche/page.tsx");
+  assert.match(hub, /<CitySearchFallback \/>/);
+});
