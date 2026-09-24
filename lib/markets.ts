@@ -85,6 +85,16 @@ export function platformUrl(pathname: string): string {
   return `${PLATFORM_ORIGIN}/${pathname.replace(/^\/+/, "")}`;
 }
 
+/** ICONY-Inhaltsseiten mit Pfad ohne .html; sie bleiben auf der Plattform und werden nie in Next.js gerendert. */
+export const PLATFORM_PAGES = { datingTips: "/dating-tipps/" } as const;
+
+/** Ziel auf der Plattform, wenn `pathname` (ohne Länderpräfix) eine ICONY-Inhaltsseite ist. */
+export function platformPageUrl(pathname: string): string | null {
+  const normalized = normalizePath(pathname);
+  const page = Object.values(PLATFORM_PAGES).find((path) => normalizePath(path) === normalized);
+  return page ? platformUrl(page) : null;
+}
+
 /**
  * canonical plus hreflang-Alternativen. `markets` begrenzt die Alternativen auf Länder,
  * in denen die Seite existiert (z. B. Stadtseiten nur in einem Land).

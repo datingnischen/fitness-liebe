@@ -155,7 +155,7 @@ export function getReadingMinutes(html = "") {
 }
 
 const INTERNAL_CONTENT_LINK =
-  /href=(["'])https?:\/\/(?:www\.)?fitness-liebe\.de(\/(?:magazin|partnersuche|ueber-uns|social-media|dating-tipps)(?:[\/?#][^"']*)?)\1/gi;
+  /href=(["'])https?:\/\/(?:www\.)?fitness-liebe\.de(\/(?:magazin|partnersuche|ueber-uns|social-media)(?:[\/?#][^"']*)?)\1/gi;
 
 // WordPress speichert interne Links absolut; relativ mit Länderpräfix funktionieren sie auf Produktion und auf Vercel-Previews.
 export function relativizeInternalLinks(html = "", market: MarketCode = DEFAULT_MARKET) {

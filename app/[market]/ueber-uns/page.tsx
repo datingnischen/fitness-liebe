@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { getAuthorProfile } from "@/lib/author-profiles";
-import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, DATING_TIPS_PATH, aboutOverviewCanonical } from "@/lib/about-section";
+import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, aboutOverviewCanonical } from "@/lib/about-section";
 import { HOME_INTRO as BASE_INTRO, HOME_SECTIONS as BASE_SECTIONS, HOME_TRUST_TILES as BASE_TRUST_TILES } from "@/lib/home-content";
 import { aboutCopy, localizeTexts } from "@/lib/market-copy";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
-import { REGISTRATION_URL, marketAlternates, platformUrl } from "@/lib/markets";
+import { PLATFORM_PAGES, REGISTRATION_URL, marketAlternates, platformUrl } from "@/lib/markets";
 import { SOCIAL_CHANNELS } from "@/lib/social-channels";
 
 export const revalidate = 3600;
@@ -83,9 +83,9 @@ export default async function AboutOverviewPage({ params }: PageProps) {
             <h2>Dating-Tipps für den Start</h2>
           </div>
           <p>Bleib du selbst, fülle dein Profil aus und schreib persönliche Nachrichten: Unsere Tipps für eine erfolgreiche Partnersuche online.</p>
-          <Link className="button button-primary" href={DATING_TIPS_PATH}>
+          <a className="button button-primary" href={platformUrl(PLATFORM_PAGES.datingTips)}>
             Zu den Dating-Tipps
-          </Link>
+          </a>
         </article>
       </section>
 

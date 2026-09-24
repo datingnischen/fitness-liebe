@@ -22,6 +22,7 @@ Routen, Sitemap, hreflang (`de-DE`, `de-AT`, `de-CH`, `x-default` → DE) und `<
   `lib/market-partnersuche.ts` – derzeit nur DE. Ohne Stadtseiten blenden AT/CH die Partnersuche aus.
 - Magazin und Inhaltsseiten sind in allen Ländern gleich und verweisen per hreflang aufeinander.
 - ICONY-Plattformseiten bleiben ohne Länderpräfix auf `https://fitness-liebe.de` (`platformUrl`).
+  Dazu gehört auch `/dating-tipps/` (`PLATFORM_PAGES`): nie in Next.js rendern, `proxy.ts` leitet `/<land>/dating-tipps` dorthin um.
 
 ## Struktur
 
@@ -35,7 +36,7 @@ Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`).
 | `/magazin/fitnesswelten`, `/magazin/thema/[slug]` | Themenwelten aus `lib/fitnesswelten.ts` |
 | `/magazin/inhalt` | Inhaltsverzeichnis A–Z |
 | `/magazin/christian`, `/magazin/gazi-avakhti` | Autorenprofile (WP-Seiten) |
-| `/dating-tipps`, `/social-media`, `/ueber-uns` | Übernommene ICONY-Inhaltsseiten |
+| `/social-media`, `/ueber-uns` | Übernommene ICONY-Inhaltsseiten |
 
 WordPress kennt nur die Kategorien „Allgemein" und „Rezepte". Die Zuordnung zu Fitnesswelten
 steht in `lib/fitnesswelten.ts`; neue Beiträge landen per Titel-Stichwort automatisch in einer Welt.

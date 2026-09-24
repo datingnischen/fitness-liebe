@@ -3,7 +3,6 @@ import { publicUrl, type MarketCode } from "@/lib/markets";
 export const ABOUT_OVERVIEW_PATH = "/ueber-uns";
 // Die Social-Media-Seite liegt live unter /social-media/ – der Pfad bleibt erhalten.
 export const ABOUT_SOCIAL_MEDIA_PATH = "/social-media";
-export const DATING_TIPS_PATH = "/dating-tipps";
 
 export function canonicalMagazinePagePath(slug: string) {
   return `/magazin/${slug}`;
@@ -15,8 +14,4 @@ export function aboutOverviewCanonical(market: MarketCode) {
 
 export function aboutSocialMediaCanonical(market: MarketCode) {
   return publicUrl(market, ABOUT_SOCIAL_MEDIA_PATH);
-}
-
-export function datingTipsCanonical(market: MarketCode) {
-  return publicUrl(market, DATING_TIPS_PATH);
 }

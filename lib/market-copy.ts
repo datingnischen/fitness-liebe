@@ -1,6 +1,6 @@
 import type { MarketCode } from "#markets";
 
-// Startseite, Dating-Tipps, Über uns und Social Media gibt es in jedem Land. Damit AT und CH
+// Startseite, Über uns und Social Media gibt es in jedem Land. Damit AT und CH
 // keine wortgleichen Kopien von DE sind, bekommen sie eigene Titel, Descriptions, Überschriften
 // und Einleitungen mit Landesbezug; CH schreibt zusätzlich ohne ß. Der Inhalt bleibt derselbe.
 // DE nutzt die Originaltexte der Seiten unverändert.
@@ -52,35 +52,6 @@ export function homeCopy(market: MarketCode) {
           "Finde sportliche Singles in der Schweiz, von Zürich über Bern bis Basel: fitness-liebe.de ist die Partnervermittlung für Fitness-Fans – mit geprüften Profilen, Fitness-Magazin und kostenlosem Start.",
         heading: "in der Schweiz.",
         lead: "Joggen am See, Biken in den Bergen oder Hantelbank im Studio: Bei fitness-liebe.de triffst du Menschen in der Schweiz, die Bewegung genauso lieben wie du – für eine ernsthafte Beziehung mit gemeinsamem Puls.",
-      },
-    },
-  );
-}
-
-export function datingTipsCopy(market: MarketCode) {
-  return pageCopy(
-    market,
-    {
-      title: "Dating-Tipps: So gelingt die Partnersuche online",
-      description:
-        "Bleib du selbst, zeig dich mit Foto, schreib persönliche Nachrichten und bleib sicher: Die wichtigsten Dating-Tipps von fitness-liebe.de für einen erfolgreichen Start.",
-      heading: "Dating-Tipps: So gelingt die Partnersuche online",
-      lead: "Online-Dating ist eine großartige Möglichkeit, neue Menschen kennenzulernen. Damit Du von Anfang an die bestmöglichen Chancen hast, haben wir die wichtigsten Tipps zusammengefasst – online flirten ist leichter als gedacht!",
-    },
-    {
-      at: {
-        title: "Dating-Tipps für Österreich: So gelingt die Partnersuche online",
-        description:
-          "Bleib du selbst, zeig dich mit Foto, schreib persönliche Nachrichten und bleib sicher: Dating-Tipps von fitness-liebe.de für sportliche Singles in Österreich.",
-        heading: "Dating-Tipps für Österreich: So gelingt die Partnersuche online",
-        lead: "Ob in Wien, Linz oder Salzburg: Online-Dating ist eine großartige Möglichkeit, neue Menschen kennenzulernen. Damit Du von Anfang an die bestmöglichen Chancen hast, haben wir die wichtigsten Tipps zusammengefasst – online flirten ist leichter als gedacht!",
-      },
-      ch: {
-        title: "Dating-Tipps für die Schweiz: So gelingt die Partnersuche online",
-        description:
-          "Bleib du selbst, zeig dich mit Foto, schreib persönliche Nachrichten und bleib sicher: Dating-Tipps von fitness-liebe.de für sportliche Singles in der Schweiz.",
-        heading: "Dating-Tipps für die Schweiz: So gelingt die Partnersuche online",
-        lead: "Ob in Zürich, Bern oder Luzern: Online-Dating ist eine grossartige Möglichkeit, neue Menschen kennenzulernen. Damit Du von Anfang an die bestmöglichen Chancen hast, haben wir die wichtigsten Tipps zusammengefasst – online flirten ist leichter als gedacht!",
       },
     },
   );

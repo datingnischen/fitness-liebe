@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, DATING_TIPS_PATH } from "@/lib/about-section";
+import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH } from "@/lib/about-section";
 import { getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { getMarketCityPages, marketsWithCity } from "@/lib/market-partnersuche";
@@ -30,7 +30,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/partnersuche", changeFrequency: "weekly", priority: 0.9, markets: partnersucheMarkets },
     { path: "/magazin/fitnesswelten", changeFrequency: "weekly", priority: 0.8 },
     { path: "/magazin/inhalt", changeFrequency: "daily", priority: 0.7 },
-    { path: DATING_TIPS_PATH, changeFrequency: "monthly", priority: 0.7 },
     { path: ABOUT_OVERVIEW_PATH, changeFrequency: "monthly", priority: 0.7 },
     { path: ABOUT_SOCIAL_MEDIA_PATH, changeFrequency: "monthly", priority: 0.6 },
     ...posts.map((post): Route => ({

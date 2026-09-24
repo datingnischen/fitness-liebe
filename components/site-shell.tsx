@@ -2,11 +2,14 @@
 
 import { usePathname } from "next/navigation";
 import { MarketLink } from "@/components/market-link";
-import { platformUrl, registrationUrl, stripMarketPrefix, type MarketCode } from "@/lib/markets";
+import { PLATFORM_PAGES, platformUrl, registrationUrl, stripMarketPrefix, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
 
 type NavLink = { label: string; href: string; external?: boolean };
 type Props = { market?: MarketCode; hasCityPages?: boolean };
+
+// Vertrauens- und Plattformseiten gehören ICONY: immer absolut auf die Live-Domain.
+const platform = (path: string, label: string): NavLink => ({ label, href: platformUrl(path), external: true });
 
 const headerNav: NavLink[] = [
   { label: "Start", href: "/" },
@@ -16,12 +19,10 @@ const headerNav: NavLink[] = [
   { label: "Training", href: "/magazin/thema/training" },
   { label: "Ernährung", href: "/magazin/thema/ernaehrung" },
   { label: "Rezepte", href: "/magazin/thema/rezepte" },
-  { label: "Dating-Tipps", href: "/dating-tipps" },
+  platform(PLATFORM_PAGES.datingTips, "Dating-Tipps"),
   { label: "Über uns", href: "/ueber-uns" },
 ];
 
-// Vertrauens- und Plattformseiten gehören ICONY: immer absolut auf die Live-Domain.
-const platform = (path: string, label: string): NavLink => ({ label, href: platformUrl(path), external: true });
 
 const footerColumns: Array<{ title: string; links: NavLink[] }> = [
   {
@@ -30,7 +31,7 @@ const footerColumns: Array<{ title: string; links: NavLink[] }> = [
       { label: "Flirten im Fitnessstudio", href: "/magazin/flirten-im-fitnessstudio" },
       { label: "Sportarten fürs erste Date", href: "/magazin/sportarten-fuer-erstes-date" },
       { label: "Fit bleiben als Paar", href: "/magazin/fit-bleiben-als-paar" },
-      { label: "Dating-Tipps", href: "/dating-tipps" },
+      platform(PLATFORM_PAGES.datingTips, "Dating-Tipps"),
     ],
   },
   {
@@ -133,7 +134,7 @@ export function SiteHeader({ market = "de", hasCityPages = true }: Props) {
             </summary>
             <div className="header-menu-panel">
               <nav className="main-nav compact-menu-nav" aria-label="Hauptnavigation">
-                {navFor(hasCityPages).map((item) => <span key={item.href}>{localLink(market, item.href, item.label)}</span>)}
+                {navFor(hasCityPages).map((item) => <span key={item.href}>{item.external ? <a href={item.href}>{item.label}</a> : localLink(market, item.href, item.label)}</span>)}
               </nav>
             </div>
           </details>

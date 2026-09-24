@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { aboutCopy, datingTipsCopy, homeCopy, localizeTexts, socialMediaCopy } from "../lib/market-copy.ts";
+import { aboutCopy, homeCopy, localizeTexts, socialMediaCopy } from "../lib/market-copy.ts";
 
-const pages = { home: homeCopy, datingTips: datingTipsCopy, about: (market) => aboutCopy(market, "Einleitung."), socialMedia: socialMediaCopy };
+const pages = { home: homeCopy, about: (market) => aboutCopy(market, "Einleitung."), socialMedia: socialMediaCopy };
 
 test("AT and CH get their own title, description, heading and lead on every shared page", () => {
   for (const [name, copy] of Object.entries(pages)) {

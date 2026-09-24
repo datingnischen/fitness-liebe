@@ -11,6 +11,7 @@ import {
   marketAlternates,
   marketFromPathname,
   marketPath,
+  platformPageUrl,
   platformUrl,
   publicUrl,
   registrationUrl,
@@ -30,7 +31,7 @@ test("pages live below the country prefix", () => {
 });
 
 test("internal links get the country prefix exactly once", () => {
-  assert.equal(localizeHref("at", "/dating-tipps"), "/at/dating-tipps");
+  assert.equal(localizeHref("at", "/social-media"), "/at/social-media");
   assert.equal(localizeHref("de", "/magazin"), "/de/magazin");
   assert.equal(localizeHref("ch", "/"), "/ch");
   assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/de/magazin/inhalt?q=x#a");
@@ -44,9 +45,17 @@ test("internal links get the country prefix exactly once", () => {
 test("country prefix is recognised and stripped", () => {
   assert.equal(marketFromPathname("/ch/partnersuche"), "ch");
   assert.equal(marketFromPathname("/partnersuche"), null);
-  assert.equal(marketFromPathname("/dating-tipps"), null);
+  assert.equal(marketFromPathname("/social-media"), null);
   assert.equal(stripMarketPrefix("/at/partnersuche/wien"), "/partnersuche/wien");
   assert.equal(stripMarketPrefix("/de"), "/");
+});
+
+test("Dating-Tipps is an ICONY page and never rendered by Next.js", async () => {
+  assert.equal(platformPageUrl("/dating-tipps"), "https://fitness-liebe.de/dating-tipps/");
+  assert.equal(platformPageUrl("/dating-tipps/"), "https://fitness-liebe.de/dating-tipps/");
+  assert.equal(platformPageUrl("/social-media"), null);
+  const routes = await readdir(new URL("../app/[market]/", import.meta.url));
+  assert.ok(!routes.includes("dating-tipps"));
 });
 
 test("ICONY platform pages stay absolute on the live domain without country prefix", () => {
@@ -65,13 +74,13 @@ test("only DE has its own magazine; AT/CH link to it instead of duplicating it",
 });
 
 test("hreflang lists every country plus x-default", () => {
-  const alternates = marketAlternates("at", "/dating-tipps");
-  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/dating-tipps");
+  const alternates = marketAlternates("at", "/social-media");
+  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/social-media");
   assert.deepEqual(alternates.languages, {
-    "de-DE": "https://fitness-liebe.de/de/dating-tipps",
-    "de-AT": "https://fitness-liebe.de/at/dating-tipps",
-    "de-CH": "https://fitness-liebe.de/ch/dating-tipps",
-    "x-default": "https://fitness-liebe.de/de/dating-tipps",
+    "de-DE": "https://fitness-liebe.de/de/social-media",
+    "de-AT": "https://fitness-liebe.de/at/social-media",
+    "de-CH": "https://fitness-liebe.de/ch/social-media",
+    "x-default": "https://fitness-liebe.de/de/social-media",
   });
   assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), ["de-DE", "x-default"]);
 });
