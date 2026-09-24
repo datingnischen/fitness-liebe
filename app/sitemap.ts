@@ -3,7 +3,7 @@ import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, DATING_TIPS_PATH } from "
 import { getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { getMarketCityPages, marketsWithCity } from "@/lib/market-partnersuche";
-import { MARKET_CODES, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
+import { MARKET_CODES, marketAlternates, marketsForPath, publicUrl, type MarketCode } from "@/lib/markets";
 import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
 
 
@@ -12,7 +12,7 @@ type Route = Omit<Entry, "url" | "alternates"> & { path: string; markets?: reado
 
 // Jede Seite steht einmal je Land in der Sitemap, mit hreflang-Verweisen auf die anderen Länder.
 function localized(route: Route): Entry[] {
-  const { path, markets = MARKET_CODES, ...entry } = route;
+  const { path, markets = marketsForPath(path), ...entry } = route;
   return markets.map((market) => ({
     ...entry,
     url: publicUrl(market, path),

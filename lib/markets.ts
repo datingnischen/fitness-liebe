@@ -11,12 +11,14 @@ export type MarketConfig = {
   countryName: string;
   /** hreflang und <html lang> */
   locale: `de-${string}`;
+  /** Eigenes Magazin unter /<land>/magazin. Ohne eigene Inhalte verweist das Land auf das Magazin von DE (kein Duplicate Content). */
+  magazine: boolean;
 };
 
 const MARKETS: Record<MarketCode, MarketConfig> = {
-  de: { code: "de", countryName: "Deutschland", locale: "de-DE" },
-  at: { code: "at", countryName: "Österreich", locale: "de-AT" },
-  ch: { code: "ch", countryName: "Schweiz", locale: "de-CH" },
+  de: { code: "de", countryName: "Deutschland", locale: "de-DE", magazine: true },
+  at: { code: "at", countryName: "Österreich", locale: "de-AT", magazine: false },
+  ch: { code: "ch", countryName: "Schweiz", locale: "de-CH", magazine: false },
 };
 
 /** Domain dieser Website; alle Länder liegen als Unterordner darunter. */
@@ -58,6 +60,26 @@ export function marketUrl(market: MarketCode): string {
   return `${SITE_ORIGIN}/${market}`;
 }
 
+const MAGAZINE_PATH = /^\/magazin(?:\/|$)/;
+
+export function isMagazinePath(pathname: string): boolean {
+  return MAGAZINE_PATH.test(normalizePath(pathname));
+}
+
+export function hasMagazine(market: MarketCode): boolean {
+  return MARKETS[market].magazine;
+}
+
+/** Länder, in denen es die Seite `pathname` gibt: Magazinseiten nur in Ländern mit eigenem Magazin. */
+export function marketsForPath(pathname: string): MarketCode[] {
+  return isMagazinePath(pathname) ? MARKET_CODES.filter(hasMagazine) : [...MARKET_CODES];
+}
+
+/** Land, dessen Seite ein Link aus `market` öffnet: Magazinlinks aus AT/CH führen ins DE-Magazin. */
+export function contentMarket(market: MarketCode, pathname: string): MarketCode {
+  return isMagazinePath(pathname) && !hasMagazine(market) ? DEFAULT_MARKET : market;
+}
+
 /** Absolute URL auf der ICONY-Plattform; diese Seiten werden nie auf Vercel gerendert. */
 export function platformUrl(pathname: string): string {
   return `${PLATFORM_ORIGIN}/${pathname.replace(/^\/+/, "")}`;
@@ -67,7 +89,7 @@ export function platformUrl(pathname: string): string {
  * canonical plus hreflang-Alternativen. `markets` begrenzt die Alternativen auf Länder,
  * in denen die Seite existiert (z. B. Stadtseiten nur in einem Land).
  */
-export function marketAlternates(market: MarketCode, pathname = "/", markets: readonly MarketCode[] = MARKET_CODES) {
+export function marketAlternates(market: MarketCode, pathname = "/", markets: readonly MarketCode[] = marketsForPath(pathname)) {
   const languages: Record<string, string> = {};
   for (const code of markets) languages[getMarket(code).locale] = publicUrl(code, pathname);
   if (markets.includes(DEFAULT_MARKET)) languages["x-default"] = publicUrl(DEFAULT_MARKET, pathname);
@@ -94,7 +116,7 @@ const MARKET_PREFIX = new RegExp(`^/(?:${MARKET_CODES.join("|")})(?=/|$)`);
 export function localizeHref(market: MarketCode, href: string): string {
   if (!href.startsWith("/") || href.startsWith("//") || MARKET_PREFIX.test(href)) return href;
   const [, path = "/", suffix = ""] = href.match(/^([^?#]*)(.*)$/) ?? [];
-  return `${marketPath(market, path)}${suffix}`;
+  return `${marketPath(contentMarket(market, path), path)}${suffix}`;
 }
 
 /** Entfernt das Länderpräfix: "/at/partnersuche/wien" → "/partnersuche/wien". */

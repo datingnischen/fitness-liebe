@@ -4,6 +4,9 @@ import test from "node:test";
 import { getMarketCityPages, getMarketPartnersucheHub, hasCityPages, marketsWithCity } from "../lib/market-partnersuche.ts";
 import {
   MARKET_CODES,
+  contentMarket,
+  hasMagazine,
+  marketsForPath,
   localizeHref,
   marketAlternates,
   marketFromPathname,
@@ -27,10 +30,12 @@ test("pages live below the country prefix", () => {
 });
 
 test("internal links get the country prefix exactly once", () => {
-  assert.equal(localizeHref("at", "/magazin"), "/at/magazin");
+  assert.equal(localizeHref("at", "/dating-tipps"), "/at/dating-tipps");
+  assert.equal(localizeHref("de", "/magazin"), "/de/magazin");
   assert.equal(localizeHref("ch", "/"), "/ch");
   assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/de/magazin/inhalt?q=x#a");
   assert.equal(localizeHref("at", "/de/magazin"), "/de/magazin");
+  assert.equal(localizeHref("ch", "/ueber-uns"), "/ch/ueber-uns");
   assert.equal(localizeHref("at", "https://fitness-liebe.de/login/"), "https://fitness-liebe.de/login/");
   assert.equal(localizeHref("at", "#faq"), "#faq");
   assert.equal(localizeHref("at", "/deutsch"), "/at/deutsch");
@@ -49,14 +54,24 @@ test("ICONY platform pages stay absolute on the live domain without country pref
   assert.equal(registrationUrl("location"), "https://fitness-liebe.de/registration/?AID=location");
 });
 
+test("only DE has its own magazine; AT/CH link to it instead of duplicating it", () => {
+  assert.deepEqual(MARKET_CODES.filter(hasMagazine), ["de"]);
+  assert.equal(localizeHref("at", "/magazin"), "/de/magazin");
+  assert.equal(localizeHref("ch", "/magazin/cardio-training"), "/de/magazin/cardio-training");
+  assert.equal(contentMarket("at", "/magazin/thema/training"), "de");
+  assert.equal(contentMarket("at", "/magazinfoo"), "at");
+  assert.deepEqual(marketsForPath("/magazin/cardio-training"), ["de"]);
+  assert.deepEqual(Object.keys(marketAlternates("de", "/magazin").languages), ["de-DE", "x-default"]);
+});
+
 test("hreflang lists every country plus x-default", () => {
-  const alternates = marketAlternates("at", "/magazin");
-  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/magazin");
+  const alternates = marketAlternates("at", "/dating-tipps");
+  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/dating-tipps");
   assert.deepEqual(alternates.languages, {
-    "de-DE": "https://fitness-liebe.de/de/magazin",
-    "de-AT": "https://fitness-liebe.de/at/magazin",
-    "de-CH": "https://fitness-liebe.de/ch/magazin",
-    "x-default": "https://fitness-liebe.de/de/magazin",
+    "de-DE": "https://fitness-liebe.de/de/dating-tipps",
+    "de-AT": "https://fitness-liebe.de/at/dating-tipps",
+    "de-CH": "https://fitness-liebe.de/ch/dating-tipps",
+    "x-default": "https://fitness-liebe.de/de/dating-tipps",
   });
   assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), ["de-DE", "x-default"]);
 });
