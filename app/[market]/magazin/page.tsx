@@ -5,6 +5,7 @@ import { classifyFitnesswelt } from "@/lib/fitnesswelten";
 import { getMagazineTopicLinks } from "@/lib/magazine-topics";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { REGISTRATION_URL, marketAlternates, publicUrl } from "@/lib/markets";
+import { staticAsset } from "@/lib/static-asset";
 import {
   MAGAZINE_POSTS_PER_PAGE,
   formatUpdatedDate,
@@ -23,16 +24,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: "Fitness-Magazin: Dating, Training & Ernährung",
     description:
-      "Das Magazin von fitness-liebe.de: Fitness-Dating und Flirten, Fit als Paar, Training, Ernährung und Rezepte – von Datingexperte Christian M. Haas und Personaltrainer Gazi Avakhti.",
+      "Das Magazin von fitness-liebe.de: Fitness-Dating und Flirten, Fit als Paar, Training, Ernährung und Rezepte – von Datingexperte Christian M. Haas.",
     alternates: marketAlternates(market, "/magazin"),
     openGraph: {
       title: "Fitness-Magazin: Dating, Training & Ernährung",
       description:
-        "Das Magazin von fitness-liebe.de: Fitness-Dating und Flirten, Fit als Paar, Training, Ernährung und Rezepte – von Datingexperte Christian M. Haas und Personaltrainer Gazi Avakhti.",
+        "Das Magazin von fitness-liebe.de: Fitness-Dating und Flirten, Fit als Paar, Training, Ernährung und Rezepte – von Datingexperte Christian M. Haas.",
       url: publicUrl(market, "/magazin"),
     },
   };
 }
+
+// Gazi bleibt ausgeblendet, solange die Kooperation nicht feststeht.
+const SIDEBAR_HIDDEN_PAGES = new Set(["datenschutz", "impressum", "gazi-avakhti"]);
+const SIDEBAR_PAGE_IMAGES: Record<string, { src: string; alt: string }> = {
+  christian: { src: "/images/authors/christian-m-haas-tennis.webp", alt: "Christian M. Haas auf dem Tennisplatz" },
+};
 
 export default async function MagazineOverviewPage() {
   const [{ posts, totalPages, totalItems }, pages, topics] = await Promise.all([
@@ -43,7 +50,7 @@ export default async function MagazineOverviewPage() {
 
   const featuredPost = posts[0];
   const latestPosts = posts.slice(0, 3);
-  const importantPages = pages.filter((page) => page.slug !== "datenschutz" && page.slug !== "impressum").slice(0, 6);
+  const importantPages = pages.filter((page) => !SIDEBAR_HIDDEN_PAGES.has(page.slug)).slice(0, 6);
 
   return (
     <main className="shell shell-narrow magazine-overview-page">
@@ -52,7 +59,7 @@ export default async function MagazineOverviewPage() {
         <h1>Wir verbinden Liebe und Fitness: Training, Ernährung und Dating für sportliche Singles.</h1>
         <p>
           Flirten im Gym, fit bleiben als Paar, Krafttraining, Kalorienbedarf und Rezepte fürs Kochdate — geschrieben
-          von Datingexperte Christian M. Haas und Personaltrainer Gazi Avakhti, mit direktem Weg zur Anmeldung.
+          von Datingexperte Christian M. Haas, mit direktem Weg zur Anmeldung.
         </p>
         <div className="button-row">
           <Link className="button button-primary" href={REGISTRATION_URL}>
@@ -180,11 +187,22 @@ export default async function MagazineOverviewPage() {
           <div className="section-header">
             <span className="eyebrow">Autoren</span>
             <h2>Unsere Autoren und Experten</h2>
-            <p>Wer hinter dem Magazin steht: Dating-Erfahrung trifft Trainingspraxis.</p>
+            <p>Wer hinter dem Magazin steht: Dating-Erfahrung und Leidenschaft für Sport.</p>
           </div>
           <div className="stack-list important-page-list">
             {importantPages.map((page) => (
               <Link key={page.id} href={canonicalMagazinePagePath(page.slug)} className="article-card article-card-compact article-card-page-link">
+                {SIDEBAR_PAGE_IMAGES[page.slug] ? (
+                  <img
+                    className="article-card-page-photo"
+                    src={staticAsset(SIDEBAR_PAGE_IMAGES[page.slug].src)}
+                    alt={SIDEBAR_PAGE_IMAGES[page.slug].alt}
+                    width={640}
+                    height={800}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : null}
                 <h3>{page.title}</h3>
                 <p>{stripHtml(page.excerpt || page.content).slice(0, 120)}…</p>
               </Link>

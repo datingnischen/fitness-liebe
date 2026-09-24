@@ -1253,6 +1253,15 @@ a.social-bubble:hover {
   box-shadow: 0 14px 32px rgba(31, 35, 40, 0.06);
 }
 
+.article-card-page-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
 .article-card-page-link h3,
 .article-card-page-link p {
   margin: 0;
