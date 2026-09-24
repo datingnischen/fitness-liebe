@@ -274,7 +274,8 @@ export const NOINDEX_MAGAZINE_PAGES = new Set(["datenschutz", "impressum", "gazi
 // Smush liefert Bilder je nach Cache als Lazyload aus: echte URL in data-src, im src nur ein
 // SVG-Platzhalter. Ohne das Smush-Skript bliebe das Bild leer, deshalb die Attribute zurücktauschen.
 export function unwrapLazyImages(html = "") {
-  return html.replace(/<img\b[^>]*\bdata-src=["'][^"']+["'][^>]*>/gi, (tag) =>
+  // Smush verzögert auch iframes (YouTube) so: echte URL in data-src, src ist ein leerer Platzhalter.
+  return html.replace(/<(?:img|iframe)\b[^>]*\bdata-src=["'][^"']+["'][^>]*>/gi, (tag) =>
     tag
       .replace(/\ssrc=(["'])data:[^"']*\1/i, "")
       .replace(/\sdata-(src|srcset|sizes)=/gi, " $1=")

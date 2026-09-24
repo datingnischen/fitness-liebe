@@ -16,3 +16,11 @@ test("normale Bilder bleiben unverändert", () => {
   const html = '<img class="alignnone" src="https://x.de/b.png" alt="">';
   assert.equal(unwrapLazyImages(html), html);
 });
+
+test("Smush-Lazyload-iframes bekommen ihre YouTube-URL zurück", () => {
+  const html =
+    '<iframe width="340" height="215" data-src="https://www.youtube.com/embed/spa1PEtqyI4" title="Video" allowfullscreen src="data:image/svg+xml;base64,PHN2Zz4=" class="lazyload" data-load-mode="1"></iframe>';
+  const result = unwrapLazyImages(html);
+  assert.match(result, / src="https:\/\/www\.youtube\.com\/embed\/spa1PEtqyI4"/);
+  assert.doesNotMatch(result, /data:image|data-src|lazyload/);
+});
