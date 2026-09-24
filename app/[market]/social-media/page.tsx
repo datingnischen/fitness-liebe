@@ -4,15 +4,13 @@ import { AuthorSocialIcon } from "@/components/author-social-icon";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { getAuthorProfile } from "@/lib/author-profiles";
 import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, aboutSocialMediaCanonical } from "@/lib/about-section";
+import { localizeTexts, socialMediaCopy } from "@/lib/market-copy";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { REGISTRATION_URL, marketAlternates } from "@/lib/markets";
-import { SOCIAL_CHANNELS, SOCIAL_COMMUNITY } from "@/lib/social-channels";
+import { SOCIAL_CHANNELS, SOCIAL_COMMUNITY as BASE_COMMUNITY } from "@/lib/social-channels";
 
 export const revalidate = 3600;
 
-const TITLE = "Fitness-Liebe auf Social Media";
-const DESCRIPTION =
-  "Folge fitness-liebe.de auf Facebook, YouTube und Pinterest – mit Community-News, Videos und Inspiration rund um Fitness, Gesundheit und Partnersuche.";
 const HERO_IMAGE =
   "https://static-cms.icony-hosting.de/cms/02F8AAC1CE38A87CE7CD6DE1C824CD522D9D2CD1D8314853D41B805E6CBB6008/1000/fitness-liebe-(1).jpg";
 
@@ -20,6 +18,7 @@ type PageProps = { params: MarketParams };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
+  const { title: TITLE, description: DESCRIPTION } = socialMediaCopy(market);
   return {
     title: TITLE,
     description: DESCRIPTION,
@@ -28,7 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function SocialMediaPage() {
+export default async function SocialMediaPage({ params }: PageProps) {
+  const market = await resolveMarket(params);
+  const copy = socialMediaCopy(market);
+  const SOCIAL_COMMUNITY = localizeTexts(market, BASE_COMMUNITY);
   const expert = await getAuthorProfile("christian-m-haas");
 
   return (
@@ -36,8 +38,8 @@ export default async function SocialMediaPage() {
       <section className="hero-card hero-brand social-hero">
         <div className="social-hero-copy">
           <span className="eyebrow">Über uns · Social Media</span>
-          <h1>{TITLE}</h1>
-          <p>{DESCRIPTION}</p>
+          <h1>{copy.heading}</h1>
+          <p>{copy.lead}</p>
           <ul className="social-hero-icons" aria-label="Unsere Kanäle">
             {SOCIAL_CHANNELS.map((channel) => (
               <li key={channel.platform}>

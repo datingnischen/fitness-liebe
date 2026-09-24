@@ -5,19 +5,17 @@ import { getAuthorProfile } from "@/lib/author-profiles";
 import { DATING_TIPS_PATH, datingTipsCanonical } from "@/lib/about-section";
 import { buildMagazineFaqGraph } from "@/lib/magazine-faq";
 import { serializeJsonLd } from "@/lib/json-ld";
+import { datingTipsCopy, localizeText, localizeTexts } from "@/lib/market-copy";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { REGISTRATION_URL, marketAlternates, platformUrl } from "@/lib/markets";
 
 export const revalidate = 3600;
 
-const TITLE = "Dating-Tipps: So gelingt die Partnersuche online";
-const DESCRIPTION =
-  "Bleib du selbst, zeig dich mit Foto, schreib persönliche Nachrichten und bleib sicher: Die wichtigsten Dating-Tipps von fitness-liebe.de für einen erfolgreichen Start.";
 const HERO_IMAGE =
   "https://static-cms.icony-hosting.de/cms/1B040717C56536027BF524577D5C2FB40C39C2BEE4EDF2383F38D555768DC901/1000/iStock-1197834456.jpg";
 
 // Texte der bisherigen ICONY-Seite fitness-liebe.de/dating-tipps/
-const TIPS = [
+const BASE_TIPS = [
   {
     icon: "🙂",
     title: "Das Wichtigste zuerst: Bleibe Du selbst!",
@@ -56,7 +54,7 @@ const TIPS = [
   },
 ];
 
-const FAQ = [
+const BASE_FAQ = [
   {
     question: "Wie schreibe ich die erste Nachricht beim Fitness-Dating?",
     answer:
@@ -73,7 +71,7 @@ const FAQ = [
   },
 ];
 
-const faqItems = FAQ.map((item, index) => ({
+const toFaqItems = (faq: typeof BASE_FAQ) => faq.map((item, index) => ({
   id: `faq-${index + 1}`,
   question: item.question,
   answerHtml: item.answer,
@@ -84,6 +82,7 @@ type PageProps = { params: MarketParams };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
+  const { title: TITLE, description: DESCRIPTION } = datingTipsCopy(market);
   return {
     title: TITLE,
     description: DESCRIPTION,
@@ -94,6 +93,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DatingTipsPage({ params }: PageProps) {
   const market = await resolveMarket(params);
+  const copy = datingTipsCopy(market);
+  const TIPS = localizeTexts(market, BASE_TIPS);
+  const faqItems = toFaqItems(localizeTexts(market, BASE_FAQ));
   const expert = await getAuthorProfile("christian-m-haas");
   const faqGraph = buildMagazineFaqGraph({ items: faqItems, pageUrl: datingTipsCanonical(market), pageName: "Häufige Fragen zu Dating-Tipps" });
 
@@ -104,12 +106,8 @@ export default async function DatingTipsPage({ params }: PageProps) {
       <section className="hero-card hero-brand social-hero">
         <div className="social-hero-copy">
           <span className="eyebrow">Dating-Tipps</span>
-          <h1>{TITLE}</h1>
-          <p>
-            Online-Dating ist eine großartige Möglichkeit, neue Menschen kennenzulernen. Damit Du von Anfang an die
-            bestmöglichen Chancen hast, haben wir die wichtigsten Tipps zusammengefasst – online flirten ist leichter als
-            gedacht!
-          </p>
+          <h1>{copy.heading}</h1>
+          <p>{copy.lead}</p>
           <div className="button-row">
             <a className="button button-primary" href={REGISTRATION_URL}>
               Kostenlos registrieren
@@ -168,7 +166,7 @@ export default async function DatingTipsPage({ params }: PageProps) {
           <ExpertTrustCard
             profile={expert}
             eyebrow="Unser Datingexperte"
-            title="Wir wünschen Dir viel Spaß und Erfolg bei der Partnersuche!"
+            title={localizeText(market, "Wir wünschen Dir viel Spaß und Erfolg bei der Partnersuche!")}
             primaryLabel="Zum Expertenprofil"
           />
         </section>

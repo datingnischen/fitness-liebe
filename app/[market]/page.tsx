@@ -3,7 +3,8 @@ import Link from "@/components/local-link";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { getAuthorProfile } from "@/lib/author-profiles";
 import { FITNESSWELTEN, entriesForFitnesswelt } from "@/lib/fitnesswelten";
-import { HOME_FEATURES, HOME_INTRO, HOME_SECTIONS, HOME_TRUST_TILES } from "@/lib/home-content";
+import { HOME_FEATURES as BASE_FEATURES, HOME_INTRO as BASE_INTRO, HOME_SECTIONS as BASE_SECTIONS, HOME_TRUST_TILES as BASE_TRUST_TILES } from "@/lib/home-content";
+import { homeCopy, localizeTexts } from "@/lib/market-copy";
 import { getMarketCityPages } from "@/lib/market-partnersuche";
 import { REGISTRATION_URL, SITE_ORIGIN, getMarket, isMarketCode, marketAlternates, marketUrl, platformUrl, publicUrl, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
@@ -21,9 +22,6 @@ import "./home.css";
 export const revalidate = 300;
 
 const HOME_HERO_IMAGE = staticAsset("/home/frontpage-visual-fitnessliebe.webp");
-const TITLE = "Wir verlieben sportliche Singles – fitness-liebe.de";
-const DESCRIPTION =
-  "Finde sportliche Singles in deiner Umgebung: fitness-liebe.de ist die Partnervermittlung für Fitness-Fans – mit geprüften Profilen, Magazin zu Training, Ernährung und Fitness-Dating und kostenlosem Start.";
 const HOME_CITY_ORDER = ["berlin", "hamburg", "muenchen", "koeln", "frankfurt", "stuttgart"];
 
 type PageProps = { params: Promise<{ market: string }> };
@@ -31,6 +29,7 @@ type PageProps = { params: Promise<{ market: string }> };
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { market } = await params;
   if (!isMarketCode(market)) return {};
+  const { title: TITLE, description: DESCRIPTION } = homeCopy(market);
   return {
     title: { absolute: TITLE },
     description: DESCRIPTION,
@@ -56,6 +55,13 @@ export default async function HomePage({ params }: PageProps) {
   const { market: marketParam } = await params;
   const market: MarketCode = isMarketCode(marketParam) ? marketParam : "de";
   const siteUrl = marketUrl(market);
+  const copy = homeCopy(market);
+  const [HOME_FEATURES, HOME_INTRO, HOME_SECTIONS, HOME_TRUST_TILES] = localizeTexts(market, [
+    BASE_FEATURES,
+    BASE_INTRO,
+    BASE_SECTIONS,
+    BASE_TRUST_TILES,
+  ] as const);
   const [posts, expert] = await Promise.all([loadPosts(), getAuthorProfile("christian-m-haas").catch(() => null)]);
   const [featured, ...more] = posts;
   const latest = more.slice(0, 3);
@@ -72,7 +78,7 @@ export default async function HomePage({ params }: PageProps) {
         "@id": `${siteUrl}/#website`,
         url: `${siteUrl}/`,
         name: "fitness-liebe.de",
-        description: DESCRIPTION,
+        description: copy.description,
         inLanguage: getMarket(market).locale,
       },
       {
@@ -104,12 +110,9 @@ export default async function HomePage({ params }: PageProps) {
               <span aria-hidden="true">⚡</span> Wir verlieben sportliche Singles
             </span>
             <h1>
-              Finde jetzt sportliche Singles <span>in deiner Umgebung.</span>
+              Finde jetzt sportliche Singles <span>{copy.heading}</span>
             </h1>
-            <p>
-              Laufrunde, Yogamatte oder Hantelbank: Bei fitness-liebe.de triffst du Menschen, die Bewegung genauso lieben wie
-              du – für eine ernsthafte Beziehung mit gemeinsamem Puls.
-            </p>
+            <p>{copy.lead}</p>
             <div className="fl-hero-actions">
               <a className="button button-primary fl-hero-cta" href={REGISTRATION_URL}>
                 Kostenlos registrieren

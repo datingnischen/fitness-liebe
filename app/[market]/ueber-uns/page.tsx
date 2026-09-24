@@ -3,21 +3,20 @@ import Link from "@/components/local-link";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { getAuthorProfile } from "@/lib/author-profiles";
 import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, DATING_TIPS_PATH, aboutOverviewCanonical } from "@/lib/about-section";
-import { HOME_INTRO, HOME_SECTIONS, HOME_TRUST_TILES } from "@/lib/home-content";
+import { HOME_INTRO as BASE_INTRO, HOME_SECTIONS as BASE_SECTIONS, HOME_TRUST_TILES as BASE_TRUST_TILES } from "@/lib/home-content";
+import { aboutCopy, localizeTexts } from "@/lib/market-copy";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { REGISTRATION_URL, marketAlternates, platformUrl } from "@/lib/markets";
 import { SOCIAL_CHANNELS } from "@/lib/social-channels";
 
 export const revalidate = 3600;
 
-const TITLE = "Über fitness-liebe.de";
-const DESCRIPTION =
-  "Wer hinter fitness-liebe.de steht, warum gemeinsame Bewegung verbindet und wo du uns findest: Team, Magazin-Autoren, Sicherheit und Social-Media-Kanäle.";
 
 type PageProps = { params: MarketParams };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
+  const { title: TITLE, description: DESCRIPTION } = aboutCopy(market, BASE_INTRO.paragraphs.join(" "));
   return {
     title: TITLE,
     description: DESCRIPTION,
@@ -26,10 +25,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-const WHY = HOME_SECTIONS.find((section) => section.heading === "Warum Fitness-Liebe.de?");
-const STORY = HOME_SECTIONS.filter((section) => section !== WHY).slice(0, 3);
-
-export default async function AboutOverviewPage() {
+export default async function AboutOverviewPage({ params }: PageProps) {
+  const market = await resolveMarket(params);
+  const copy = aboutCopy(market, BASE_INTRO.paragraphs.join(" "));
+  const [HOME_SECTIONS, HOME_TRUST_TILES] = localizeTexts(market, [BASE_SECTIONS, BASE_TRUST_TILES] as const);
+  const WHY = HOME_SECTIONS.find((section) => section.heading === "Warum Fitness-Liebe.de?");
+  const STORY = HOME_SECTIONS.filter((section) => section !== WHY).slice(0, 3);
   // Gazi bleibt ausgeblendet, solange die Kooperation nicht feststeht (Profilseite ist noindex).
   const christian = await getAuthorProfile("christian-m-haas");
 
@@ -37,8 +38,8 @@ export default async function AboutOverviewPage() {
     <main className="shell shell-narrow">
       <section className="hero-card hero-brand">
         <span className="eyebrow">Über uns</span>
-        <h1>Wir verbinden Liebe mit Fitness.</h1>
-        <p>{HOME_INTRO.paragraphs.join(" ")}</p>
+        <h1>{copy.heading}</h1>
+        <p>{copy.lead}</p>
         <div className="button-row">
           <a className="button button-primary" href={REGISTRATION_URL}>
             Kostenlos registrieren
