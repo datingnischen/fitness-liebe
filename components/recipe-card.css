@@ -38,6 +38,7 @@
   overflow: hidden;
   scroll-margin-top: 90px;
   box-shadow: 0 14px 32px rgba(31, 35, 40, 0.07);
+  container-type: inline-size;
 }
 
 .recipe-card-head {
@@ -225,13 +226,8 @@
   color: var(--muted);
 }
 
-@media (max-width: 760px) {
-  .recipe-card-head,
-  .recipe-card-ingredients,
-  .recipe-card-steps {
-    padding: 18px 16px;
-  }
-
+/* Neben der Magazin-Sidebar ist die Karte schmal: Zutaten und Schritte dann untereinander. */
+@container (max-width: 720px) {
   .recipe-card-body {
     grid-template-columns: 1fr;
   }
@@ -239,6 +235,27 @@
   .recipe-card-ingredients {
     border-right: 0;
     border-bottom: 1px solid var(--line);
+  }
+
+  .recipe-card-ingredients .recipe-ingredient-group ul {
+    columns: 2;
+    column-gap: 24px;
+  }
+
+  .recipe-ingredient-group li {
+    break-inside: avoid;
+  }
+}
+
+@container (max-width: 480px) {
+  .recipe-card-head,
+  .recipe-card-ingredients,
+  .recipe-card-steps {
+    padding: 18px 16px;
+  }
+
+  .recipe-card-ingredients .recipe-ingredient-group ul {
+    columns: 1;
   }
 
   .recipe-card-facts {
