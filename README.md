@@ -10,7 +10,22 @@ Headless-Frontend für fitness-liebe.de nach dem Muster der anderen Nischenproje
 - **Plattformseiten** (Login, Registrierung, Sicherheit, Redaktionelle Kontrolle, Basis-Mitgliedschaft,
   Erfolgsgeschichten, Rechtstexte …) bleiben bei ICONY und werden immer absolut auf `https://fitness-liebe.de` verlinkt.
 
+## Länder
+
+Alle Seiten liegen unter einem Länderpräfix: `/de/…`, `/at/…`, `/ch/…` (`app/[market]`).
+Die Länderliste steht in `lib/markets.ts` (`MARKET_CODES`, `MARKETS`); ein weiteres Land ist dort ein Eintrag.
+Routen, Sitemap, hreflang (`de-DE`, `de-AT`, `de-CH`, `x-default` → DE) und `<html lang>` lesen daraus.
+
+- Alte URLs ohne Präfix (`/partnersuche/berlin`, `/magazin/…`, `/`) leitet `proxy.ts` per 308 nach `/de/…` um.
+- Interne Links schreiben weiter `/magazin/…`; `components/local-link.tsx` bzw. `MarketLink` setzen das Präfix.
+- Stadtseiten gibt es nur für Länder mit Daten in `data/partnersuche-markets.json` und Hub-Text in
+  `lib/market-partnersuche.ts` – derzeit nur DE. Ohne Stadtseiten blenden AT/CH die Partnersuche aus.
+- Magazin und Inhaltsseiten sind in allen Ländern gleich und verweisen per hreflang aufeinander.
+- ICONY-Plattformseiten bleiben ohne Länderpräfix auf `https://fitness-liebe.de` (`platformUrl`).
+
 ## Struktur
+
+Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`).
 
 | Route | Inhalt |
 | --- | --- |

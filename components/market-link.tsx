@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { MarketCode } from "@/lib/markets";
+import { localizeHref, type MarketCode } from "@/lib/markets";
 
 type Props = { market: MarketCode; path?: string; children: ReactNode; className?: string };
 
-// Nur ein Markt: relative Links funktionieren auf der Live-Domain und auf Vercel-Previews gleichermaßen.
-export function MarketLink({ path = "/", children, className }: Props) {
-  const normalized = path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}`;
+// Relative Links mit Länderpräfix funktionieren auf der Live-Domain und auf Vercel-Previews gleichermaßen.
+export function MarketLink({ market, path = "/", children, className }: Props) {
   return (
-    <Link className={className} href={normalized}>
+    <Link className={className} href={localizeHref(market, path)}>
       {children}
     </Link>
   );

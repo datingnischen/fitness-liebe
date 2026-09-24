@@ -1,0 +1,81 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { IconySinglesWidget } from "@/components/icony-singles-widget";
+import { MarketLink } from "@/components/market-link";
+import { ExpertTrustCard } from "@/components/expert-trust-card";
+import { MoreCities } from "@/components/more-cities";
+import { getAuthorProfile } from "@/lib/author-profiles";
+import { getMarketCityPage, getMarketCityPages, getNearbyMarketCities, marketsWithCity } from "@/lib/market-partnersuche";
+import { extractLeadImage } from "@/lib/magazine-lead-image";
+import { MARKET_CODES, isMarketCode, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
+
+type PageProps = { params: Promise<{ market: string; slug: string }> };
+
+export const revalidate = 86400;
+
+export function generateStaticParams() {
+  return MARKET_CODES.flatMap((market) => getMarketCityPages(market).map(({ slug }) => ({ market, slug })));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { market, slug } = await params;
+  const city = isMarketCode(market) ? getMarketCityPage(market, slug) : null;
+  if (!city) return {};
+  return {
+    title: city.title,
+    description: city.description,
+    alternates: marketAlternates(city.market, city.path, marketsWithCity(slug)),
+    openGraph: {
+      title: city.title,
+      description: city.description,
+      url: publicUrl(city.market, city.path),
+      images: city.imageUrl ? [city.imageUrl] : undefined,
+    },
+  };
+}
+
+export default async function PartnersucheCityPage({ params }: PageProps) {
+  const { market: marketParam, slug } = await params;
+  if (!isMarketCode(marketParam)) notFound();
+  const market: MarketCode = marketParam;
+  const [city, expert] = [getMarketCityPage(market, slug), await getAuthorProfile("christian-m-haas")];
+  if (!city) notFound();
+  const nearby = getNearbyMarketCities(market, slug);
+  // Das erste Bild im ICONY-Text steht schon im Hero
+  const body = city.imageUrl ? (extractLeadImage(city.contentHtml)?.content ?? city.contentHtml) : city.contentHtml;
+
+  return (
+    <main className="shell shell-narrow">
+      <section className="hero-card hero-brand social-hero">
+        <div className="social-hero-copy">
+        <span className="eyebrow">Fitness-Dating in {city.cityName}</span>
+        <h1>{city.title}</h1>
+        <p>{city.description}</p>
+        <div className="chip-row">
+          <span className="trust-chip">Profile aus der Region</span>
+          <span className="trust-chip">Laufstrecken & Treffpunkte</span>
+          <span className="trust-chip">Kostenlos starten</span>
+        </div>
+        <div className="button-row">
+          <a className="button button-primary" href={city.registrationUrl}>Sportliche Singles in {city.cityName} finden</a>
+          <MarketLink className="button button-secondary" market={market} path="/partnersuche">Alle Städte</MarketLink>
+        </div>
+        </div>
+        {city.imageUrl ? (
+          <figure className="social-hero-media city-hero-media">
+            <img src={city.imageUrl} alt={city.imageAlt || `Sportliche Singles in ${city.cityName}`} loading="eager" decoding="async" />
+            {city.sourceAttributionUrl ? (
+              <figcaption className="city-hero-credit">
+                Bild: <a href={city.sourceAttributionUrl} rel="nofollow noopener">Pixabay</a>
+              </figcaption>
+            ) : null}
+          </figure>
+        ) : null}
+      </section>
+      <section className="content-section"><IconySinglesWidget city={city.cityName} zip={city.icony.zip} country={city.icony.country} platformId={city.icony.platformId} registrationUrl={city.registrationUrl} searchUrl={city.searchUrl} /></section>
+      <section className="content-section"><article className="panel-card"><div className="section-header"><span className="eyebrow">Tipps & Highlights vor Ort</span><h2>Fitness, Flirt und Treffpunkte in {city.cityName}</h2></div><div className="rich-content" dangerouslySetInnerHTML={{ __html: body }} /></article></section>
+      <MoreCities market={market} cities={nearby} total={getMarketCityPages(market).length} />
+      {expert ? <section className="content-section"><ExpertTrustCard profile={expert} eyebrow="Unser Datingexperte" title={`Christian begleitet Fitness-Dating-Themen und regionale Einstiege auch für ${city.cityName}.`} primaryLabel="Zum Expertenprofil" registrationHref={city.registrationUrl} /></section> : null}
+    </main>
+  );
+}

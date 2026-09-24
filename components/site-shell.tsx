@@ -2,11 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import { MarketLink } from "@/components/market-link";
-import { publicUrl, type MarketCode } from "@/lib/markets";
+import { platformUrl, registrationUrl, stripMarketPrefix, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
 
 type NavLink = { label: string; href: string; external?: boolean };
-type Props = { market?: MarketCode };
+type Props = { market?: MarketCode; hasCityPages?: boolean };
 
 const headerNav: NavLink[] = [
   { label: "Start", href: "/" },
@@ -21,7 +21,7 @@ const headerNav: NavLink[] = [
 ];
 
 // Vertrauens- und Plattformseiten gehören ICONY: immer absolut auf die Live-Domain.
-const platform = (path: string, label: string): NavLink => ({ label, href: publicUrl("de", path), external: true });
+const platform = (path: string, label: string): NavLink => ({ label, href: platformUrl(path), external: true });
 
 const footerColumns: Array<{ title: string; links: NavLink[] }> = [
   {
@@ -72,11 +72,16 @@ function localLink(market: MarketCode, href: string, children: React.ReactNode, 
 }
 
 function isCityPage(pathname: string) {
-  return /^\/partnersuche\/[a-z0-9-]+\/?$/i.test(pathname);
+  return /^\/partnersuche\/[a-z0-9-]+\/?$/i.test(stripMarketPrefix(pathname));
 }
 
-function registrationHref(market: MarketCode, pathname: string) {
-  return publicUrl(market, isCityPage(pathname) ? "/registration/?AID=location" : "/registration/?AID=magazin");
+function registrationHref(pathname: string) {
+  return registrationUrl(isCityPage(pathname) ? "location" : "magazin");
+}
+
+// Länder ohne Stadtseiten verlinken die Partnersuche nicht.
+function navFor(hasCityPages: boolean) {
+  return hasCityPages ? headerNav : headerNav.filter((item) => item.href !== "/partnersuche");
 }
 
 function Brand({ market }: { market: MarketCode }) {
@@ -110,16 +115,16 @@ function CheckIcon() {
   );
 }
 
-export function SiteHeader({ market = "de" }: Props) {
+export function SiteHeader({ market = "de", hasCityPages = true }: Props) {
   const pathname = usePathname() || "/";
-  const register = registrationHref(market, pathname);
+  const register = registrationHref(pathname);
 
   return (
     <header className="site-header-shell">
       <div className="site-header-bar compact-header-bar">
         <Brand market={market} />
         <div className="header-actions compact-header-actions" aria-label="Nutzeraktionen">
-          <a className="login-link" href={publicUrl(market, "/login/")}>Login</a>
+          <a className="login-link" href={platformUrl("/login/")}>Login</a>
           <a className="header-register header-register-primary" href={register}>Registrieren</a>
           <details className="header-menu">
             <summary aria-label="Menü öffnen">
@@ -128,7 +133,7 @@ export function SiteHeader({ market = "de" }: Props) {
             </summary>
             <div className="header-menu-panel">
               <nav className="main-nav compact-menu-nav" aria-label="Hauptnavigation">
-                {headerNav.map((item) => <span key={item.href}>{localLink(market, item.href, item.label)}</span>)}
+                {navFor(hasCityPages).map((item) => <span key={item.href}>{localLink(market, item.href, item.label)}</span>)}
               </nav>
             </div>
           </details>
@@ -140,7 +145,7 @@ export function SiteHeader({ market = "de" }: Props) {
 
 export function SiteFooter({ market = "de" }: Props) {
   const pathname = usePathname() || "/";
-  const register = registrationHref(market, pathname);
+  const register = registrationHref(pathname);
 
   return (
     <footer className="fl-footer">
@@ -206,10 +211,10 @@ export function SiteFooter({ market = "de" }: Props) {
           <div className="fl-footer-legal">
             <a href={register}>Registrieren</a>
             {localLink(market, "/magazin", "Magazin")}
-            <a href={publicUrl(market, "/agb.html")}>AGB</a>
-            <a href={publicUrl(market, "/datenschutz.html")}>Datenschutz</a>
-            <a href={publicUrl(market, "/impressum.html")}>Impressum</a>
-            <a href={publicUrl(market, "/barrierefreiheit.html")}>Barrierefreiheit</a>
+            <a href={platformUrl("/agb.html")}>AGB</a>
+            <a href={platformUrl("/datenschutz.html")}>Datenschutz</a>
+            <a href={platformUrl("/impressum.html")}>Impressum</a>
+            <a href={platformUrl("/barrierefreiheit.html")}>Barrierefreiheit</a>
           </div>
         </div>
       </div>

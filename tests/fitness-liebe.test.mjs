@@ -113,13 +113,14 @@ test("audio summaries become a styled card and never leak into excerpts", () => 
   assert.match(enhanced, /<h2>Kurzantwort<\/h2>/);
 });
 
-test("internal WordPress links become relative, uploads stay absolute", () => {
+test("internal WordPress links become relative with country prefix, uploads stay absolute", () => {
   const html =
     '<a href="https://fitness-liebe.de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>';
   assert.equal(
     relativizeInternalLinks(html),
-    '<a href="/magazin/fitnessroutinen">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
+    '<a href="/de/magazin/fitnessroutinen">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
   );
+  assert.match(relativizeInternalLinks(html, "ch"), /href="\/ch\/magazin\/fitnessroutinen"/);
 });
 
 test("ICONY trust and legal pages link absolutely to the live domain", async () => {
@@ -175,6 +176,6 @@ test("Städteübersicht verweist auf die individuelle Suche der Live-Domain", as
   const component = await read("components/city-search-fallback.tsx");
   assert.match(component, /href=\{LOCATION_SEARCH_URL\}/);
   assert.match(component, /Deine Stadt fehlt\?/);
-  const hub = await read("app/partnersuche/page.tsx");
+  const hub = await read("app/[market]/partnersuche/page.tsx");
   assert.match(hub, /<CitySearchFallback \/>/);
 });

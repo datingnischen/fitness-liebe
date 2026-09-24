@@ -1,5 +1,5 @@
 import data from "../data/partnersuche-markets.json" with { type: "json" };
-import type { MarketCode } from "./markets.ts";
+import { MARKET_CODES, type MarketCode } from "#markets";
 
 export type MarketCityPage = {
   market: MarketCode;
@@ -51,9 +51,10 @@ type HubCopy = {
   editorial: MarketHubEditorial;
 };
 
-const imports = data as Record<MarketCode, RawMarket>;
+// Stadtseiten gibt es je Land nur, wenn sie in data/partnersuche-markets.json importiert sind.
+const imports = data as Partial<Record<MarketCode, RawMarket>>;
 
-const HUB_COPY: Record<MarketCode, HubCopy> = {
+const HUB_COPY: Partial<Record<MarketCode, HubCopy>> = {
   de: {
     title: "Fitness-Dating in deiner Stadt – finde sportliche Singles",
     description:
@@ -97,7 +98,8 @@ const HUB_COPY: Record<MarketCode, HubCopy> = {
 };
 
 export function withPostcodeSearch(page: MarketCityPage): MarketCityPage {
-  const postcodePattern = /^\d{5}$/;
+  // DE fünfstellig, AT/CH vierstellig
+  const postcodePattern = /^\d{4,5}$/;
   if (!postcodePattern.test(page.icony.zip)) {
     throw new Error(`Invalid postcode for ${page.market}/${page.slug}: ${page.icony.zip}`);
   }
@@ -113,22 +115,33 @@ export function withPostcodeSearch(page: MarketCityPage): MarketCityPage {
 }
 
 export function getMarketCityPages(market: MarketCode): MarketCityPage[] {
-  return imports[market].pages.map(withPostcodeSearch);
+  return (imports[market]?.pages ?? []).map(withPostcodeSearch);
+}
+
+export function hasCityPages(market: MarketCode): boolean {
+  return Boolean(imports[market]?.pages.length && HUB_COPY[market]);
+}
+
+/** Länder, in denen es die Stadtseite `slug` gibt – für hreflang. */
+export function marketsWithCity(slug: string): MarketCode[] {
+  return MARKET_CODES.filter((market) => imports[market]?.pages.some((page) => page.slug === slug));
 }
 
 export function getMarketCityPage(market: MarketCode, slug: string): MarketCityPage | null {
-  const page = imports[market].pages.find((entry) => entry.slug === slug);
+  const page = imports[market]?.pages.find((entry) => entry.slug === slug);
   return page ? withPostcodeSearch(page) : null;
 }
 
 export function getMarketPartnersucheHub(market: MarketCode) {
   const copy = HUB_COPY[market];
+  const raw = imports[market];
+  if (!copy || !raw?.pages.length) return null;
   return {
     market,
     title: copy.title,
     description: copy.description,
     editorial: copy.editorial,
-    cities: imports[market].pages.map((page) => ({
+    cities: raw.pages.map((page) => ({
       slug: page.slug,
       cityName: page.cityName,
       href: page.path,
