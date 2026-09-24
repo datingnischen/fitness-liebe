@@ -1257,7 +1257,7 @@ a.social-bubble:hover {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 5 / 4;
   object-fit: cover;
   border-radius: 18px;
 }

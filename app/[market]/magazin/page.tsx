@@ -197,8 +197,8 @@ export default async function MagazineOverviewPage() {
                     className="article-card-page-photo"
                     src={staticAsset(SIDEBAR_PAGE_IMAGES[page.slug].src)}
                     alt={SIDEBAR_PAGE_IMAGES[page.slug].alt}
-                    width={640}
-                    height={800}
+                    width={800}
+                    height={640}
                     loading="lazy"
                     decoding="async"
                   />
