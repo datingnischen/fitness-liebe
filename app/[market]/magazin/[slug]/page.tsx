@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AuthorProfileFacts } from "@/components/author-profile-facts";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { PublishedBookFeature } from "@/components/published-book-feature";
+import { RecipeCard, RecipeHeroFacts } from "@/components/recipe-card";
 import { authorSlugForProfilePage, getAuthorProfile } from "@/lib/author-profiles";
 import { staticAsset } from "@/lib/static-asset";
 import {
@@ -26,6 +27,7 @@ import { serializeJsonLd } from "@/lib/json-ld";
 import { classifyFitnesswelt, entriesForFitnesswelt, type Fitnesswelt } from "@/lib/fitnesswelten";
 import { extractLeadImage } from "@/lib/magazine-lead-image";
 import { getMagazineSidebarVariant, type MagazineSidebarVariant } from "@/lib/magazine-sidebar";
+import { RECIPE_CARD_MARKER, buildRecipeNode, getRecipe } from "@/lib/recipes";
 import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, marketUrl, type MarketCode } from "@/lib/markets";
 
 type PageProps = {
@@ -49,6 +51,12 @@ function metaDescription(entry: MagazineEntry) {
   if (entry.seoDescription) return entry.seoDescription;
   const text = stripHtml(entry.excerpt || entry.content);
   return text.length > 155 ? `${text.slice(0, 154).replace(/\s+\S*$/, "")} …` : text;
+}
+
+// Kurzer Einstieg im Hero: gepflegter Auszug vollständig, sonst der Textanfang mit Auslassung.
+function heroText(entry: MagazineEntry) {
+  const text = stripHtml(entry.excerpt || entry.content);
+  return text.length > 220 ? `${text.slice(0, 220).replace(/\s+\S*$/, "")} …` : text;
 }
 
 function MagazineRadarCard() {
@@ -264,6 +272,14 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     dateModified: entry.modified || undefined,
   });
 
+  // Rezeptkarte an der Markierung im Beitrag, ohne Markierung direkt vor dem Text.
+  const recipe = entry.type === "post" ? getRecipe(slug) : null;
+  const [contentBeforeRecipe, contentAfterRecipe] = recipe
+    ? content.search(RECIPE_CARD_MARKER) === -1
+      ? ["", content]
+      : content.split(RECIPE_CARD_MARKER, 2)
+    : [content, ""];
+
   const world = classifyFitnesswelt(entry);
   const sidebarVariant = getMagazineSidebarVariant(world.id);
   const posts = entry.type === "post" ? await loadPosts() : [];
@@ -275,6 +291,20 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     pageUrl: `${siteUrl}/magazin/${slug}`,
     pageName: `Häufige Fragen zu ${decodeHtmlEntities(entry.title)}`,
   });
+  const articleAuthor = authorProfile
+    ? { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: `${siteUrl}${authorProfile.profileUrl}` }
+    : undefined;
+  const recipeNode = recipe
+    ? buildRecipeNode({
+        recipe,
+        pageUrl: `${siteUrl}/magazin/${slug}`,
+        image: heroImage?.src,
+        datePublished: entry.date,
+        dateModified: entry.modified || entry.date,
+        author: articleAuthor,
+        inLanguage: getMarket(market).locale,
+      })
+    : null;
   const articleGraph =
     entry.type === "post"
       ? {
@@ -290,12 +320,12 @@ export default async function MagazineDetailPage({ params }: PageProps) {
               dateModified: entry.modified || entry.date,
               inLanguage: getMarket(market).locale,
               mainEntityOfPage: `${siteUrl}/magazin/${slug}`,
-              author: authorProfile
-                ? { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: `${siteUrl}${authorProfile.profileUrl}` }
-                : undefined,
+              author: articleAuthor,
               publisher: { "@type": "Organization", name: "fitness-liebe.de", url: siteUrl },
               articleSection: world.name,
+              about: recipeNode ? { "@id": recipeNode["@id"] } : undefined,
             },
+            ...(recipeNode ? [recipeNode] : []),
             {
               "@type": "BreadcrumbList",
               itemListElement: [
@@ -329,7 +359,8 @@ export default async function MagazineDetailPage({ params }: PageProps) {
           {isProfilePage ? "Autorenprofil" : entry.type === "post" ? `${world.emoji} ${world.name}` : "Magazin-Seite"}
         </span>
         <h1>{entry.title}</h1>
-        <p>{pageDescription ?? `${stripHtml(entry.excerpt || entry.content).slice(0, 220)}…`}</p>
+        <p>{pageDescription ?? heroText(entry)}</p>
+        {recipe ? <RecipeHeroFacts recipe={recipe} /> : null}
         <div className="meta-row">
           {entry.authorName && !isProfilePage ? (
             <span>
@@ -372,7 +403,9 @@ export default async function MagazineDetailPage({ params }: PageProps) {
         <div className="magazine-detail-layout">
           <div className="magazine-detail-main">
             <section className="rich-content">
-              <div dangerouslySetInnerHTML={{ __html: content }} />
+              {contentBeforeRecipe ? <div dangerouslySetInnerHTML={{ __html: contentBeforeRecipe }} /> : null}
+              {recipe ? <RecipeCard recipe={recipe} /> : null}
+              {contentAfterRecipe ? <div dangerouslySetInnerHTML={{ __html: contentAfterRecipe }} /> : null}
             </section>
           </div>
           <aside className="magazine-detail-side" aria-label="Singlebörse und Conversion-Module">
