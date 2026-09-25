@@ -100,7 +100,7 @@ export const getAuthorProfile = cache(async (slug: string): Promise<AuthorProfil
       role: "Gründer von fitness-liebe.de, Datingexperte und Sport-Enthusiast",
       jobTitle: "Gründer & Datingexperte",
       shortBio:
-        "Christian M. Haas verbindet seine sportliche Leidenschaft – vom Auswahlfußball bis zur Tennis-Verbandsliga – mit langjähriger Erfahrung im Aufbau spezialisierter Dating-Plattformen. Sein Ziel: Menschen zusammenbringen, die einen aktiven Lebensstil teilen.",
+        "Christian M. Haas verbindet seine sportliche Leidenschaft – vom Auswahlfußball über Roll- und Eishockey bis zum Tennis in der Gruppenliga – mit langjähriger Erfahrung im Aufbau spezialisierter Dating-Plattformen. Sein Ziel: Menschen zusammenbringen, die einen aktiven Lebensstil teilen.",
       topics: ["Fitness-Dating", "Partnersuche für Sportliche", "Motivation & Balance", "Community-Aufbau"],
       socials: [
         { platform: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/christian-m-haas-457323379" },
@@ -115,7 +115,7 @@ export const getAuthorProfile = cache(async (slug: string): Promise<AuthorProfil
       profileFacts: [
         { label: "Rolle", value: "Gründer von fitness-liebe.de, Datingexperte und Autor" },
         { label: "Schwerpunkte", value: "Dating für sportlich aktive Singles, gemeinsame Fitness-Ziele, Balance in der Beziehung" },
-        { label: "Sportlicher Hintergrund", value: "Fußball ab vier Jahren in Auswahlmannschaften, später Tennis in Gruppen- und Verbandsliga" },
+        { label: "Sportlicher Hintergrund", value: "Fußball ab vier Jahren in Auswahlmannschaften, Rollhockey und Eishockey auf Seen, später Tennis überwiegend in der Gruppenliga mit vereinzelten Verbandsliga-Einsätzen" },
         { label: "Plattformbetrieb", value: "ICONY GmbH – Christian begleitet das Magazin redaktionell und beratend" },
         { label: "Buch", value: "„Dating ohne Bullshit“, BoD – Books on Demand, 1. Auflage 2026" },
       ],
@@ -127,11 +127,12 @@ export const getAuthorProfile = cache(async (slug: string): Promise<AuthorProfil
       profileUrl: "/magazin/christian",
       facts: [
         "Langjährige Erfahrung mit Dating-Portalen und spezialisierten Communities",
-        "Sportbiografie von Auswahlfußball bis Tennis-Verbandsliga",
+        "Sportbiografie von Auswahlfußball über Roll- und Eishockey bis Tennis-Gruppenliga",
         `Bereits ${authorPosts.length} veröffentlichte Beiträge im Magazin`,
       ],
       story: [
-        "Sport begleitet Christian seit seiner Kindheit: Mit vier Jahren begann er mit dem Fußball und spielte in mehreren Auswahlmannschaften, später entdeckte er Tennis und spielte in der Gruppen- und Verbandsliga.",
+        "Sport begleitet Christian seit seiner Kindheit: Mit vier Jahren begann er mit dem Fußball und spielte in mehreren Auswahlmannschaften, später entdeckte er Tennis und spielte überwiegend in der Gruppenliga, mit vereinzelten Einsätzen in der Verbandsliga. Daneben spielte er Rollhockey und auf zugefrorenen Seen Eishockey.",
+        "Sport hat seine Kindheit bestimmt – daraus sind später auch die Plattformen FussballSingles.de und Eishockey-Liebe.de entstanden.",
         "Disziplin, Zielstrebigkeit und Teamfähigkeit aus dem Sport prägen bis heute seine Arbeit im Online-Dating. Wer Sport liebt, sucht oft nicht nur einen Menschen, sondern einen Lebensstil – mit gemeinsamen Zielen, Energie und gegenseitiger Motivation.",
         "Im Magazin schreibt Christian deshalb über Dating für sportlich aktive Singles, Partnersuche mit gemeinsamen Fitness-Zielen und Balance in der Beziehung – verständlich, ehrlich und nah am Alltag.",
       ],
