@@ -20,13 +20,15 @@ Routen, Sitemap, hreflang (`de-DE`, `de-AT`, `de-CH`, `x-default` → DE) und `<
 - Interne Links schreiben weiter `/magazin/…`; `components/local-link.tsx` bzw. `MarketLink` setzen das Präfix.
 - Stadtseiten gibt es nur für Länder mit Daten in `data/partnersuche-markets.json` und Hub-Text in
   `lib/market-partnersuche.ts` – derzeit nur DE. Ohne Stadtseiten blenden AT/CH die Partnersuche aus.
-- Magazin und Inhaltsseiten sind in allen Ländern gleich und verweisen per hreflang aufeinander.
+- Das Magazin gibt es nur in DE (`MARKETS[…].magazine`): `/at/magazin/…` und `/ch/magazin/…` leiten per 308
+  nach `/de/magazin/…` um, Magazinlinks aus AT/CH zeigen direkt auf `/de`, hreflang und Sitemap führen
+  Magazinseiten nur für DE. Die übrigen Inhaltsseiten sind in allen Ländern gleich und verweisen per hreflang aufeinander.
 - ICONY-Plattformseiten bleiben ohne Länderpräfix auf `https://fitness-liebe.de` (`platformUrl`).
   Dazu gehört auch `/dating-tipps/` (`PLATFORM_PAGES`): nie in Next.js rendern, `proxy.ts` leitet `/<land>/dating-tipps` dorthin um.
 
 ## Struktur
 
-Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`).
+Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`); `/magazin/…` nur unter `/de`.
 
 | Route | Inhalt |
 | --- | --- |
