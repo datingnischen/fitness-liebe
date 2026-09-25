@@ -5,6 +5,7 @@ import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { StickyCTAButton } from "@/components/sticky-cta-button";
 import { hasCityPages } from "@/lib/market-partnersuche";
 import { MARKET_CODES, SITE_ORIGIN, getMarket, isMarketCode } from "@/lib/markets";
+import { staticAsset } from "@/lib/static-asset";
 
 type Props = Readonly<{ children: React.ReactNode; params: Promise<{ market: string }> }>;
 
@@ -20,6 +21,8 @@ export const metadata: Metadata = {
   description:
     "Die Singlebörse für sportliche Menschen: Finde Singles, die Fitness, Bewegung und einen gesunden Lifestyle teilen – mit Magazin zu Training, Ernährung und Fitness-Dating.",
   metadataBase: new URL(SITE_ORIGIN),
+  // Absolut vom Vercel-Host: der nginx vor der Live-Domain reicht nur Seitenrouten durch.
+  icons: { icon: staticAsset("/brand/icon.png") },
 };
 
 export default async function MarketLayout({ children, params }: Props) {
