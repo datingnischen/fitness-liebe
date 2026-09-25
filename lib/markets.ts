@@ -44,20 +44,31 @@ function normalizePath(pathname: string) {
   return pathname === "/" || pathname === "" ? "/" : `/${pathname.replace(/^\/+|\/+$/g, "")}`;
 }
 
-/** Seitenpfad im Land: marketPath("at", "/magazin") → "/at/magazin". */
+const FILE_PATH_PATTERN = /\/[^/]*\.[a-z0-9]+$/i;
+
+/**
+ * Seitenpfade enden immer auf einen Schrägstrich, wie die ICONY-Plattform (/login/, /suche/).
+ * Dateien wie /sitemap.xml bleiben ohne. Query und Anker hängen hinter dem Schrägstrich.
+ */
+export function withTrailingSlash(pathname: string): string {
+  const match = pathname.match(/^([^?#]*)(.*)$/);
+  const path = match?.[1] ?? pathname;
+  const suffix = match?.[2] ?? "";
+  if (!path || path.endsWith("/") || FILE_PATH_PATTERN.test(path)) {
+    return `${path || "/"}${suffix}`;
+  }
+  return `${path}/${suffix}`;
+}
+
+/** Seitenpfad im Land, immer mit Schrägstrich am Ende: marketPath("at", "/magazin") → "/at/magazin/". */
 export function marketPath(market: MarketCode, pathname = "/"): string {
   const normalized = normalizePath(pathname);
-  return normalized === "/" ? `/${market}` : `/${market}${normalized}`;
+  return withTrailingSlash(normalized === "/" ? `/${market}` : `/${market}${normalized}`);
 }
 
-/** Absolute URL einer eigenen Seite, z. B. für canonical, Sitemap und JSON-LD. */
+/** Absolute URL einer eigenen Seite (mit Schrägstrich am Ende), z. B. für canonical, Sitemap und JSON-LD. */
 export function publicUrl(market: MarketCode, pathname = "/"): string {
   return `${SITE_ORIGIN}${marketPath(market, pathname)}`;
-}
-
-/** Basis-URL eines Landes ohne abschließenden Slash: "https://fitness-liebe.de/at". */
-export function marketUrl(market: MarketCode): string {
-  return `${SITE_ORIGIN}/${market}`;
 }
 
 const MAGAZINE_PATH = /^\/magazin(?:\/|$)/;
@@ -122,9 +133,13 @@ export const LOCATION_SEARCH_URL = searchUrl("location");
 
 const MARKET_PREFIX = new RegExp(`^/(?:${MARKET_CODES.join("|")})(?=/|$)`);
 
-/** Setzt vor interne Pfade das Länderpräfix, lässt externe, Anker- und bereits präfixierte Links unverändert. */
+/**
+ * Setzt vor interne Pfade das Länderpräfix und hängt den Schrägstrich an; externe und Anker-Links bleiben
+ * unverändert, bereits präfixierte Links bekommen nur den Schrägstrich.
+ */
 export function localizeHref(market: MarketCode, href: string): string {
-  if (!href.startsWith("/") || href.startsWith("//") || MARKET_PREFIX.test(href)) return href;
+  if (!href.startsWith("/") || href.startsWith("//")) return href;
+  if (MARKET_PREFIX.test(href)) return withTrailingSlash(href);
   const [, path = "/", suffix = ""] = href.match(/^([^?#]*)(.*)$/) ?? [];
   return `${marketPath(contentMarket(market, path), path)}${suffix}`;
 }

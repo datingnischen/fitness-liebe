@@ -4,7 +4,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AUTHOR_PROFILE_PATHS, getAuthorPosts, getAuthorProfile, getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
 import { formatUpdatedDate, getUpdatedDate, stripHtml } from "@/lib/wordpress";
 import { serializeJsonLd } from "@/lib/json-ld";
-import { REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, marketUrl, type MarketCode } from "@/lib/markets";
+import { REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, publicUrl, type MarketCode } from "@/lib/markets";
 
 type PageProps = {
   params: Promise<{ market: string; slug: string }>;
@@ -24,7 +24,6 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { market, slug } = await params;
   if (!isMarketCode(market)) return {};
-  const siteUrl = marketUrl(market);
   const posts = await getAuthorPosts(slug);
   if (!posts.length) return {};
 
@@ -47,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: profile.name,
       description: profile.bio.slice(0, 155),
-      url: `${siteUrl}${canonicalPath}`,
+      url: publicUrl(market, canonicalPath),
       images: profile.imageUrl ? [profile.imageUrl] : undefined,
     },
   };
@@ -57,7 +56,6 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
   const { market: marketParam, slug } = await params;
   if (!isMarketCode(marketParam)) notFound();
   const market: MarketCode = marketParam;
-  const siteUrl = marketUrl(market);
   const posts = await getAuthorPosts(slug);
   // Autoren ohne Beitraege (z. B. das ausgelaufene Redaktions-Archiv) leiten dauerhaft
   // auf das Autorenprofil weiter, statt ein leeres Archiv auszuliefern.
@@ -69,7 +67,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
   const latestPost = posts[0];
   const highlightedPosts = posts.slice(0, 6);
   const canonicalPath = AUTHOR_PROFILE_PATHS[slug] ?? profile.profileUrl;
-  const canonicalUrl = `${siteUrl}${canonicalPath}`;
+  const canonicalUrl = publicUrl(market, canonicalPath);
   const shouldNoindex = isNoindexAuthorArchive(slug);
   const isEditorialTeamPage = slug === "redaktion";
 
@@ -80,7 +78,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Magazin", item: `${siteUrl}/magazin` },
+            { "@type": "ListItem", position: 1, name: "Magazin", item: publicUrl(market, "/magazin") },
             { "@type": "ListItem", position: 2, name: profile.name, item: canonicalUrl },
           ],
         },

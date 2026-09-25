@@ -124,9 +124,14 @@ test("internal WordPress links become relative with country prefix, uploads stay
     '<a href="https://fitness-liebe.de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>';
   assert.equal(
     relativizeInternalLinks(html),
-    '<a href="/de/magazin/fitnessroutinen">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
+    '<a href="/de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
   );
-  assert.match(relativizeInternalLinks(html, "ch"), /href="\/ch\/magazin\/fitnessroutinen"/);
+  // CH hat kein eigenes Magazin: der Link führt direkt ins DE-Magazin statt über eine Umleitung.
+  assert.match(relativizeInternalLinks(html, "ch"), /href="\/de\/magazin\/fitnessroutinen\/"/);
+  assert.match(
+    relativizeInternalLinks('<a href="https://fitness-liebe.de/partnersuche/berlin?x=1#top">B</a>', "at"),
+    /href="\/at\/partnersuche\/berlin\/\?x=1#top"/,
+  );
 });
 
 test("ICONY trust and legal pages link absolutely to the live domain", async () => {

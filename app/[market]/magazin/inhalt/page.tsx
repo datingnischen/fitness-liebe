@@ -4,7 +4,7 @@ import { formatUpdatedLabel, getMagazinePages, getMagazinePosts } from "@/lib/wo
 import { buildMagazineIndex, countIndexLinks } from "@/lib/magazine-index";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
-import { marketAlternates, marketUrl, publicUrl } from "@/lib/markets";
+import { marketAlternates, publicUrl } from "@/lib/markets";
 import { MagazineIndexBrowser } from "./magazine-index-browser";
 import "./inhalt.css";
 
@@ -28,8 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function MagazineIndexPage({ params }: PageProps) {
   const market = await resolveMarket(params);
-  const siteUrl = marketUrl(market);
-  const PAGE_URL = `${siteUrl}/magazin/inhalt`;
+  const PAGE_URL = publicUrl(market, "/magazin/inhalt");
   const [posts, pages] = await Promise.all([getMagazinePosts(), getMagazinePages()]);
   const sections = buildMagazineIndex({ posts, pages, formatDate: formatUpdatedLabel });
   const total = countIndexLinks(sections);
@@ -38,7 +37,7 @@ export default async function MagazineIndexPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Magazin", item: `${siteUrl}/magazin` },
+      { "@type": "ListItem", position: 1, name: "Magazin", item: publicUrl(market, "/magazin") },
       { "@type": "ListItem", position: 2, name: "Inhaltsverzeichnis", item: PAGE_URL },
     ],
   };

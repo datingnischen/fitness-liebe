@@ -24,14 +24,18 @@ export default function nextConfig(phase: string): NextConfig {
 
   return {
     turbopack: { root: process.cwd() },
+    // Seiten-URLs enden auf "/" wie auf der ICONY-Plattform. Die Umleitung übernimmt proxy.ts,
+    // damit alte URLs ohne Länderpräfix und ohne Schrägstrich mit einer einzigen 308 ankommen.
+    trailingSlash: true,
+    skipTrailingSlashRedirect: true,
     assetPrefix: isDev || !assetHost ? undefined : `${assetHost}${assetPathPrefix}`,
     async redirects() {
       return [
         // Alte WordPress-Kategorie-URLs, ohne Länderpräfix landen sie in /de (siehe proxy.ts)
-        { source: "/magazin/kategorie/allgemein", destination: `/${DEFAULT_MARKET}/magazin`, permanent: true },
-        { source: "/magazin/kategorie/:slug", destination: `/${DEFAULT_MARKET}/magazin/thema/:slug`, permanent: true },
-        { source: `/:market(${MARKET_CODES.join("|")})/magazin/kategorie/allgemein`, destination: "/:market/magazin", permanent: true },
-        { source: `/:market(${MARKET_CODES.join("|")})/magazin/kategorie/:slug`, destination: "/:market/magazin/thema/:slug", permanent: true },
+        { source: "/magazin/kategorie/allgemein", destination: `/${DEFAULT_MARKET}/magazin/`, permanent: true },
+        { source: "/magazin/kategorie/:slug", destination: `/${DEFAULT_MARKET}/magazin/thema/:slug/`, permanent: true },
+        { source: `/:market(${MARKET_CODES.join("|")})/magazin/kategorie/allgemein`, destination: "/:market/magazin/", permanent: true },
+        { source: `/:market(${MARKET_CODES.join("|")})/magazin/kategorie/:slug`, destination: "/:market/magazin/thema/:slug/", permanent: true },
       ];
     },
     async rewrites() {

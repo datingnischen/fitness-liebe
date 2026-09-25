@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { serializeJsonLd } from "@/lib/json-ld";
-import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, marketPath, marketUrl, publicUrl, type MarketCode } from "@/lib/markets";
+import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, marketPath, publicUrl, type MarketCode } from "@/lib/markets";
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { hasCityPages } from "@/lib/market-partnersuche";
 import { HIDDEN_CATEGORY_SLUGS, getMagazineTopic, getMagazineTopicLinks, topicEmoji } from "@/lib/magazine-topics";
@@ -56,7 +56,6 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
   const { market: marketParam, slug } = await params;
   if (!isMarketCode(marketParam)) notFound();
   const market: MarketCode = marketParam;
-  const siteUrl = marketUrl(market);
   if (HIDDEN_CATEGORY_SLUGS.has(slug)) permanentRedirect(marketPath(market, "/magazin"));
   const topic = await getMagazineTopic(slug);
   if (!topic) notFound();
@@ -64,7 +63,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
   const topicLinks = await getMagazineTopicLinks();
   const posts = topic.posts;
   const category = { name: topic.name };
-  const pageUrl = `${siteUrl}/magazin/thema/${slug}`;
+  const pageUrl = publicUrl(market, `/magazin/thema/${slug}`);
   const emoji = topic.emoji;
   const intro = topic.intro;
   const [featured, ...rest] = posts;
@@ -88,7 +87,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
             "@type": "ListItem",
             position: index + 1,
             name: post.title,
-            url: `${siteUrl}/magazin/${post.slug}`,
+            url: publicUrl(market, `/magazin/${post.slug}`),
           })),
         },
       },
@@ -96,7 +95,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
         "@type": "BreadcrumbList",
         "@id": `${pageUrl}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Magazin", item: `${siteUrl}/magazin` },
+          { "@type": "ListItem", position: 1, name: "Magazin", item: publicUrl(market, "/magazin") },
           { "@type": "ListItem", position: 2, name: category.name, item: pageUrl },
         ],
       },

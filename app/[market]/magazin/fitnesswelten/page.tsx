@@ -4,7 +4,7 @@ import { getAllMagazineEntries, getEntryCoverImage, type MagazineEntry } from "@
 import { buildMagazineFaqGraph } from "@/lib/magazine-faq";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
-import { REGISTRATION_URL, getMarket, marketAlternates, marketUrl, publicUrl, type MarketCode } from "@/lib/markets";
+import { REGISTRATION_URL, getMarket, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
 import {
   FITNESSWELTEN,
   FITNESSWELT_ARTICLE_COUNT,
@@ -43,7 +43,6 @@ const faqItems = FITNESSWELT_FAQ.map((item, index) => ({
 }));
 
 function buildPageGraph(market: MarketCode) {
-  const siteUrl = marketUrl(market);
   const PAGE_URL = publicUrl(market, PAGE_PATH);
   return {
     "@context": "https://schema.org",
@@ -67,14 +66,14 @@ function buildPageGraph(market: MarketCode) {
           "@type": "ListItem",
           position: index + 1,
           name: world.name,
-          url: `${siteUrl}/magazin/thema/${world.id}`,
+          url: publicUrl(market, `/magazin/thema/${world.id}`),
         })),
       },
       {
         "@type": "BreadcrumbList",
         "@id": `${PAGE_URL}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Magazin", item: `${siteUrl}/magazin` },
+          { "@type": "ListItem", position: 1, name: "Magazin", item: publicUrl(market, "/magazin") },
           { "@type": "ListItem", position: 2, name: "Fitnesswelten", item: PAGE_URL },
         ],
       },

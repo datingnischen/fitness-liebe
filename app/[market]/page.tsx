@@ -6,7 +6,7 @@ import { FITNESSWELTEN, entriesForFitnesswelt } from "@/lib/fitnesswelten";
 import { HOME_FEATURES as BASE_FEATURES, HOME_INTRO as BASE_INTRO, HOME_SECTIONS as BASE_SECTIONS, HOME_TRUST_TILES as BASE_TRUST_TILES } from "@/lib/home-content";
 import { homeCopy, localizeTexts } from "@/lib/market-copy";
 import { getMarketCityPages } from "@/lib/market-partnersuche";
-import { REGISTRATION_URL, SITE_ORIGIN, getMarket, isMarketCode, marketAlternates, marketUrl, platformUrl, publicUrl, type MarketCode } from "@/lib/markets";
+import { REGISTRATION_URL, SITE_ORIGIN, getMarket, isMarketCode, marketAlternates, platformUrl, publicUrl, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
 import {
   formatUpdatedDate,
@@ -54,7 +54,7 @@ function teaser(post: MagazineEntry, length: number) {
 export default async function HomePage({ params }: PageProps) {
   const { market: marketParam } = await params;
   const market: MarketCode = isMarketCode(marketParam) ? marketParam : "de";
-  const siteUrl = marketUrl(market);
+  const siteUrl = publicUrl(market);
   const copy = homeCopy(market);
   const [HOME_FEATURES, HOME_INTRO, HOME_SECTIONS, HOME_TRUST_TILES] = localizeTexts(market, [
     BASE_FEATURES,
@@ -75,17 +75,17 @@ export default async function HomePage({ params }: PageProps) {
     "@graph": [
       {
         "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        url: `${siteUrl}/`,
+        "@id": `${siteUrl}#website`,
+        url: siteUrl,
         name: "fitness-liebe.de",
         description: copy.description,
         inLanguage: getMarket(market).locale,
       },
       {
         "@type": "Organization",
-        "@id": `${siteUrl}/#organization`,
+        "@id": `${siteUrl}#organization`,
         name: "fitness-liebe.de",
-        url: `${siteUrl}/`,
+        url: siteUrl,
         logo: `${SITE_ORIGIN}/app-assets/brand/fitness-liebe-logo.svg`,
         sameAs: [
           "https://www.facebook.com/profile.php?id=61578910400002",

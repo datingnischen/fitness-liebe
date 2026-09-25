@@ -28,7 +28,7 @@ import { classifyFitnesswelt, entriesForFitnesswelt, type Fitnesswelt } from "@/
 import { extractLeadImage } from "@/lib/magazine-lead-image";
 import { getMagazineSidebarVariant, type MagazineSidebarVariant } from "@/lib/magazine-sidebar";
 import { RECIPE_CARD_MARKER, buildRecipeNode, getRecipe } from "@/lib/recipes";
-import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, marketUrl, type MarketCode } from "@/lib/markets";
+import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
 
 type PageProps = {
   params: Promise<{ market: string; slug: string }>;
@@ -195,7 +195,6 @@ async function loadPosts() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { market, slug } = await params;
   if (!isMarketCode(market)) return {};
-  const siteUrl = marketUrl(market);
   const entry = await getMagazineEntryBySlug(slug);
   if (!entry) return {};
 
@@ -209,7 +208,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: entry.seoTitle || entry.title,
       description,
-      url: `${siteUrl}/magazin/${slug}`,
+      url: publicUrl(market, `/magazin/${slug}`),
       type: entry.type === "post" ? "article" : "website",
       images: entry.featuredImage ? [entry.featuredImage] : undefined,
     },
@@ -220,7 +219,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
   const { market: marketParam, slug } = await params;
   if (!isMarketCode(marketParam)) notFound();
   const market: MarketCode = marketParam;
-  const siteUrl = marketUrl(market);
+  const siteUrl = publicUrl(market);
   const entry = await getMagazineEntryBySlug(slug);
   if (!entry) notFound();
 
@@ -251,7 +250,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     slug,
     christianSlug: "christian",
     content: entry.content,
-    canonicalUrl: `${siteUrl}/magazin/christian`,
+    canonicalUrl: publicUrl(market, "/magazin/christian"),
     siteUrl,
     profileName: "Christian M. Haas",
     profileDescription: CHRISTIAN_PAGE_DESCRIPTION,
@@ -267,8 +266,8 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     ],
     breadcrumb: [
       { name: "Startseite", url: siteUrl },
-      { name: "Magazin", url: `${siteUrl}/magazin` },
-      { name: "Christian M. Haas", url: `${siteUrl}/magazin/christian` },
+      { name: "Magazin", url: publicUrl(market, "/magazin") },
+      { name: "Christian M. Haas", url: publicUrl(market, "/magazin/christian") },
     ],
     dateModified: entry.modified || undefined,
   });
@@ -289,16 +288,16 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     .slice(0, 3);
   const faqGraph = buildMagazineFaqGraph({
     items: faqItems,
-    pageUrl: `${siteUrl}/magazin/${slug}`,
+    pageUrl: publicUrl(market, `/magazin/${slug}`),
     pageName: `Häufige Fragen zu ${decodeHtmlEntities(entry.title)}`,
   });
   const articleAuthor = authorProfile
-    ? { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: `${siteUrl}${authorProfile.profileUrl}` }
+    ? { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: publicUrl(market, authorProfile.profileUrl) }
     : undefined;
   const recipeNode = recipe
     ? buildRecipeNode({
         recipe,
-        pageUrl: `${siteUrl}/magazin/${slug}`,
+        pageUrl: publicUrl(market, `/magazin/${slug}`),
         image: heroImage?.src,
         datePublished: entry.date,
         dateModified: entry.modified || entry.date,
@@ -313,14 +312,14 @@ export default async function MagazineDetailPage({ params }: PageProps) {
           "@graph": [
             {
               "@type": "BlogPosting",
-              "@id": `${siteUrl}/magazin/${slug}#article`,
+              "@id": `${publicUrl(market, `/magazin/${slug}`)}#article`,
               headline: entry.title,
               description: metaDescription(entry),
               image: heroImage?.src,
               datePublished: entry.date,
               dateModified: entry.modified || entry.date,
               inLanguage: getMarket(market).locale,
-              mainEntityOfPage: `${siteUrl}/magazin/${slug}`,
+              mainEntityOfPage: publicUrl(market, `/magazin/${slug}`),
               author: articleAuthor,
               publisher: { "@type": "Organization", name: "fitness-liebe.de", url: siteUrl },
               articleSection: world.name,
@@ -330,9 +329,9 @@ export default async function MagazineDetailPage({ params }: PageProps) {
             {
               "@type": "BreadcrumbList",
               itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Magazin", item: `${siteUrl}/magazin` },
-                { "@type": "ListItem", position: 2, name: world.name, item: `${siteUrl}/magazin/thema/${world.id}` },
-                { "@type": "ListItem", position: 3, name: entry.title, item: `${siteUrl}/magazin/${slug}` },
+                { "@type": "ListItem", position: 1, name: "Magazin", item: publicUrl(market, "/magazin") },
+                { "@type": "ListItem", position: 2, name: world.name, item: publicUrl(market, `/magazin/thema/${world.id}`) },
+                { "@type": "ListItem", position: 3, name: entry.title, item: publicUrl(market, `/magazin/${slug}`) },
               ],
             },
           ],

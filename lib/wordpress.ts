@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { DEFAULT_MARKET, type MarketCode } from "#markets";
+import { DEFAULT_MARKET, localizeHref, type MarketCode } from "#markets";
 
 const MAGAZINE_API_BASE = "https://fitness-liebe.de/magazin/wp-json/wp/v2";
 export const SITE_URL = "https://fitness-liebe.de";
@@ -158,11 +158,11 @@ const INTERNAL_CONTENT_LINK =
   /href=(["'])https?:\/\/(?:www\.)?fitness-liebe\.de(\/(?:magazin|partnersuche|ueber-uns|social-media)(?:[\/?#][^"']*)?)\1/gi;
 
 // WordPress speichert interne Links absolut; relativ mit Länderpräfix funktionieren sie auf Produktion und auf Vercel-Previews.
+// localizeHref hängt den Schrägstrich an und führt Magazinlinks aus Ländern ohne Magazin nach /de.
 export function relativizeInternalLinks(html = "", market: MarketCode = DEFAULT_MARKET) {
   return html.replace(INTERNAL_CONTENT_LINK, (match, quote: string, path: string) => {
     if (/\/wp-(?:content|admin|json)\//i.test(path)) return match;
-    const relative = path.replace(/\/+(?=[?#]|$)/, "");
-    return `href=${quote}/${market}${relative}${quote}`;
+    return `href=${quote}${localizeHref(market, path)}${quote}`;
   });
 }
 

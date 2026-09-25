@@ -7,7 +7,7 @@ import { DEFAULT_MARKET, isMarketCode, localizeHref } from "@/lib/markets";
 
 type Props = Omit<ComponentProps<typeof NextLink>, "href"> & { href: string };
 
-/** next/link mit Länderpräfix: href="/magazin" wird unter /at/… zu "/at/magazin". */
+/** next/link mit Länderpräfix: href="/magazin" wird unter /at/… zu "/at/magazin/". */
 export default function Link({ href, ...props }: Props) {
   const params = useParams<{ market?: string }>();
   const market = params?.market && isMarketCode(params.market) ? params.market : DEFAULT_MARKET;

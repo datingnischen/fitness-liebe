@@ -23,23 +23,23 @@ test("de, at and ch are the configured countries", () => {
 });
 
 test("pages live below the country prefix", () => {
-  assert.equal(marketPath("de", "/partnersuche"), "/de/partnersuche");
-  assert.equal(marketPath("at", "/"), "/at");
-  assert.equal(marketPath("ch", "magazin/cardio-training/"), "/ch/magazin/cardio-training");
-  assert.equal(publicUrl("de", "/partnersuche/berlin"), "https://fitness-liebe.de/de/partnersuche/berlin");
-  assert.equal(publicUrl("at"), "https://fitness-liebe.de/at");
+  assert.equal(marketPath("de", "/partnersuche"), "/de/partnersuche/");
+  assert.equal(marketPath("at", "/"), "/at/");
+  assert.equal(marketPath("ch", "magazin/cardio-training/"), "/ch/magazin/cardio-training/");
+  assert.equal(publicUrl("de", "/partnersuche/berlin"), "https://fitness-liebe.de/de/partnersuche/berlin/");
+  assert.equal(publicUrl("at"), "https://fitness-liebe.de/at/");
 });
 
 test("internal links get the country prefix exactly once", () => {
-  assert.equal(localizeHref("at", "/social-media"), "/at/social-media");
-  assert.equal(localizeHref("de", "/magazin"), "/de/magazin");
-  assert.equal(localizeHref("ch", "/"), "/ch");
-  assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/de/magazin/inhalt?q=x#a");
-  assert.equal(localizeHref("at", "/de/magazin"), "/de/magazin");
-  assert.equal(localizeHref("ch", "/ueber-uns"), "/ch/ueber-uns");
+  assert.equal(localizeHref("at", "/social-media"), "/at/social-media/");
+  assert.equal(localizeHref("de", "/magazin"), "/de/magazin/");
+  assert.equal(localizeHref("ch", "/"), "/ch/");
+  assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/de/magazin/inhalt/?q=x#a");
+  assert.equal(localizeHref("at", "/de/magazin"), "/de/magazin/");
+  assert.equal(localizeHref("ch", "/ueber-uns"), "/ch/ueber-uns/");
   assert.equal(localizeHref("at", "https://fitness-liebe.de/login/"), "https://fitness-liebe.de/login/");
   assert.equal(localizeHref("at", "#faq"), "#faq");
-  assert.equal(localizeHref("at", "/deutsch"), "/at/deutsch");
+  assert.equal(localizeHref("at", "/deutsch"), "/at/deutsch/");
 });
 
 test("country prefix is recognised and stripped", () => {
@@ -65,8 +65,8 @@ test("ICONY platform pages stay absolute on the live domain without country pref
 
 test("only DE has its own magazine; AT/CH link to it instead of duplicating it", () => {
   assert.deepEqual(MARKET_CODES.filter(hasMagazine), ["de"]);
-  assert.equal(localizeHref("at", "/magazin"), "/de/magazin");
-  assert.equal(localizeHref("ch", "/magazin/cardio-training"), "/de/magazin/cardio-training");
+  assert.equal(localizeHref("at", "/magazin"), "/de/magazin/");
+  assert.equal(localizeHref("ch", "/magazin/cardio-training"), "/de/magazin/cardio-training/");
   assert.equal(contentMarket("at", "/magazin/thema/training"), "de");
   assert.equal(contentMarket("at", "/magazinfoo"), "at");
   assert.deepEqual(marketsForPath("/magazin/cardio-training"), ["de"]);
@@ -75,12 +75,12 @@ test("only DE has its own magazine; AT/CH link to it instead of duplicating it",
 
 test("hreflang lists every country plus x-default", () => {
   const alternates = marketAlternates("at", "/social-media");
-  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/social-media");
+  assert.equal(alternates.canonical, "https://fitness-liebe.de/at/social-media/");
   assert.deepEqual(alternates.languages, {
-    "de-DE": "https://fitness-liebe.de/de/social-media",
-    "de-AT": "https://fitness-liebe.de/at/social-media",
-    "de-CH": "https://fitness-liebe.de/ch/social-media",
-    "x-default": "https://fitness-liebe.de/de/social-media",
+    "de-DE": "https://fitness-liebe.de/de/social-media/",
+    "de-AT": "https://fitness-liebe.de/at/social-media/",
+    "de-CH": "https://fitness-liebe.de/ch/social-media/",
+    "x-default": "https://fitness-liebe.de/de/social-media/",
   });
   assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), ["de-DE", "x-default"]);
 });
