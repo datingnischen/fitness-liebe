@@ -168,6 +168,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
           <article className="thema-featured">
             <Link href={`/magazin/${featured.slug}`} className="thema-card-media thema-featured-media" tabIndex={-1} aria-hidden="true">
               <CoverImage post={featured} emoji={emoji} eager />
+              <ReadingBubble post={featured} />
             </Link>
             <div className="thema-featured-copy">
               <PostMeta post={featured} label="Neuester Artikel" />
@@ -190,6 +191,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
               <article key={post.id} className="thema-card">
                 <Link href={`/magazin/${post.slug}`} className="thema-card-media" tabIndex={-1} aria-hidden="true">
                   <CoverImage post={post} emoji={emoji} />
+                  <ReadingBubble post={post} />
                 </Link>
                 <div className="thema-card-body">
                   <PostMeta post={post} />
@@ -198,7 +200,8 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
                   </h3>
                   <p>{teaser(post, 150)}</p>
                   <span className="thema-card-more" aria-hidden="true">
-                    Weiterlesen →
+                    Weiterlesen
+                    <span className="thema-card-more-arrow">→</span>
                   </span>
                 </div>
               </article>
@@ -268,7 +271,15 @@ function PostMeta({ post, label }: { post: MagazineEntry; label?: string }) {
     <div className="thema-meta">
       {label ? <span className="thema-meta-label">{label}</span> : null}
       {getUpdatedDate(post) ? <time dateTime={getUpdatedDate(post)}>{formatUpdatedDate(post)}</time> : null}
-      <span>{getReadingMinutes(post.content)} Min. Lesezeit</span>
+      <span className="sr-only">{getReadingMinutes(post.content)} Min. Lesezeit</span>
     </div>
+  );
+}
+
+function ReadingBubble({ post }: { post: MagazineEntry }) {
+  return (
+    <span className="thema-reading-bubble">
+      <span aria-hidden="true">⏱</span> {getReadingMinutes(post.content)} Min. Lesezeit
+    </span>
   );
 }
