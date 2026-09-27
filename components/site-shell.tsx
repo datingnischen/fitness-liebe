@@ -2,7 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { MarketLink } from "@/components/market-link";
+import { SiteSearchForm } from "@/components/site-search-form";
 import { PLATFORM_PAGES, platformUrl, registrationUrl, stripMarketPrefix, type MarketCode } from "@/lib/markets";
+import { SITE_SEARCH_PATH } from "@/lib/site-search";
 import { staticAsset } from "@/lib/static-asset";
 
 type NavLink = { label: string; href: string; external?: boolean };
@@ -21,6 +23,7 @@ const headerNav: NavLink[] = [
   { label: "Rezepte", href: "/magazin/thema/rezepte" },
   platform(PLATFORM_PAGES.datingTips, "Dating-Tipps"),
   { label: "Über uns", href: "/ueber-uns" },
+  { label: "Suche", href: SITE_SEARCH_PATH },
 ];
 
 
@@ -50,6 +53,7 @@ const footerColumns: Array<{ title: string; links: NavLink[] }> = [
       { label: "Christian M. Haas", href: "/magazin/christian" },
       { label: "Social Media", href: "/social-media" },
       { label: "Inhaltsverzeichnis A–Z", href: "/magazin/inhalt" },
+      { label: "Suche", href: SITE_SEARCH_PATH },
     ],
   },
   {
@@ -133,6 +137,7 @@ export function SiteHeader({ market = "de", hasCityPages = true }: Props) {
               <span className="sr-only">Menü</span>
             </summary>
             <div className="header-menu-panel">
+              <SiteSearchForm market={market} compact />
               <nav className="main-nav compact-menu-nav" aria-label="Hauptnavigation">
                 {navFor(hasCityPages).map((item) => <span key={item.href}>{item.external ? <a href={item.href}>{item.label}</a> : localLink(market, item.href, item.label)}</span>)}
               </nav>

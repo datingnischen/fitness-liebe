@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
+import { SiteSearchForm } from "@/components/site-search-form";
 import { getAuthorProfile } from "@/lib/author-profiles";
 import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH, aboutOverviewCanonical } from "@/lib/about-section";
 import { HOME_INTRO as BASE_INTRO, HOME_SECTIONS as BASE_SECTIONS, HOME_TRUST_TILES as BASE_TRUST_TILES } from "@/lib/home-content";
@@ -51,6 +52,17 @@ export default async function AboutOverviewPage({ params }: PageProps) {
             Social Media
           </Link>
         </div>
+      </section>
+
+      <section className="content-section">
+        <article className="panel-card">
+          <div className="section-header">
+            <span className="eyebrow">Suche</span>
+            <h2>Du suchst etwas Bestimmtes?</h2>
+          </div>
+          <p>Durchsuche Magazin, Fitnesswelten und Städteseiten auf einen Blick.</p>
+          <SiteSearchForm market={market} />
+        </article>
       </section>
 
       {WHY ? (

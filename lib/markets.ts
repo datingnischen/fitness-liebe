@@ -97,7 +97,8 @@ export function platformUrl(pathname: string): string {
 }
 
 /** ICONY-Inhaltsseiten mit Pfad ohne .html; sie bleiben auf der Plattform und werden nie in Next.js gerendert. */
-export const PLATFORM_PAGES = { datingTips: "/dating-tipps/" } as const;
+// /suche/ ist die ICONY-Mitgliedersuche; die Seitensuche liegt unter /<land>/ueber-uns/suche/.
+export const PLATFORM_PAGES = { datingTips: "/dating-tipps/", search: "/suche/" } as const;
 
 /** Ziel auf der Plattform, wenn `pathname` (ohne Länderpräfix) eine ICONY-Inhaltsseite ist. */
 export function platformPageUrl(pathname: string): string | null {

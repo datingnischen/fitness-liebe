@@ -39,6 +39,7 @@ Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`); `/magazin/…` nur 
 | `/magazin/inhalt` | Inhaltsverzeichnis A–Z |
 | `/magazin/christian`, `/magazin/gazi-avakhti` | Autorenprofile (WP-Seiten) |
 | `/social-media`, `/ueber-uns` | Übernommene ICONY-Inhaltsseiten |
+| `/ueber-uns/suche` | Seitensuche (Magazin, Fitnesswelten, Städte), `noindex`, nicht in der Sitemap – `/suche/` gehört ICONY |
 
 WordPress kennt nur die Kategorien „Allgemein" und „Rezepte". Die Zuordnung zu Fitnesswelten
 steht in `lib/fitnesswelten.ts`; neue Beiträge landen per Titel-Stichwort automatisch in einer Welt.
