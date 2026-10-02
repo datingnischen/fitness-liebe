@@ -13,14 +13,12 @@ import {
   getReadingMinutes,
   stripHtml,
   type MagazineEntry,
-} from "@/lib/wordpress";
+} from "@/lib/magazine";
 import "./thema.css";
 
 type PageProps = {
   params: Promise<{ market: string; slug: string }>;
 };
-
-export const revalidate = 300;
 
 const REGISTER_URL = REGISTRATION_URL;
 

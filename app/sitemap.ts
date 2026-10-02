@@ -4,7 +4,7 @@ import { getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profil
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { getMarketCityPages, marketsWithCity } from "@/lib/market-partnersuche";
 import { MARKET_CODES, marketAlternates, marketsForPath, publicUrl, type MarketCode } from "@/lib/markets";
-import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
+import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts } from "@/lib/magazine";
 
 
 type Entry = MetadataRoute.Sitemap[number];

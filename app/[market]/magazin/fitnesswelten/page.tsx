@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
-import { getAllMagazineEntries, getEntryCoverImage, type MagazineEntry } from "@/lib/wordpress";
+import { getAllMagazineEntries, getEntryCoverImage, type MagazineEntry } from "@/lib/magazine";
 import { buildMagazineFaqGraph } from "@/lib/magazine-faq";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
@@ -14,8 +14,6 @@ import {
   findFitnessweltArticle,
 } from "@/lib/fitnesswelten";
 import "./fitnesswelten.css";
-
-export const revalidate = 300;
 
 const TITLE = "Fitnesswelten: Dating, Training, Ernährung & Rezepte";
 const DESCRIPTION =

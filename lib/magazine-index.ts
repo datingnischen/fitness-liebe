@@ -1,5 +1,5 @@
 import { FITNESSWELTEN, classifyFitnesswelt } from "#fitnesswelten";
-import type { MagazineEntry } from "./wordpress";
+import type { MagazineEntry } from "./magazine";
 
 // Inhaltsverzeichnis für /magazin/inhalt: alle Beiträge nach Fitnesswelt, dazu die Seiten.
 

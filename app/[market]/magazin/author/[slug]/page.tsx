@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { AUTHOR_PROFILE_PATHS, getAuthorPosts, getAuthorProfile, getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
-import { formatUpdatedDate, getUpdatedDate, stripHtml } from "@/lib/wordpress";
+import { formatUpdatedDate, getUpdatedDate, stripHtml } from "@/lib/magazine";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, publicUrl, type MarketCode } from "@/lib/markets";
 
@@ -13,8 +13,6 @@ type PageProps = {
 type StructuredData = Record<string, unknown>;
 
 const CHRISTIAN_CANONICAL_PATH = "/magazin/christian";
-
-export const revalidate = 300;
 
 export async function generateStaticParams() {
   const slugs = await getKnownAuthorSlugs();

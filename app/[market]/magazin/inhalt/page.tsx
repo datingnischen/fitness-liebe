@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
-import { formatUpdatedLabel, getMagazinePages, getMagazinePosts } from "@/lib/wordpress";
+import { formatUpdatedLabel, getMagazinePages, getMagazinePosts } from "@/lib/magazine";
 import { buildMagazineIndex, countIndexLinks } from "@/lib/magazine-index";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { marketAlternates, publicUrl } from "@/lib/markets";
 import { MagazineIndexBrowser } from "./magazine-index-browser";
 import "./inhalt.css";
-
-export const revalidate = 300;
 
 const TITLE = "Inhaltsverzeichnis: alle Magazin-Beiträge & Seiten A–Z";
 const DESCRIPTION =

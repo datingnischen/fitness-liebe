@@ -16,10 +16,8 @@ import {
   getReadingMinutes,
   stripHtml,
   type MagazineEntry,
-} from "@/lib/wordpress";
+} from "@/lib/magazine";
 import "./home.css";
-
-export const revalidate = 300;
 
 const HOME_HERO_IMAGE = staticAsset("/home/frontpage-visual-fitnessliebe.webp");
 const HOME_CITY_ORDER = ["berlin", "hamburg", "muenchen", "koeln", "frankfurt", "stuttgart"];

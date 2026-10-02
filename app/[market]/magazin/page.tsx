@@ -13,9 +13,7 @@ import {
   getMagazinePages,
   getMagazinePostsPage,
   stripHtml,
-} from "@/lib/wordpress";
-
-export const revalidate = 300;
+} from "@/lib/magazine";
 
 type PageProps = { params: MarketParams };
 

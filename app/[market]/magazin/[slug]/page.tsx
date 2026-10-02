@@ -13,6 +13,7 @@ import {
   enhanceAudioSummary,
   formatUpdatedDate,
   getUpdatedDate,
+  getAllMagazineEntries,
   getEntryCoverImage,
   getMagazineEntryBySlug,
   getMagazinePosts,
@@ -20,7 +21,7 @@ import {
   relativizeInternalLinks,
   stripHtml,
   type MagazineEntry,
-} from "@/lib/wordpress";
+} from "@/lib/magazine";
 import { buildChristianBookProfileGraph, stripPublishedBookSchema } from "@/lib/christian-book-profile-schema";
 import { buildMagazineFaqGraph, getMagazineFaqItems, getMagazineFaqSubject, renderMagazineFaqSection } from "@/lib/magazine-faq";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -28,13 +29,11 @@ import { classifyFitnesswelt, entriesForFitnesswelt, type Fitnesswelt } from "@/
 import { extractLeadImage } from "@/lib/magazine-lead-image";
 import { getMagazineSidebarVariant, type MagazineSidebarVariant } from "@/lib/magazine-sidebar";
 import { RECIPE_CARD_MARKER, buildRecipeNode, getRecipe } from "@/lib/recipes";
-import { REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
+import { DEFAULT_MARKET, REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
 
 type PageProps = {
   params: Promise<{ market: string; slug: string }>;
 };
-
-export const revalidate = 300;
 
 const ONLINE_IFRAME_SRC = "https://js.icony.com/frame/?w=300&h=300&id=fitnessliebe&pc=FBCA08&aid=magazin";
 const CHRISTIAN_PAGE_DESCRIPTION =
@@ -190,6 +189,12 @@ async function loadPosts() {
   } catch {
     return [] as MagazineEntry[];
   }
+}
+
+// Das Magazin gibt es nur in DE (AT/CH leiten per 308 um); alle Seiten kommen aus Dateien und werden beim Build erzeugt.
+export async function generateStaticParams() {
+  const entries = await getAllMagazineEntries();
+  return entries.map((entry) => ({ market: DEFAULT_MARKET, slug: entry.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

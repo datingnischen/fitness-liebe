@@ -4,7 +4,16 @@ Headless-Frontend für fitness-liebe.de nach dem Muster der anderen Nischenproje
 
 ## Quellen
 
-- **Magazin:** WordPress unter `https://fitness-liebe.de/magazin/wp-json/wp/v2` (Revalidate 300 s)
+- **Magazin:** Dateien im Repo, kein WordPress mehr (Import am 2026-10-02, danach nie wieder ausführen):
+  - `content/magazin/beitraege/<slug>.md` (45 Beiträge) und `content/magazin/seiten/<slug>.md` (Autorenprofile, Rechtstexte):
+    Frontmatter (`title`, `seoTitle`, `description`, `excerpt`, `published`, `updated`, `category`, `author`, `image`, `imageAlt`)
+    plus HTML-Körper (Audio-Zusammenfassung, Rezeptmarker `<!-- rezeptkarte -->` und FAQ-Blöcke hängen daran)
+  - `data/magazin-kategorien.json`, `data/magazin-autoren.json`, `data/magazin-weiterleitungen.json` (alte Slugs)
+  - Bilder und Audio unter `public/magazin/wp-content/uploads/…` (Pfad wie früher in WordPress, in der App über den Asset-Host)
+  - `data/magazin-wp-inventar.json`: Slug-Inventar von WordPress, gegen das `tests/magazine-content.test.mjs` prüft
+  - Neuer Beitrag = Datei in `content/magazin/beitraege/` anlegen (Vorlage: ein bestehender Beitrag), committen, pushen;
+    `published`/`updated` als ISO-Zeitstempel, `imageAlt` nie leer, Bild nach `public/magazin/wp-content/uploads/<jahr>/<monat>/`
+  - `scripts/import_wordpress.py` ist das einmalige Importwerkzeug (liest die öffentliche REST-API, überschreibt Korrekturen)
 - **Stadtseiten:** ICONY `/partnersuche/<stadt>/`, importiert nach `data/partnersuche-markets.json`
   (`python scripts/import_partnersuche.py`)
 - **Plattformseiten** (Login, Registrierung, Sicherheit, Redaktionelle Kontrolle, Basis-Mitgliedschaft,
@@ -37,11 +46,11 @@ Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`); `/magazin/…` nur 
 | `/magazin`, `/magazin/[slug]` | Magazin-Übersicht und Artikel (Audio-Zusammenfassung, FAQ, verwandte Artikel) |
 | `/magazin/fitnesswelten`, `/magazin/thema/[slug]` | Themenwelten aus `lib/fitnesswelten.ts` |
 | `/magazin/inhalt` | Inhaltsverzeichnis A–Z |
-| `/magazin/christian`, `/magazin/gazi-avakhti` | Autorenprofile (WP-Seiten) |
+| `/magazin/christian`, `/magazin/gazi-avakhti` | Autorenprofile (Seiten in `content/magazin/seiten/`) |
 | `/social-media`, `/ueber-uns` | Übernommene ICONY-Inhaltsseiten |
 | `/ueber-uns/suche` | Seitensuche (Magazin, Fitnesswelten, Städte), `noindex`, nicht in der Sitemap – `/suche/` gehört ICONY |
 
-WordPress kennt nur die Kategorien „Allgemein" und „Rezepte". Die Zuordnung zu Fitnesswelten
+Es gibt nur die Kategorien „Allgemein" und „Rezepte" (`data/magazin-kategorien.json`). Die Zuordnung zu Fitnesswelten
 steht in `lib/fitnesswelten.ts`; neue Beiträge landen per Titel-Stichwort automatisch in einer Welt.
 
 ## Assets

@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { staticAsset } from "@/lib/static-asset";
-import { getMagazineEntryBySlug, getMagazinePosts } from "@/lib/wordpress";
+import { getMagazineEntryBySlug, getMagazinePosts } from "@/lib/magazine";
 
 /** Christian vor dem Tennisplatz (freigestellt aus dem Porträt, Hintergrund gerendert). */
 export const CHRISTIAN_PROFILE_PHOTO = staticAsset("/images/authors/christian-m-haas-tennis-portrait.webp");

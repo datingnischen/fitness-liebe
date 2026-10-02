@@ -8,7 +8,7 @@ import { resolveMarket, type MarketParams } from "@/lib/market-params";
 import { publicUrl, type MarketCode } from "@/lib/markets";
 import { SOCIAL_CHANNELS } from "@/lib/social-channels";
 import { SITE_SEARCH_MAX_RESULTS, SITE_SEARCH_PATH, searchDocuments, searchTerms, shortExcerpt, type SearchDocument } from "@/lib/site-search";
-import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts, stripHtml } from "@/lib/wordpress";
+import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts, stripHtml } from "@/lib/magazine";
 
 const TITLE = "Suche";
 const DESCRIPTION = "Durchsuche Magazin, Fitnesswelten und Städteseiten von fitness-liebe.de.";

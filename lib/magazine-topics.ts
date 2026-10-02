@@ -7,7 +7,7 @@ import {
   getMagazinePostsByCategory,
   stripHtml,
   type MagazineEntry,
-} from "@/lib/wordpress";
+} from "@/lib/magazine";
 
 export type MagazineTopic = {
   slug: string;

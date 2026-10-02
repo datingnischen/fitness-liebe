@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
-import { REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, publicUrl } from "@/lib/markets";
+import { DEFAULT_MARKET, REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, publicUrl } from "@/lib/markets";
 import { notFound, redirect } from "next/navigation";
-import { MAGAZINE_POSTS_PER_PAGE, getMagazinePostsPage, stripHtml } from "@/lib/wordpress";
+import { MAGAZINE_POSTS_PER_PAGE, getMagazinePostsPage, stripHtml } from "@/lib/magazine";
 
 type PageProps = {
   params: Promise<{ market: string; page: string }>;
 };
 
-export const revalidate = 300;
-
 function parsePageNumber(value: string) {
   const pageNumber = Number(value);
   return Number.isInteger(pageNumber) && pageNumber > 0 ? pageNumber : null;
+}
+
+export async function generateStaticParams() {
+  const { totalPages } = await getMagazinePostsPage(1, MAGAZINE_POSTS_PER_PAGE);
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({ market: DEFAULT_MARKET, page: String(index + 2) }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
