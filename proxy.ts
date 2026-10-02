@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
-import { isWpRestPath, isWpRestRoot } from "#wp-rest-paths";
+import { isWpRestPath, isWpRestRoot, restRewriteUrl } from "#wp-rest-paths";
 import { DEFAULT_MARKET, contentMarket, marketFromPathname, marketPath, platformPageUrl, stripMarketPrefix } from "#markets";
 
 // Dateien und Metadaten-Routen ohne Länderpräfix und ohne Schrägstrich (robots.txt, sitemap.xml, icon.png …).
@@ -19,15 +19,11 @@ export function proxy(request: NextRequest) {
   // /magazin/wp-json/… und /magazin/index.php?rest_route=… (auch /magazin/?rest_route=…), ohne Umleitung. Die
   // Route liegt unter /[market]/…; Adressen ohne Länderpräfix gehen intern nach /de.
   if (isWpRestRoot(pathname, request.nextUrl.searchParams)) {
-    const destination = new URL(request.nextUrl.href);
-    destination.pathname = `/${DEFAULT_MARKET}/magazin/index.php`;
-    return NextResponse.rewrite(destination);
+    return NextResponse.rewrite(restRewriteUrl(request.nextUrl.href, `/${DEFAULT_MARKET}/magazin/index.php`));
   }
   if (isWpRestPath(pathname)) {
     if (marketFromPathname(pathname)) return NextResponse.next();
-    const destination = new URL(request.nextUrl.href);
-    destination.pathname = `/${DEFAULT_MARKET}${pathname}`;
-    return NextResponse.rewrite(destination);
+    return NextResponse.rewrite(restRewriteUrl(request.nextUrl.href, `/${DEFAULT_MARKET}${pathname}`));
   }
   if (UNPREFIXED.test(pathname)) return NextResponse.next();
 

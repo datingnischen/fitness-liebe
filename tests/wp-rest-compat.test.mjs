@@ -184,6 +184,10 @@ test("proxy: wp-json und ?rest_route= antworten ohne Umleitung, mit und ohne Lä
     assert.equal(response.status, 200, path);
     assert.match(response.headers.get("x-middleware-rewrite") || "", /\/de\/magazin\/index\.php\?rest_route=/, path);
   }
+  // Vercel verwirft bei Rewrites Parameter ohne Wert: ?_embed (WordPress-Schreibweise) wird zu _embed=1.
+  for (const path of ["/magazin/wp-json/wp/v2/posts?per_page=3&_embed", "/magazin/index.php?rest_route=/wp/v2/posts&_embed", "/magazin/?rest_route=/wp/v2/posts&_embed"]) {
+    assert.match(proxy(new NextRequest(`https://fitness-liebe.vercel.app${path}`)).headers.get("x-middleware-rewrite") || "", /[?&]_embed=1/, path);
+  }
   // Das normale Magazin bleibt unberührt.
   assert.equal(run("/magazin/cardio-training/").headers.get("location"), "https://fitness-liebe.vercel.app/de/magazin/cardio-training/");
   assert.equal(run("/de/magazin/?q=1").headers.get("x-middleware-rewrite"), null);
