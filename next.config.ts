@@ -29,7 +29,12 @@ export default function nextConfig(phase: string): NextConfig {
   return {
     turbopack: { root: process.cwd() },
     // Die Seitensuche liest Magazin-Dateien zur Laufzeit (searchParams): Inhalte in das Server-Bundle aufnehmen.
-    outputFileTracingIncludes: { "/[market]/ueber-uns/suche": ["./content/magazin/**/*", "./data/magazin-*.json"] },
+    outputFileTracingIncludes: {
+      "/[market]/ueber-uns/suche": ["./content/magazin/**/*", "./data/magazin-*.json"],
+      // Der WP-kompatible REST-Endpunkt (lib/wp-rest-compat.ts) liest die Magazin-Dateien ebenfalls zur Laufzeit.
+      "/[market]/magazin/wp-json/[[...route]]": ["./content/magazin/**/*", "./data/magazin-*.json"],
+      "/[market]/magazin/index.php": ["./content/magazin/**/*", "./data/magazin-*.json"],
+    },
     // Seiten-URLs enden auf "/" wie auf der ICONY-Plattform. Die Umleitung übernimmt proxy.ts,
     // damit alte URLs ohne Länderpräfix und ohne Schrägstrich mit einer einzigen 308 ankommen.
     trailingSlash: true,

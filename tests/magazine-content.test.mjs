@@ -139,7 +139,7 @@ test("Quellcode greift nicht mehr auf WordPress zu", () => {
     for (const entry of readdirSync(rootPath(`${dir}/`), { withFileTypes: true })) {
       const path = `${dir}/${entry.name}`;
       if (entry.isDirectory()) walk(path);
-      else if (/\.(tsx?|mjs)$/.test(entry.name) && !path.startsWith("tests/") && /wp-json|WORDPRESS_REST|fetchWp|wp\/v2/.test(readText(path))) offenders.push(path);
+      else if (/\.(tsx?|mjs)$/.test(entry.name) && !path.startsWith("tests/") && !/^lib\/wp-rest-(?:compat|paths)\.ts$|^app\/\[market\]\/magazin\/(?:wp-json|index\.php)\//.test(path) && /wp-json|WORDPRESS_REST|fetchWp|wp\/v2/.test(readText(path))) offenders.push(path);
     }
   }
   for (const dir of ["app", "components", "lib"]) walk(dir);
