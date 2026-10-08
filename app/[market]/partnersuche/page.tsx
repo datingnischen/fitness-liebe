@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CitySearchFallback } from "@/components/city-search-fallback";
 import { MarketLink } from "@/components/market-link";
-import { getMarketPartnersucheHub } from "@/lib/market-partnersuche";
+import { getMarketPartnersucheHub, getMarketPartnersucheIntro } from "@/lib/market-partnersuche";
 import { LOCATION_REGISTRATION_URL, getMarket, isMarketCode, marketAlternates, publicUrl, type MarketCode } from "@/lib/markets";
 
 type PageProps = { params: Promise<{ market: string }> };
@@ -10,25 +10,39 @@ type PageProps = { params: Promise<{ market: string }> };
 async function loadHub(params: PageProps["params"]) {
   const { market } = await params;
   const hub = isMarketCode(market) ? getMarketPartnersucheHub(market) : null;
-  if (!hub) notFound();
-  return hub;
+  const intro = !hub && isMarketCode(market) ? getMarketPartnersucheIntro(market) : null;
+  if (!hub && !intro) notFound();
+  return { hub, intro };
 }
 
 export const revalidate = 86400;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const hub = await loadHub(params);
-  const market: MarketCode = hub.market;
+  const { hub, intro } = await loadHub(params);
+  if (intro) {
+    // Ohne eigene Stadtseiten dünn: aus dem Index, Canonical auf die eigene Adresse.
+    return {
+      title: intro.title,
+      description: intro.description,
+      alternates: { canonical: publicUrl(intro.market, "/partnersuche") },
+      robots: { index: false, follow: true },
+      openGraph: { title: intro.title, description: intro.description, url: publicUrl(intro.market, "/partnersuche") },
+    };
+  }
+  const found = hub!;
+  const market: MarketCode = found.market;
   return {
-    title: hub.title,
-    description: hub.description,
+    title: found.title,
+    description: found.description,
     alternates: marketAlternates(market, "/partnersuche"),
-    openGraph: { title: hub.title, description: hub.description, url: publicUrl(market, "/partnersuche") },
+    openGraph: { title: found.title, description: found.description, url: publicUrl(market, "/partnersuche") },
   };
 }
 
 export default async function PartnersucheHubPage({ params }: PageProps) {
-  const hub = await loadHub(params);
+  const loaded = await loadHub(params);
+  if (loaded.intro) return <PartnersucheIntro intro={loaded.intro} />;
+  const hub = loaded.hub!;
   const { market } = hub;
   const { countryName } = getMarket(market);
   return (
@@ -105,6 +119,33 @@ export default async function PartnersucheHubPage({ params }: PageProps) {
         Bildquellen: <a href="https://pixabay.com/de/photos/paar-fitnessstudio-%C3%BCbung-fitness-7437534/" rel="nofollow noopener">Pixabay</a>,{" "}
         <a href="https://pixabay.com/de/photos/yoga-drau%C3%9Fen-sonnenaufgang-6723315/" rel="nofollow noopener">Pixabay</a>
       </p>
+    </main>
+  );
+}
+
+function PartnersucheIntro({ intro }: { intro: NonNullable<Awaited<ReturnType<typeof loadHub>>["intro"]> }) {
+  const { countryName } = getMarket(intro.market);
+  return (
+    <main className="shell shell-narrow">
+      <section className="hero-card hero-brand">
+        <span className="eyebrow">Partnersuche für Sportliche · {countryName}</span>
+        <h1>{intro.title}</h1>
+        <p>{intro.description}</p>
+        <div className="button-row">
+          <a className="button button-primary" href={LOCATION_REGISTRATION_URL}>Kostenlos sportliche Singles finden</a>
+          <MarketLink className="button button-secondary" market={intro.market} path="/magazin">Zum Fitness-Magazin</MarketLink>
+        </div>
+      </section>
+      <section className="content-section">
+        <article className="panel-card">
+          <div className="section-header">
+            <span className="eyebrow">Fitness-Dating in {countryName}</span>
+            <h2>Sportliche Singles in deiner Region</h2>
+          </div>
+          {intro.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <CitySearchFallback />
+        </article>
+      </section>
     </main>
   );
 }

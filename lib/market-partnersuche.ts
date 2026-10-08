@@ -160,3 +160,32 @@ export function getNearbyMarketCities(market: MarketCode, slug: string, count = 
   const withoutImage = ordered.filter((page) => !page.imageUrl);
   return [...withImage, ...withoutImage].slice(0, count);
 }
+
+export type MarketPartnersucheIntro = { market: MarketCode; title: string; description: string; paragraphs: string[] };
+
+const INTRO_COPY: Partial<Record<MarketCode, Omit<MarketPartnersucheIntro, "market">>> = {
+  at: {
+    title: "Fitness-Dating in Österreich – sportliche Singles kennenlernen",
+    description:
+      "Partnersuche für Sportliche in Österreich: Eigene Stadtseiten sind in Vorbereitung. Bis dahin findest du sportliche Singles in deiner Region direkt über die Suche.",
+    paragraphs: [
+      "Du bewegst dich gern, ob beim Laufen an der Donau, auf der Skipiste oder im Fitnessstudio, und suchst jemanden mit ähnlichen Interessen? Auf fitness-liebe.de kannst du dich kostenlos anmelden und Singles aus deiner Region entdecken.",
+      "Eigene Stadtseiten für Österreich mit Laufstrecken, Parks und Trainingsorten sind in Vorbereitung. Bis sie erscheinen, kannst du über die Suche nach Postleitzahl Profile in deiner Nähe ansehen.",
+    ],
+  },
+  ch: {
+    title: "Fitness-Dating in der Schweiz – sportliche Singles kennenlernen",
+    description:
+      "Partnersuche für Sportliche in der Schweiz: Eigene Stadtseiten sind in Vorbereitung. Bis dahin findest du sportliche Singles in deiner Region direkt über die Suche.",
+    paragraphs: [
+      "Du bewegst dich gern, ob beim Joggen am See, beim Wandern in den Bergen oder im Fitnessstudio, und suchst jemanden mit ähnlichen Interessen? Auf fitness-liebe.de kannst du dich kostenlos anmelden und Singles aus deiner Region entdecken.",
+      "Eigene Stadtseiten für die Schweiz mit Laufstrecken, Parks und Trainingsorten sind in Vorbereitung. Bis sie erscheinen, kannst du über die Suche nach Postleitzahl Profile in deiner Nähe ansehen.",
+    ],
+  },
+};
+
+/** Länder ohne importierte Stadtseiten: kurze Einleitung statt 404, damit die URL-Struktur je Land gleich ist. */
+export function getMarketPartnersucheIntro(market: MarketCode): MarketPartnersucheIntro | null {
+  const copy = INTRO_COPY[market];
+  return copy && !hasCityPages(market) ? { market, ...copy } : null;
+}

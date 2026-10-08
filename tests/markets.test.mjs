@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readdir } from "node:fs/promises";
 import test from "node:test";
-import { getMarketCityPages, getMarketPartnersucheHub, hasCityPages, marketsWithCity } from "../lib/market-partnersuche.ts";
+import { getMarketCityPages, getMarketPartnersucheHub, getMarketPartnersucheIntro, hasCityPages, marketsWithCity } from "../lib/market-partnersuche.ts";
 import {
   MARKET_CODES,
   contentMarket,
@@ -92,6 +92,16 @@ test("city pages exist only where they are imported", () => {
     assert.equal(hasCityPages(market), getMarketCityPages(market).length > 0);
     if (!hasCityPages(market)) assert.equal(getMarketPartnersucheHub(market), null);
   }
+});
+
+test("AT and CH answer /partnersuche with an intro until they have city pages", () => {
+  for (const market of ["at", "ch"]) {
+    const intro = getMarketPartnersucheIntro(market);
+    assert.ok(intro && intro.paragraphs.length > 0, market);
+    assert.ok(!/\d{2,}/.test(intro.paragraphs.join(" ")), "keine erfundenen Zahlen");
+  }
+  assert.equal(getMarketPartnersucheIntro("de"), null);
+  assert.ok(!/ß/.test(JSON.stringify(getMarketPartnersucheIntro("ch"))), "CH ohne ß");
 });
 
 test("all content routes live below app/[market]", async () => {
