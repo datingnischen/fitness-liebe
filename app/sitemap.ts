@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/magazin/inhalt", changeFrequency: "daily", priority: 0.7 },
     { path: ABOUT_OVERVIEW_PATH, changeFrequency: "monthly", priority: 0.7 },
     { path: ABOUT_SOCIAL_MEDIA_PATH, changeFrequency: "monthly", priority: 0.6 },
+    { path: "/faq", changeFrequency: "monthly", priority: 0.6 },
     ...posts.map((post): Route => ({
       path: `/magazin/${post.slug}`,
       lastModified: post.modified || post.date,

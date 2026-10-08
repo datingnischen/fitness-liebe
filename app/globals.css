@@ -3354,3 +3354,18 @@ body {
     align-self: flex-start;
   }
 }
+
+/* FAQ */
+.faq-browser { display: grid; gap: 18px; }
+.faq-tools { display: grid; gap: 10px; }
+.faq-search input { width: 100%; font: inherit; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.faq-count { margin: 0; opacity: 0.75; }
+.faq-topics { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+.faq-topics a { white-space: nowrap; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; color: inherit; font-weight: 600; }
+.faq-card { scroll-margin-top: 80px; }
+.faq-card h2 { margin: 0; }
+.faq-card details { border-top: 1px solid var(--line); padding: 4px 0; }
+.faq-card summary { cursor: pointer; font-weight: 700; padding: 12px 0; }
+.faq-answer { padding-bottom: 12px; }
+.faq-answer p { margin: 0 0 8px; }
+.faq-empty { margin: 0; }

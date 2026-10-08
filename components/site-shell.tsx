@@ -52,6 +52,7 @@ const footerColumns: Array<{ title: string; links: NavLink[] }> = [
       { label: "Über fitness-liebe.de", href: "/ueber-uns" },
       { label: "Christian M. Haas", href: "/magazin/christian" },
       { label: "Social Media", href: "/ueber-uns/social-media" },
+      { label: "Häufige Fragen (FAQ)", href: "/faq" },
       { label: "Inhaltsverzeichnis A–Z", href: "/magazin/inhalt" },
       { label: "Suche", href: SITE_SEARCH_PATH },
     ],

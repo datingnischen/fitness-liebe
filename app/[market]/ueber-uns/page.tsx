@@ -51,6 +51,9 @@ export default async function AboutOverviewPage({ params }: PageProps) {
           <Link className="button button-secondary" href={ABOUT_SOCIAL_MEDIA_PATH}>
             Social Media
           </Link>
+          <Link className="button button-secondary" href="/faq">
+            Häufige Fragen
+          </Link>
         </div>
       </section>
 
