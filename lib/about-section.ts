@@ -1,8 +1,8 @@
 import { publicUrl, type MarketCode } from "@/lib/markets";
 
 export const ABOUT_OVERVIEW_PATH = "/ueber-uns";
-// Die Social-Media-Seite liegt live unter /social-media/ – der Pfad bleibt erhalten.
-export const ABOUT_SOCIAL_MEDIA_PATH = "/social-media";
+// Social Media liegt im Über-uns-Bereich; /social-media/ bleibt als Weiterleitung erhalten.
+export const ABOUT_SOCIAL_MEDIA_PATH = "/ueber-uns/social-media";
 
 export function canonicalMagazinePagePath(slug: string) {
   return `/magazin/${slug}`;

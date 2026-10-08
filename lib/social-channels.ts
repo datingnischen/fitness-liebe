@@ -10,7 +10,7 @@ export type SocialChannel = {
   href: string;
 };
 
-// Kanäle wie auf fitness-liebe.de/social-media/
+// Kanäle wie auf fitness-liebe.de/ueber-uns/social-media/
 export const SOCIAL_CHANNELS: SocialChannel[] = [
   {
     platform: "facebook",
