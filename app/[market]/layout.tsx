@@ -5,7 +5,9 @@ import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { StickyCTAButton } from "@/components/sticky-cta-button";
 import { hasCityPages } from "@/lib/market-partnersuche";
 import { MARKET_CODES, SITE_ORIGIN, getMarket, isMarketCode } from "@/lib/markets";
-import { staticAsset } from "@/lib/static-asset";
+import { staticAsset, assetHost } from "@/lib/static-asset";
+import { Analytics } from "@vercel/analytics/next";
+import { vercelAnalyticsProps } from "@/lib/vercel-analytics";
 
 type Props = Readonly<{ children: React.ReactNode; params: Promise<{ market: string }> }>;
 
@@ -36,6 +38,7 @@ export default async function MarketLayout({ children, params }: Props) {
         {children}
         <SiteFooter market={market} />
         <StickyCTAButton />
+        <Analytics {...vercelAnalyticsProps(assetHost)} />
       </body>
     </html>
   );
