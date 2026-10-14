@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MarketLink } from "@/components/market-link";
 import { SiteSearchForm } from "@/components/site-search-form";
@@ -13,16 +14,25 @@ type Props = { market?: MarketCode; hasCityPages?: boolean };
 // Vertrauens- und Plattformseiten gehören ICONY: immer absolut auf die Live-Domain.
 const platform = (path: string, label: string): NavLink => ({ label, href: platformUrl(path), external: true });
 
-const headerNav: NavLink[] = [
+type MenuLink = NavLink & { hint: string };
+
+// Hauptbereiche: auf dem Desktop direkt im Header, im Menü mit kurzer Beschreibung
+const headerNav: MenuLink[] = [
+  { label: "Partnersuche", href: "/partnersuche", hint: "Sportliche Singles in deiner Stadt" },
+  { label: "Magazin", href: "/magazin", hint: "Alle Ratgeber und Artikel" },
+  { label: "Fitness-Dating", href: "/magazin/thema/fitness-dating", hint: "Flirten, Dates und Profil-Tipps" },
+  { label: "Training", href: "/magazin/thema/training", hint: "Kraft, Ausdauer und Motivation" },
+  { label: "Ernährung", href: "/magazin/thema/ernaehrung", hint: "Essen für Leistung und Genuss" },
+  { label: "Rezepte", href: "/magazin/thema/rezepte", hint: "Fit kochen – gern auch zu zweit" },
+];
+
+const quickNav = ["/partnersuche", "/magazin", "/magazin/thema/training", "/magazin/thema/ernaehrung", "/magazin/thema/rezepte"];
+
+const serviceNav: NavLink[] = [
   { label: "Start", href: "/" },
-  { label: "Partnersuche", href: "/partnersuche" },
-  { label: "Magazin", href: "/magazin" },
-  { label: "Fitness-Dating", href: "/magazin/thema/fitness-dating" },
-  { label: "Training", href: "/magazin/thema/training" },
-  { label: "Ernährung", href: "/magazin/thema/ernaehrung" },
-  { label: "Rezepte", href: "/magazin/thema/rezepte" },
   platform(PLATFORM_PAGES.datingTips, "Dating-Tipps"),
   { label: "Über uns", href: "/ueber-uns" },
+  { label: "Häufige Fragen", href: "/faq" },
   { label: "Suche", href: SITE_SEARCH_PATH },
 ];
 
@@ -90,6 +100,14 @@ function navFor(hasCityPages: boolean) {
   return hasCityPages ? headerNav : headerNav.filter((item) => item.href !== "/partnersuche");
 }
 
+function isActive(pathname: string, href: string) {
+  const current = stripMarketPrefix(pathname).replace(/\/+$/, "") || "/";
+  const target = href.replace(/\/+$/, "") || "/";
+  if (target === "/") return current === "/";
+  if (target === "/magazin") return current === "/magazin";
+  return current === target || current.startsWith(`${target}/`);
+}
+
 function Brand({ market }: { market: MarketCode }) {
   return localLink(
     market,
@@ -124,24 +142,101 @@ function CheckIcon() {
 export function SiteHeader({ market = "de", hasCityPages = true }: Props) {
   const pathname = usePathname() || "/";
   const register = registrationHref(pathname);
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const nav = navFor(hasCityPages);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // <details> bleibt nach einer Client-Navigation offen: beim Seitenwechsel schließen
+  useEffect(() => {
+    if (menuRef.current) menuRef.current.open = false;
+  }, [pathname]);
+
+  useEffect(() => {
+    const close = (event: Event) => {
+      const menu = menuRef.current;
+      if (!menu?.open) return;
+      if (event instanceof KeyboardEvent ? event.key === "Escape" : !menu.contains(event.target as Node)) {
+        menu.open = false;
+        if (event instanceof KeyboardEvent) menu.querySelector("summary")?.focus();
+      }
+    };
+    document.addEventListener("keydown", close);
+    document.addEventListener("pointerdown", close);
+    return () => {
+      document.removeEventListener("keydown", close);
+      document.removeEventListener("pointerdown", close);
+    };
+  }, []);
+
+  const toggle = () => document.documentElement.classList.toggle("fl-menu-open", Boolean(menuRef.current?.open));
 
   return (
-    <header className="site-header-shell">
-      <div className="site-header-bar compact-header-bar">
+    <header className={`fl-header${scrolled ? " is-scrolled" : ""}`}>
+      <div className="fl-header-bar">
         <Brand market={market} />
-        <div className="header-actions compact-header-actions" aria-label="Nutzeraktionen">
-          <a className="login-link" href={platformUrl("/login/")}>Login</a>
-          <a className="header-register header-register-primary" href={register}>Registrieren</a>
-          <details className="header-menu">
-            <summary aria-label="Menü öffnen">
-              <span className="menu-icon" aria-hidden="true"><span /><span /><span /></span>
-              <span className="sr-only">Menü</span>
+        <nav className="fl-header-quick" aria-label="Hauptbereiche">
+          {nav
+            .filter((item) => quickNav.includes(item.href))
+            .map((item) => (
+              <span key={item.href} className={isActive(pathname, item.href) ? "is-active" : undefined}>
+                {localLink(market, item.href, item.label)}
+              </span>
+            ))}
+        </nav>
+        <div className="fl-header-actions">
+          <a className="fl-header-login" href={platformUrl("/login/")}>Login</a>
+          <a className="fl-header-register" href={register}>
+            <span className="fl-header-register-long">Kostenlos</span>Registrieren
+          </a>
+          <details className="fl-menu" ref={menuRef} onToggle={toggle}>
+            <summary aria-label="Menü öffnen oder schließen">
+              <span className="fl-burger" aria-hidden="true"><span /><span /><span /></span>
+              <span className="fl-menu-label">Menü</span>
             </summary>
-            <div className="header-menu-panel">
-              <SiteSearchForm market={market} compact />
-              <nav className="main-nav compact-menu-nav" aria-label="Hauptnavigation">
-                {navFor(hasCityPages).map((item) => <span key={item.href}>{item.external ? <a href={item.href}>{item.label}</a> : localLink(market, item.href, item.label)}</span>)}
-              </nav>
+            <div className="fl-menu-panel">
+              <div className="fl-menu-main">
+                <p className="fl-menu-kicker">Entdecken</p>
+                <nav className="fl-menu-nav" aria-label="Hauptnavigation">
+                  {nav.map((item, index) => (
+                    <span key={item.href} className={isActive(pathname, item.href) ? "is-active" : undefined}>
+                      {localLink(
+                        market,
+                        item.href,
+                        <>
+                          <small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small>
+                          <strong>{item.label}</strong>
+                          <em>{item.hint}</em>
+                        </>,
+                      )}
+                    </span>
+                  ))}
+                </nav>
+              </div>
+              <div className="fl-menu-side">
+                <a className="fl-menu-login" href={platformUrl("/login/")}>
+                  Schon Mitglied? <strong>Einloggen</strong>
+                </a>
+                <SiteSearchForm market={market} compact />
+                <p className="fl-menu-kicker">Service</p>
+                <ul className="fl-menu-service">
+                  {serviceNav.map((item) => (
+                    <li key={item.href}>{item.external ? <a href={item.href}>{item.label}</a> : localLink(market, item.href, item.label)}</li>
+                  ))}
+                </ul>
+                <a className="fl-menu-cta" href={register}>
+                  <PulseLine className="fl-menu-cta-pulse" peakAt={300} />
+                  <span>Liebe mit Puls</span>
+                  <strong>Sportliche Singles kostenlos kennenlernen</strong>
+                  <i aria-hidden="true">→</i>
+                </a>
+              </div>
             </div>
           </details>
         </div>

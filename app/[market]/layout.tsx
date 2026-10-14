@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
+import "../redesign.css";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
 import { StickyCTAButton } from "@/components/sticky-cta-button";
 import { hasCityPages } from "@/lib/market-partnersuche";
