@@ -9,7 +9,8 @@
     "#magazine": "./lib/magazine.ts",
     "#magazine-content": "./lib/magazine-content.ts",
     "#static-asset": "./lib/static-asset.ts",
-    "#wp-rest-paths": "./lib/wp-rest-paths.ts"
+    "#wp-rest-paths": "./lib/wp-rest-paths.ts",
+    "#teaser-image": "./lib/teaser-image.ts"
   },
   "scripts": {
     "dev": "next dev",
