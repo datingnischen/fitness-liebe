@@ -1,6 +1,8 @@
-// Jedes Land hat ein eigenes Pfadpräfix (/de, /at, /ch …). Ein weiteres Land kommt dazu,
-// indem es hier in MARKET_CODES und MARKETS eingetragen wird; Routen, Sitemap, hreflang
-// und die Weiterleitungen alter URLs lesen alle aus dieser Liste.
+// Jedes Land hat ein eigenes Pfadpräfix (/at, /ch …); Deutschland als Standardland liegt öffentlich ohne
+// Präfix (fitness-liebe.de/magazin/…), intern weiter unter app/[market]/… (proxy.ts schreibt /magazin/ nach /de/magazin/).
+// Grund: Der nginx vor fitness-liebe.de reicht nur die Seitenrouten ohne Präfix an Vercel weiter (Reverse-Proxy-
+// Livegang Oktober 2026), /de/… lief dort ins Leere. Ein weiteres Land kommt dazu, indem es hier in MARKET_CODES
+// und MARKETS eingetragen wird; Routen, Sitemap, hreflang und die Weiterleitungen alter URLs lesen alle aus dieser Liste.
 export const MARKET_CODES = ["de", "at", "ch"] as const;
 export type MarketCode = (typeof MARKET_CODES)[number];
 
@@ -60,8 +62,18 @@ export function withTrailingSlash(pathname: string): string {
   return `${path}/${suffix}`;
 }
 
-/** Seitenpfad im Land, immer mit Schrägstrich am Ende: marketPath("at", "/magazin") → "/at/magazin/". */
+/**
+ * Öffentlicher Seitenpfad im Land, immer mit Schrägstrich am Ende: marketPath("at", "/magazin") → "/at/magazin/",
+ * marketPath("de", "/magazin") → "/magazin/" (Standardland ohne Präfix).
+ */
 export function marketPath(market: MarketCode, pathname = "/"): string {
+  const normalized = normalizePath(pathname);
+  if (market === DEFAULT_MARKET) return withTrailingSlash(normalized);
+  return withTrailingSlash(normalized === "/" ? `/${market}` : `/${market}${normalized}`);
+}
+
+/** Interner Routenpfad unter app/[market] (immer mit Präfix): internalPath("de", "/magazin/") → "/de/magazin/". */
+export function internalPath(market: MarketCode, pathname = "/"): string {
   const normalized = normalizePath(pathname);
   return withTrailingSlash(normalized === "/" ? `/${market}` : `/${market}${normalized}`);
 }
@@ -135,13 +147,14 @@ export const LOCATION_SEARCH_URL = searchUrl("location");
 const MARKET_PREFIX = new RegExp(`^/(?:${MARKET_CODES.join("|")})(?=/|$)`);
 
 /**
- * Setzt vor interne Pfade das Länderpräfix und hängt den Schrägstrich an; externe und Anker-Links bleiben
- * unverändert, bereits präfixierte Links bekommen nur den Schrägstrich.
+ * Setzt vor interne Pfade das Länderpräfix (AT/CH) und hängt den Schrägstrich an; externe und Anker-Links bleiben
+ * unverändert. Bereits präfixierte Links behalten ihr Land, ein /de/-Präfix fällt weg (DE ist öffentlich präfixfrei).
  */
 export function localizeHref(market: MarketCode, href: string): string {
   if (!href.startsWith("/") || href.startsWith("//")) return href;
-  if (MARKET_PREFIX.test(href)) return withTrailingSlash(href);
   const [, path = "/", suffix = ""] = href.match(/^([^?#]*)(.*)$/) ?? [];
+  const explicit = marketFromPathname(path);
+  if (explicit) return `${marketPath(explicit, stripMarketPrefix(path))}${suffix}`;
   return `${marketPath(contentMarket(market, path), path)}${suffix}`;
 }
 

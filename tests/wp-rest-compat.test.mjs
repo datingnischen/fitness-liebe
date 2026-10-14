@@ -33,7 +33,7 @@ test("posts: Teaser-Abruf wie bei ICONY liefert drei Beiträge im WordPress-Form
     assert.equal(typeof post.content.rendered, "string");
     assert.equal(typeof post.author, "number", "author nur als ID");
     assert.ok(Array.isArray(post.categories) && post.categories.length > 0);
-    assert.equal(post.link, `https://fitness-liebe.de/de/magazin/${post.slug}/`, "kanonische Live-URL mit Länderpfad");
+    assert.equal(post.link, `https://fitness-liebe.de/magazin/${post.slug}/`, "kanonische Live-URL (DE ohne Länderpräfix)");
 
     const media = post._embedded["wp:featuredmedia"][0];
     assert.match(media.source_url, /^https:\/\/[^/]+\/app-assets\/magazin\/wp-content\/uploads\//, "Asset-Host");
@@ -188,9 +188,9 @@ test("proxy: wp-json und ?rest_route= antworten ohne Umleitung, mit und ohne Lä
   for (const path of ["/magazin/wp-json/wp/v2/posts?per_page=3&_embed", "/magazin/index.php?rest_route=/wp/v2/posts&_embed", "/magazin/?rest_route=/wp/v2/posts&_embed"]) {
     assert.match(proxy(new NextRequest(`https://fitness-liebe.vercel.app${path}`)).headers.get("x-middleware-rewrite") || "", /[?&]_embed=1/, path);
   }
-  // Das normale Magazin bleibt unberührt.
-  assert.equal(run("/magazin/cardio-training/").headers.get("location"), "https://fitness-liebe.vercel.app/de/magazin/cardio-training/");
-  assert.equal(run("/de/magazin/?q=1").headers.get("x-middleware-rewrite"), null);
+  // Das normale Magazin bleibt unberührt: präfixfrei intern nach /de/…, /de/… öffentlich weg.
+  assert.match(run("/magazin/cardio-training/").headers.get("x-middleware-rewrite") || "", /\/de\/magazin\/cardio-training\/$/);
+  assert.equal(run("/de/magazin/?q=1").headers.get("location"), "https://fitness-liebe.vercel.app/magazin/?q=1");
 });
 
 test("Routen: wp-json, index.php und Tracing sind verdrahtet; kein users-Endpunkt im Quelltext", () => {

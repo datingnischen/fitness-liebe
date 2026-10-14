@@ -13,7 +13,7 @@ test("builds a complete Recipe node for both magazine recipes", () => {
   for (const slug of ["kartoffelsalat-moggstar", "veggie-vulkan-spaghetti"]) {
     const recipe = getRecipe(slug);
     assert.ok(recipe, slug);
-    const pageUrl = `https://fitness-liebe.de/de/magazin/${slug}`;
+    const pageUrl = `https://fitness-liebe.de/magazin/${slug}`;
     const node = buildRecipeNode({ recipe, pageUrl, image: "https://example.org/bild.png", inLanguage: "de-DE" });
     assert.equal(node["@type"], "Recipe");
     assert.equal(node["@id"], `${pageUrl}#rezept`);

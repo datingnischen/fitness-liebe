@@ -21,23 +21,28 @@ Headless-Frontend für fitness-liebe.de nach dem Muster der anderen Nischenproje
 
 ## Länder
 
-Alle Seiten liegen unter einem Länderpräfix: `/de/…`, `/at/…`, `/ch/…` (`app/[market]`).
+Alle Seiten liegen intern unter einem Länderpräfix (`app/[market]`). Öffentlich ist Deutschland präfixfrei
+(`fitness-liebe.de/magazin/…`, `proxy.ts` schreibt intern nach `/de/…` um), Österreich und die Schweiz liegen unter
+`/at/…` und `/ch/…`. Grund: Der nginx vor fitness-liebe.de reicht nur die Seitenrouten ohne Präfix an Vercel weiter
+(Reverse-Proxy-Livegang Oktober 2026); `/de/…` führte dort ins Leere, `/at/…` und `/ch/…` muss nginx zusätzlich durchreichen.
 Die Länderliste steht in `lib/markets.ts` (`MARKET_CODES`, `MARKETS`); ein weiteres Land ist dort ein Eintrag.
 Routen, Sitemap, hreflang (`de-DE`, `de-AT`, `de-CH`, `x-default` → DE) und `<html lang>` lesen daraus.
 
-- Alte URLs ohne Präfix (`/partnersuche/berlin`, `/magazin/…`, `/`) leitet `proxy.ts` per 308 nach `/de/…` um.
-- Interne Links schreiben weiter `/magazin/…`; `components/local-link.tsx` bzw. `MarketLink` setzen das Präfix.
+- `/de/…` (alte Adressen, Vercel-Upstream) leitet `proxy.ts` per 308 auf den präfixfreien Pfad um; Pfade ohne
+  Schrägstrich bekommen ihn in derselben Umleitung.
+- Interne Links schreiben weiter `/magazin/…`; `components/local-link.tsx` bzw. `MarketLink` setzen das Präfix (AT/CH)
+  oder lassen es weg (DE).
 - Stadtseiten gibt es nur für Länder mit Daten in `data/partnersuche-markets.json` und Hub-Text in
   `lib/market-partnersuche.ts` – derzeit nur DE. Ohne Stadtseiten blenden AT/CH die Partnersuche aus.
 - Das Magazin gibt es nur in DE (`MARKETS[…].magazine`): `/at/magazin/…` und `/ch/magazin/…` leiten per 308
-  nach `/de/magazin/…` um, Magazinlinks aus AT/CH zeigen direkt auf `/de`, hreflang und Sitemap führen
+  nach `/magazin/…` um, Magazinlinks aus AT/CH zeigen direkt dorthin, hreflang und Sitemap führen
   Magazinseiten nur für DE. Die übrigen Inhaltsseiten sind in allen Ländern gleich und verweisen per hreflang aufeinander.
 - ICONY-Plattformseiten bleiben ohne Länderpräfix auf `https://fitness-liebe.de` (`platformUrl`).
   Dazu gehört auch `/dating-tipps/` (`PLATFORM_PAGES`): nie in Next.js rendern, `proxy.ts` leitet `/<land>/dating-tipps` dorthin um.
 
 ## Struktur
 
-Alle Pfade relativ zum Länderpräfix (`/de`, `/at`, `/ch`); `/magazin/…` nur unter `/de`.
+Alle Pfade relativ zum Land (DE ohne Präfix, `/at`, `/ch`); `/magazin/…` nur in DE.
 
 | Route | Inhalt |
 | --- | --- |

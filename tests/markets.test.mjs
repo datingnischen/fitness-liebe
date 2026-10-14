@@ -7,6 +7,7 @@ import {
   contentMarket,
   hasMagazine,
   marketsForPath,
+  internalPath,
   localizeHref,
   marketAlternates,
   marketFromPathname,
@@ -22,20 +23,29 @@ test("de, at and ch are the configured countries", () => {
   assert.deepEqual([...MARKET_CODES], ["de", "at", "ch"]);
 });
 
-test("pages live below the country prefix", () => {
-  assert.equal(marketPath("de", "/partnersuche"), "/de/partnersuche/");
+// Seit dem Reverse-Proxy-Livegang (Heiko, 2026-10-14) ist DE öffentlich präfixfrei: nginx reicht nur /magazin/, /faq/,
+// /partnersuche/, /ueber-uns/ … an Vercel weiter, /de/… lief ins Leere. Intern bleibt app/[market]/de.
+test("DE pages live without prefix, AT/CH below their country prefix", () => {
+  assert.equal(marketPath("de", "/partnersuche"), "/partnersuche/");
+  assert.equal(marketPath("de", "/"), "/");
   assert.equal(marketPath("at", "/"), "/at/");
   assert.equal(marketPath("ch", "magazin/cardio-training/"), "/ch/magazin/cardio-training/");
-  assert.equal(publicUrl("de", "/partnersuche/berlin"), "https://fitness-liebe.de/de/partnersuche/berlin/");
+  assert.equal(publicUrl("de", "/partnersuche/berlin"), "https://fitness-liebe.de/partnersuche/berlin/");
+  assert.equal(publicUrl("de", "/magazin"), "https://fitness-liebe.de/magazin/");
   assert.equal(publicUrl("at"), "https://fitness-liebe.de/at/");
+  assert.equal(internalPath("de", "/magazin/"), "/de/magazin/");
+  assert.equal(internalPath("de", "/"), "/de/");
+  assert.equal(internalPath("at", "/partnersuche"), "/at/partnersuche/");
 });
 
 test("internal links get the country prefix exactly once", () => {
   assert.equal(localizeHref("at", "/social-media"), "/at/social-media/");
-  assert.equal(localizeHref("de", "/magazin"), "/de/magazin/");
+  assert.equal(localizeHref("de", "/magazin"), "/magazin/");
+  assert.equal(localizeHref("de", "/"), "/");
   assert.equal(localizeHref("ch", "/"), "/ch/");
-  assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/de/magazin/inhalt/?q=x#a");
-  assert.equal(localizeHref("at", "/de/magazin"), "/de/magazin/");
+  assert.equal(localizeHref("de", "/magazin/inhalt?q=x#a"), "/magazin/inhalt/?q=x#a");
+  assert.equal(localizeHref("at", "/de/magazin"), "/magazin/");
+  assert.equal(localizeHref("de", "/at/partnersuche/wien"), "/at/partnersuche/wien/");
   assert.equal(localizeHref("ch", "/ueber-uns"), "/ch/ueber-uns/");
   assert.equal(localizeHref("at", "https://fitness-liebe.de/login/"), "https://fitness-liebe.de/login/");
   assert.equal(localizeHref("at", "#faq"), "#faq");
@@ -65,8 +75,8 @@ test("ICONY platform pages stay absolute on the live domain without country pref
 
 test("only DE has its own magazine; AT/CH link to it instead of duplicating it", () => {
   assert.deepEqual(MARKET_CODES.filter(hasMagazine), ["de"]);
-  assert.equal(localizeHref("at", "/magazin"), "/de/magazin/");
-  assert.equal(localizeHref("ch", "/magazin/cardio-training"), "/de/magazin/cardio-training/");
+  assert.equal(localizeHref("at", "/magazin"), "/magazin/");
+  assert.equal(localizeHref("ch", "/magazin/cardio-training"), "/magazin/cardio-training/");
   assert.equal(contentMarket("at", "/magazin/thema/training"), "de");
   assert.equal(contentMarket("at", "/magazinfoo"), "at");
   assert.deepEqual(marketsForPath("/magazin/cardio-training"), ["de"]);
@@ -77,10 +87,10 @@ test("hreflang lists every country plus x-default", () => {
   const alternates = marketAlternates("at", "/social-media");
   assert.equal(alternates.canonical, "https://fitness-liebe.de/at/social-media/");
   assert.deepEqual(alternates.languages, {
-    "de-DE": "https://fitness-liebe.de/de/social-media/",
+    "de-DE": "https://fitness-liebe.de/social-media/",
     "de-AT": "https://fitness-liebe.de/at/social-media/",
     "de-CH": "https://fitness-liebe.de/ch/social-media/",
-    "x-default": "https://fitness-liebe.de/de/social-media/",
+    "x-default": "https://fitness-liebe.de/social-media/",
   });
   assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), ["de-DE", "x-default"]);
 });

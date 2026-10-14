@@ -118,15 +118,15 @@ test("audio summaries become a styled card and never leak into excerpts", () => 
   assert.match(enhanced, /<h2>Kurzantwort<\/h2>/);
 });
 
-test("internal WordPress links become relative with country prefix, uploads stay absolute", () => {
+test("internal WordPress links become relative (DE without prefix), uploads stay absolute", () => {
   const html =
     '<a href="https://fitness-liebe.de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>';
   assert.equal(
     relativizeInternalLinks(html),
-    '<a href="/de/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
+    '<a href="/magazin/fitnessroutinen/">Routine</a> <a href="https://fitness-liebe.de/magazin/wp-content/uploads/x.jpg">Bild</a>',
   );
-  // CH hat kein eigenes Magazin: der Link führt direkt ins DE-Magazin statt über eine Umleitung.
-  assert.match(relativizeInternalLinks(html, "ch"), /href="\/de\/magazin\/fitnessroutinen\/"/);
+  // CH hat kein eigenes Magazin: der Link führt direkt ins DE-Magazin (präfixfrei) statt über eine Umleitung.
+  assert.match(relativizeInternalLinks(html, "ch"), /href="\/magazin\/fitnessroutinen\/"/);
   assert.match(
     relativizeInternalLinks('<a href="https://fitness-liebe.de/partnersuche/berlin?x=1#top">B</a>', "at"),
     /href="\/at\/partnersuche\/berlin\/\?x=1#top"/,
