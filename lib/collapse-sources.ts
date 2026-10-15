@@ -5,6 +5,8 @@ const SOURCE_HEADING = /<h([23])\b[^>]*>((?:(?!<\/h\1>)[\s\S])*?Quell(?:en|e)\b(
 // „Stand, Quellen & Transparenz“, „Genutzte Quellen“, „📚 Quellen“, „Quelle“ …
 const SOURCE_TITLE = /^(?:[^\p{L}\p{N}]+)?(?:Stand,\s*)?(?:Genutzte\s+|Verwendete\s+)?Quellen?[^?]*$/iu;
 
+const NOTICE = /ersetzt\s+(?:keine|nicht)[^<]{0,60}(?:Beratung|Untersuchung|Behandlung|Arzt|Ärztin)|ärztlich\s+ab/i;
+
 function headingText(inner: string) {
   return inner
     .replace(/<[^>]+>/g, "")
@@ -51,6 +53,17 @@ export function collapseSourceSections(html: string, summaryLabel = "Quellen & T
 
   if (!parts.length) return html;
 
-  const body = parts.join("\n").replace(/<h3\b[^>]*>([\s\S]*?)<\/h3>/gi, '<p class="magazine-sources__label">$1</p>');
-  return `${rest.trimEnd()}\n<details class="magazine-sources">\n<summary>${summaryLabel}</summary>\n<div class="magazine-sources__body">\n${body}\n</div>\n</details>\n`;
+  // Medizinische und rechtliche Hinweise bleiben sichtbar, nur die Belege klappen ein.
+  const notices: string[] = [];
+  const body = parts
+    .join("\n")
+    .replace(/<p\b[^>]*>(?:(?!<\/p>)[\s\S])*?<\/p>/gi, (paragraph) => {
+      if (!NOTICE.test(paragraph)) return paragraph;
+      notices.push(paragraph.replace(/^<p\b[^>]*>/i, '<p class="magazine-notice">'));
+      return "";
+    })
+    .replace(/<h3\b[^>]*>([\s\S]*?)<\/h3>/gi, '<p class="magazine-sources__label">$1</p>')
+    .replace(/\n{2,}/g, "\n");
+  const noticeHtml = notices.length ? `\n${notices.join("\n")}` : "";
+  return `${rest.trimEnd()}${noticeHtml}\n<details class="magazine-sources">\n<summary>${summaryLabel}</summary>\n<div class="magazine-sources__body">\n${body}\n</div>\n</details>\n`;
 }

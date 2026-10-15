@@ -23,6 +23,17 @@ test("Quellenabschnitt wird zugeklappter Block am Ende des Beitrags", () => {
   assert.match(out, /<p class="magazine-sources__label">Genutzte Quellen<\/p>/);
 });
 
+test("medizinischer Hinweis bleibt sichtbar vor den eingeklappten Quellen", () => {
+  const out = collapseSourceSections(
+    "<p>Text</p>\n<h2>Stand, Quellen &amp; Transparenz</h2>\n<p>Stand: Juni 2026</p>\n<p>Der Beitrag ersetzt keine medizinische Beratung.</p>\n<h3>Genutzte Quellen</h3>\n<ul><li>who.int</li></ul>",
+  );
+  const details = out.indexOf("<details");
+  const notice = out.indexOf('<p class="magazine-notice">Der Beitrag ersetzt keine medizinische Beratung.</p>');
+  assert.ok(notice > -1 && notice < details, "Hinweis steht sichtbar vor dem Block");
+  assert.ok(out.indexOf("who.int") > details, "Quellen bleiben eingeklappt");
+  assert.ok(out.indexOf("Stand: Juni 2026") > details);
+});
+
 test("Ratgeberfragen und Fließtext mit „Quelle“ bleiben unverändert", () => {
   const text = "<h2>Welche Quellen sollte ich vor der Buchung prüfen?</h2><p>a</p><h2>Seniorentreffs, eine Quelle der Inspiration</h2><p>b</p>";
   assert.equal(collapseSourceSections(text), text);

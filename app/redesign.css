@@ -1853,3 +1853,19 @@ html.fl-menu-open .sticky-cta {
 .rich-content .magazine-sources__body a {
   overflow-wrap: anywhere;
 }
+
+/* Gesundheits-/Rechtshinweis aus dem Quellenteil bleibt sichtbar */
+.rich-content p.magazine-notice {
+  margin: 28px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--accent-soft);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.rich-content p.magazine-notice + details.magazine-sources {
+  margin-top: 16px;
+}
