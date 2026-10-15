@@ -38,7 +38,7 @@ imageAlt: "Mit Bändern trainieren"
 <li><strong>Loops:</strong> Passend für Übungen für Po, Hüfte und Oberschenkel, bei denen das Band oberhalb der Knöchel oder Knie fixiert wird.</li>
 </ul>
 <h2 style='text-align: left;'>7 Übungen für das Training zu Hause</h2>
-<p style='text-align: left;'>Wer jetzt sein <a href='/magazin/beste-zeit-zum-trainieren/'>Training</a> zu Hause auf ein höheres Level bringen möchte, für den kommen nachfolgend 7 effektive Übungen mit Fitnessband für den kompletten Körper,</p>
+<p style='text-align: left;'>Wer jetzt sein <a href='/magazin/thema/training/'>Training</a> zu Hause auf ein höheres Level bringen möchte, für den kommen nachfolgend 7 effektive Übungen mit Fitnessband für den kompletten Körper,</p>
 <h3 style='text-align: left;'>Wichtiger Hinweis vor dem Training</h3>
 <p style='text-align: left;'>Die folgenden Übungen ersetzen keine individuelle Trainings- oder medizinische Beratung. Wer neu mit Fitnessbändern startet, länger keinen Sport gemacht hat, schwanger ist, akute Schmerzen hat oder mit Verletzungen, Gelenkproblemen, Herz-Kreislauf-Erkrankungen oder anderen Vorerkrankungen trainiert, sollte die Belastung vorsichtig wählen und im Zweifel vorher ärztlichen Rat einholen.</p>
 <p style='text-align: left;'>Beginne lieber mit einem leichten Band und sauberen Bewegungen als mit maximalem Widerstand. Kontrolliere das Band vor dem Training auf Risse oder poröse Stellen, befestige es sicher und brich eine Übung ab, wenn stechende Schmerzen, Schwindel oder Taubheitsgefühle auftreten. Anfänger können die genannten Wiederholungen zunächst reduzieren.</p>

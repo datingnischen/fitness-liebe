@@ -35,4 +35,4 @@ author: "redaktion"
 <h2>Wohin wir deine Daten senden</h2>
 <p>Besucher-Kommentare könnten von einem automatisierten Dienst zur Spam-Erkennung untersucht werden.</p>
 <h2>Kontakt-Informationen</h2>
-<p>siehe <a href="/impressum/">Impressum</a></p>
+<p>siehe <a href="https://fitness-liebe.de/impressum.html">Impressum</a></p>

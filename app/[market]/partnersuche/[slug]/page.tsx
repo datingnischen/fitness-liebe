@@ -74,7 +74,7 @@ export default async function PartnersucheCityPage({ params }: PageProps) {
           </ul>
           <div className="city-stage-actions">
             <a className="button button-primary button-xl" href={city.registrationUrl}>
-              Sportliche Singles in {city.cityName} finden <span aria-hidden="true">→</span>
+              Kostenlos registrieren und Singles in {city.cityName} treffen <span aria-hidden="true">→</span>
             </a>
             <MarketLink className="button button-ghost" market={market} path="/partnersuche">Alle Städte</MarketLink>
           </div>

@@ -95,16 +95,16 @@ export default async function MagazinePaginationPage({ params }: PageProps) {
           <nav className="mag-pagination" aria-label="Seitennavigation Magazin">
             {pageNumber > 2 ? (
               <Link className="button button-secondary" href={`/magazin/page/${pageNumber - 1}`}>
-                <span aria-hidden="true">←</span> Neuere Beiträge
+                <span aria-hidden="true">←</span> Neuere Beiträge (Seite {pageNumber - 1})
               </Link>
             ) : (
               <Link className="button button-secondary" href="/magazin">
-                <span aria-hidden="true">←</span> Neuere Beiträge
+                <span aria-hidden="true">←</span> Neuere Beiträge (Seite 1)
               </Link>
             )}
             {pageNumber < totalPages ? (
               <Link className="button button-secondary" href={`/magazin/page/${pageNumber + 1}`}>
-                Ältere Beiträge <span aria-hidden="true">→</span>
+                Ältere Beiträge (Seite {pageNumber + 1}) <span aria-hidden="true">→</span>
               </Link>
             ) : null}
           </nav>

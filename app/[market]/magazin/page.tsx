@@ -142,7 +142,7 @@ export default async function MagazineOverviewPage() {
           </div>
           <div className="mag-pagination">
             <Link className="button button-secondary" href={totalPages > 1 ? "/magazin/page/2" : "/magazin/inhalt"}>
-              {totalPages > 1 ? "Ältere Beiträge" : "Alle Beiträge A–Z"} <span aria-hidden="true">→</span>
+              {totalPages > 1 ? "Ältere Beiträge (Seite 2)" : "Alle Beiträge A–Z"} <span aria-hidden="true">→</span>
             </Link>
           </div>
         </section>

@@ -160,7 +160,7 @@ function RelatedArticles({ world, posts }: { world: Fitnesswelt; posts: Magazine
           <h2 id="related-titel">Das könnte dich auch interessieren</h2>
         </div>
         <Link className="related-articles-all" href={`/magazin/thema/${world.id}`}>
-          Alle Artikel <span aria-hidden="true">→</span>
+          Alle Artikel zu {world.name} <span aria-hidden="true">→</span>
         </Link>
       </div>
       <div className="related-articles-grid">
@@ -356,7 +356,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
         <nav className="thema-breadcrumb article-breadcrumb" aria-label="Brotkrumen">
           <Link href="/magazin">Magazin</Link>
           <span aria-hidden="true">›</span>
-          <Link href={`/magazin/thema/${world.id}`}>{world.shortName}</Link>
+          <Link href={`/magazin/thema/${world.id}`}>{world.name}</Link>
         </nav>
       ) : null}
 
