@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "@/components/local-link";
 import { DEFAULT_MARKET, REGISTRATION_URL, isMarketCode, marketAlternates, marketPath, publicUrl } from "@/lib/markets";
 import { notFound, redirect } from "next/navigation";
-import { MAGAZINE_POSTS_PER_PAGE, getMagazinePostsPage, stripHtml } from "@/lib/magazine";
+import { MAGAZINE_POSTS_PER_PAGE, getMagazinePostsPage } from "@/lib/magazine";
+import { PostCard } from "@/components/post-card";
+import "../../magazin.css";
 
 type PageProps = {
   params: Promise<{ market: string; page: string }>;
@@ -50,67 +52,64 @@ export default async function MagazinePaginationPage({ params }: PageProps) {
   if (!posts.length || pageNumber > totalPages) notFound();
 
   return (
-    <main className="shell shell-narrow">
-      <section className="hero-card hero-brand">
-        <span className="eyebrow">Fitness-Magazin</span>
-        <h1>Weitere Magazin-Beiträge für sportliche Singles</h1>
-        <p>
-          Hier findest du weitere Artikel, Trainingstipps und Dating-Ratgeber aus dem Magazin — ideal zum Stöbern
-          zwischen Workout, Ernährung und Fitness-Flirt.
-        </p>
-        <div className="button-row">
-          <Link className="button button-primary" href={REGISTRATION_URL}>
-            Kostenlos registrieren
-          </Link>
-          <Link className="button button-secondary" href="/magazin">
-            Zur ersten Magazin-Seite
-          </Link>
-        </div>
-      </section>
-
-      <section className="content-section">
-        <div className="section-header">
-          <span className="eyebrow">Seite {pageNumber}</span>
-          <h2>Weitere aktuelle Artikel</h2>
-        </div>
-        <div className="stack-list">
-          {posts.map((post) => (
-            <Link key={post.id} href={`/magazin/${post.slug}`} className="article-card article-card-rich">
-              {post.featuredImage ? (
-                <div className="article-card-media">
-                  <img src={post.featuredImage} alt={post.featuredImageAlt || post.title} loading="lazy" decoding="async" />
-                </div>
-              ) : null}
-              <div className="article-card-copy">
-                <h3>{post.title}</h3>
-                <p>{stripHtml(post.excerpt || post.content).slice(0, 170)}…</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <div className="pagination-bar" aria-label="Seitennavigation Magazin">
-          <span>
-            Seite {pageNumber} von {totalPages} · {totalItems} Beiträge
-          </span>
-          <div className="pagination-actions">
-            {pageNumber > 2 ? (
-              <Link className="button button-secondary" href={`/magazin/page/${pageNumber - 1}`}>
-                Neuere Beiträge
+    <main className="mag-page">
+      <section className="mag-stage mag-stage-compact" aria-labelledby="mag-title">
+        <div className="mag-stage-inner">
+          <div className="mag-stage-copy">
+            <span className="mag-kicker">Fitness-Magazin · Seite {pageNumber}</span>
+            <h1 id="mag-title">
+              Weitere Beiträge für <span className="mag-mark">sportliche Singles</span>
+            </h1>
+            <p>
+              Hier findest du weitere Artikel, Trainingstipps und Dating-Ratgeber aus dem Magazin – ideal zum Stöbern
+              zwischen Workout, Ernährung und Fitness-Flirt.
+            </p>
+            <div className="mag-stage-actions">
+              <a className="button button-primary button-xl" href={REGISTRATION_URL}>
+                Kostenlos registrieren <span aria-hidden="true">→</span>
+              </a>
+              <Link className="button button-ghost" href="/magazin">
+                Zur ersten Magazin-Seite
               </Link>
-            ) : pageNumber === 2 ? (
-              <Link className="button button-secondary" href="/magazin">
-                Neuere Beiträge
-              </Link>
-            ) : null}
-            {pageNumber < totalPages ? (
-              <Link className="button button-secondary" href={`/magazin/page/${pageNumber + 1}`}>
-                Ältere Beiträge
-              </Link>
-            ) : null}
+            </div>
           </div>
         </div>
       </section>
+
+      <div className="shell mag-shell">
+        <section className="mag-section" aria-labelledby="mag-latest-title">
+          <div className="mag-section-head">
+            <div className="section-header">
+              <span className="eyebrow">Seite {pageNumber}</span>
+              <h2 id="mag-latest-title">Weitere aktuelle Artikel</h2>
+            </div>
+            <span className="mag-count">
+              Seite {pageNumber} von {totalPages} · {totalItems} Beiträge
+            </span>
+          </div>
+          <div className="post-grid">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+          <nav className="mag-pagination" aria-label="Seitennavigation Magazin">
+            {pageNumber > 2 ? (
+              <Link className="button button-secondary" href={`/magazin/page/${pageNumber - 1}`}>
+                <span aria-hidden="true">←</span> Neuere Beiträge
+              </Link>
+            ) : (
+              <Link className="button button-secondary" href="/magazin">
+                <span aria-hidden="true">←</span> Neuere Beiträge
+              </Link>
+            )}
+            {pageNumber < totalPages ? (
+              <Link className="button button-secondary" href={`/magazin/page/${pageNumber + 1}`}>
+                Ältere Beiträge <span aria-hidden="true">→</span>
+              </Link>
+            ) : null}
+          </nav>
+        </section>
+      </div>
     </main>
   );
 }

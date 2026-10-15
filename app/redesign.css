@@ -1498,6 +1498,259 @@ html.fl-menu-open .sticky-cta {
 }
 
 /* ==========================================================================
+   Artikelkarten (Startseite, Magazin)
+   ========================================================================== */
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.post-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease;
+}
+
+.post-card:hover,
+.post-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+.post-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--ink), var(--ink-3));
+}
+
+.post-card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.post-card:hover .post-card-media img {
+  transform: scale(1.05);
+}
+
+.post-card-topic {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(17, 19, 24, 0.78);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-card-body {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 20px 22px 24px;
+}
+
+.post-card-body small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.post-card-body h3 {
+  font-size: 1.4rem;
+  font-stretch: 80%;
+  line-height: 1.12;
+}
+
+.post-card-body h3 a {
+  color: var(--ink);
+}
+
+/* ganze Karte klickbar, der Link bleibt der Titel */
+.post-card-body h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.post-card-body h3 a:focus-visible {
+  outline: none;
+}
+
+.post-card:focus-within {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.post-card-body p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 1000px) {
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Expertenkarte: Überschrift im neuen Maßstab */
+.author-box-intro h2 {
+  font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+  line-height: 1.05;
+}
+
+/* ==========================================================================
+   Artikelseite: dunkler Kopf, Text wie im Stadt-Guide
+   ========================================================================== */
+
+.hero-card.hero-magazine {
+  position: relative;
+  overflow: hidden;
+  gap: 20px;
+  padding: clamp(28px, 5vw, 56px);
+  border: 0;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(251, 202, 8, 0.22), transparent 45%),
+    radial-gradient(circle at 0% 100%, rgba(255, 90, 60, 0.12), transparent 40%),
+    var(--ink);
+  color: #fff;
+  box-shadow: var(--shadow-lift);
+  isolation: isolate;
+}
+
+.hero-card.hero-magazine::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 18px;
+  left: 0;
+  z-index: -1;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 80h620l22-40 28 74 26-96 28 104 20-42h456' fill='none' stroke='%23fbca08' stroke-opacity='.35' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+.hero-card.hero-magazine .eyebrow {
+  color: var(--accent);
+}
+
+.hero-card.hero-magazine h1 {
+  color: #fff;
+  font-size: clamp(2.3rem, 5.4vw, 4.2rem);
+  font-stretch: 75%;
+  line-height: 0.98;
+}
+
+.hero-card.hero-magazine > p {
+  max-width: 62ch;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-card.hero-magazine .meta-row {
+  align-items: center;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.hero-card.hero-magazine .meta-row a:not(.button) {
+  color: #fff;
+}
+
+.hero-card.hero-magazine .meta-row .meta-row-cta {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.article-hero-media img {
+  border-radius: var(--radius-lg);
+}
+
+.magazine-detail-main .rich-content {
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.magazine-detail-main .rich-content h2 {
+  position: relative;
+  margin: 44px 0 14px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  line-height: 1.08;
+}
+
+.magazine-detail-main .rich-content h2::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 56px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.magazine-detail-main .rich-content h3 {
+  margin: 28px 0 10px;
+  font-size: 1.3rem;
+}
+
+.magazine-detail-main .rich-content p,
+.magazine-detail-main .rich-content li {
+  color: #3b4049;
+  font-size: 1.06rem;
+  line-height: 1.8;
+}
+
+.magazine-detail-main .rich-content ul {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.magazine-detail-main .rich-content ul li {
+  position: relative;
+  padding-left: 28px;
+}
+
+.magazine-detail-main .rich-content ul li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+/* ==========================================================================
    Bewegung reduzieren
    ========================================================================== */
 

@@ -60,7 +60,6 @@
 }
 
 .thema-hero .eyebrow {
-  background: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
 
@@ -505,7 +504,7 @@
   margin: 40px 0 56px;
   padding: 34px 36px;
   border-radius: 30px;
-  color: var(--on-accent);
+  color: #fff;
   background:
     radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.14), transparent 40%),
     linear-gradient(135deg, #2b2f36, #1f2328);
@@ -519,7 +518,6 @@
 }
 
 .thema-cta .eyebrow {
-  background: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
 
@@ -534,8 +532,6 @@
 
 .thema-cta .button-primary {
   flex: 0 0 auto;
-  background: #fff;
-  color: var(--accent-dark);
 }
 
 @media (max-width: 900px) {

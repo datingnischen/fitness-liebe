@@ -495,8 +495,7 @@ a.social-bubble:hover {
 }
 
 .social-community-copy .eyebrow {
-  background: #fff;
-  color: var(--accent-dark);
+  color: var(--ink);
 }
 
 .social-community-copy p {
@@ -2976,8 +2975,6 @@ body {
 
 .published-book-copy .eyebrow {
   color: var(--accent);
-  background: rgba(251, 202, 8, 0.12);
-  border: 1px solid rgba(251, 202, 8, 0.28);
 }
 
 .published-book-copy h2 {

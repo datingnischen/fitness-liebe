@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "@/components/local-link";
+import { PostCard } from "@/components/post-card";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { getAuthorProfile } from "@/lib/author-profiles";
 import { FITNESSWELTEN, entriesForFitnesswelt } from "@/lib/fitnesswelten";
@@ -8,15 +9,7 @@ import { homeCopy, localizeTexts } from "@/lib/market-copy";
 import { getMarketCityPages } from "@/lib/market-partnersuche";
 import { REGISTRATION_URL, SITE_ORIGIN, getMarket, isMarketCode, marketAlternates, platformUrl, publicUrl, type MarketCode } from "@/lib/markets";
 import { staticAsset } from "@/lib/static-asset";
-import {
-  formatUpdatedDate,
-  getUpdatedDate,
-  getEntryCoverImage,
-  getMagazinePosts,
-  getReadingMinutes,
-  stripHtml,
-  type MagazineEntry,
-} from "@/lib/magazine";
+import { getMagazinePosts, getReadingMinutes, type MagazineEntry } from "@/lib/magazine";
 import "./home.css";
 
 const HOME_HERO_IMAGE = staticAsset("/home/frontpage-visual-fitnessliebe.webp");
@@ -42,11 +35,6 @@ async function loadPosts() {
   } catch {
     return [] as MagazineEntry[];
   }
-}
-
-function teaser(post: MagazineEntry, length: number) {
-  const text = stripHtml(post.excerpt || post.content);
-  return text.length > length ? `${text.slice(0, length).replace(/\s+\S*$/, "")} …` : text;
 }
 
 export default async function HomePage({ params }: PageProps) {
@@ -104,9 +92,7 @@ export default async function HomePage({ params }: PageProps) {
         </picture>
         <div className="fl-hero-inner">
           <div className="fl-hero-copy">
-            <span className="fl-kicker">
-              <span aria-hidden="true">⚡</span> Wir verlieben sportliche Singles
-            </span>
+            <span className="fl-kicker">Wir verlieben sportliche Singles</span>
             <h1>
               Finde jetzt sportliche Singles <span>{copy.heading}</span>
             </h1>
@@ -142,6 +128,9 @@ export default async function HomePage({ params }: PageProps) {
             </Link>
           ) : null}
         </div>
+        <svg className="fl-hero-pulse" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M0 80h520l22-40 28 74 26-96 28 104 20-42h556" />
+        </svg>
       </section>
 
       <div className="shell home-shell">
@@ -244,7 +233,7 @@ export default async function HomePage({ params }: PageProps) {
             {HOME_FEATURES.map((feature) => (
               <a key={feature.path} className="fl-feature-card" href={platformUrl(feature.path)}>
                 <span className="fl-feature-media">
-                  <img src={staticAsset(feature.image)} alt="" loading="lazy" decoding="async" />
+                  <img src={staticAsset(feature.image)} alt={feature.title} loading="lazy" decoding="async" />
                 </span>
                 <span className="fl-feature-body">
                   <small>{feature.label}</small>
@@ -270,22 +259,10 @@ export default async function HomePage({ params }: PageProps) {
                 Alle Magazin-Artikel <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <div className="fl-post-grid">
-              {latest.map((post) => {
-                const cover = getEntryCoverImage(post);
-                return (
-                  <Link key={post.id} className="fl-post-card" href={`/magazin/${post.slug}`}>
-                    <span className="fl-post-media">{cover ? <img src={cover} alt="" loading="lazy" decoding="async" /> : null}</span>
-                    <span className="fl-post-body">
-                      <small>
-                        {getUpdatedDate(post) ? `${formatUpdatedDate(post)} · ` : null}{getReadingMinutes(post.content)} Min.
-                      </small>
-                      <strong>{post.title}</strong>
-                      <span>{teaser(post, 130)}</span>
-                    </span>
-                  </Link>
-                );
-              })}
+            <div className="post-grid">
+              {latest.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
             </div>
           </section>
         ) : null}
