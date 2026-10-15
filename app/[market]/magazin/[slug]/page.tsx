@@ -27,6 +27,7 @@ import {
 import { buildChristianBookProfileGraph, stripPublishedBookSchema } from "@/lib/christian-book-profile-schema";
 import { buildMagazineFaqGraph, getMagazineFaqItems, getMagazineFaqSubject, renderMagazineFaqSection } from "@/lib/magazine-faq";
 import { serializeJsonLd } from "@/lib/json-ld";
+import { collapseSourceSections } from "@/lib/collapse-sources";
 import { classifyFitnesswelt, entriesForFitnesswelt, type Fitnesswelt } from "@/lib/fitnesswelten";
 import { extractLeadImage } from "@/lib/magazine-lead-image";
 import { getMagazineSidebarVariant, type MagazineSidebarVariant } from "@/lib/magazine-sidebar";
@@ -251,7 +252,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
   const faqItems = getMagazineFaqItems(bodyContent);
   const renderedContent = renderMagazineFaqSection(bodyContent, getMagazineFaqSubject(entry.title));
   const pageContent = slug === "christian" ? withChristianProfilePhoto(renderedContent) : renderedContent;
-  const content = relativizeInternalLinks(stripPublishedBookSchema(pageContent), market);
+  const content = collapseSourceSections(relativizeInternalLinks(stripPublishedBookSchema(pageContent), market));
   const profileGraph = buildChristianBookProfileGraph({
     slug,
     christianSlug: "christian",

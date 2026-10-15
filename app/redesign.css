@@ -1782,3 +1782,74 @@ html.fl-menu-open .sticky-cta {
     transition: none;
   }
 }
+
+/* Quellen im Magazin: eigener, kleiner Block, standardmäßig zugeklappt */
+.rich-content details.magazine-sources {
+  margin: 32px 0 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  box-shadow: none;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.rich-content details.magazine-sources > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.rich-content details.magazine-sources > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rich-content details.magazine-sources > summary::before {
+  content: "\25B8";
+  font-size: 11px;
+  transition: transform 0.15s ease;
+}
+
+.rich-content details.magazine-sources[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.rich-content details.magazine-sources > summary:hover,
+.rich-content details.magazine-sources > summary:focus-visible {
+  color: var(--ink);
+}
+
+.rich-content .magazine-sources__body {
+  padding: 4px 0 0;
+}
+
+.rich-content .magazine-sources__body p,
+.rich-content .magazine-sources__body li {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.rich-content .magazine-sources__body ul,
+.rich-content .magazine-sources__body ol {
+  margin: 0 0 8px;
+  padding-left: 18px;
+}
+
+.rich-content .magazine-sources__label {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.rich-content .magazine-sources__body a {
+  overflow-wrap: anywhere;
+}
