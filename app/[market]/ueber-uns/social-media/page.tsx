@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { AuthorSocialIcon } from "@/components/author-social-icon";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
@@ -20,8 +22,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const market = await resolveMarket(params);
   const { title: TITLE, description: DESCRIPTION } = socialMediaCopy(market);
   return {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: seoTitle(TITLE),
+    description: clampMetaDescription(DESCRIPTION),
     alternates: marketAlternates(market, ABOUT_SOCIAL_MEDIA_PATH),
     openGraph: { title: TITLE, description: DESCRIPTION, url: aboutSocialMediaCanonical(market), images: [HERO_IMAGE] },
   };

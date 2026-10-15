@@ -22,7 +22,7 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: { default: "fitness-liebe.de – Sportliche Singles, Fitness-Dating & Magazin", template: "%s | fitness-liebe.de" },
   description:
-    "Die Singlebörse für sportliche Menschen: Finde Singles, die Fitness, Bewegung und einen gesunden Lifestyle teilen – mit Magazin zu Training, Ernährung und Fitness-Dating.",
+    "Die Singlebörse für sportliche Menschen: Finde Singles, die Fitness, Bewegung und einen gesunden Lifestyle teilen – mit Fitness-Magazin.",
   metadataBase: new URL(SITE_ORIGIN),
   // Absolut vom Vercel-Host: der nginx vor der Live-Domain reicht nur Seitenrouten durch.
   icons: { icon: staticAsset("/brand/icon.png") },

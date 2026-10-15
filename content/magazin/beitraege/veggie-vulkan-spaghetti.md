@@ -1,6 +1,7 @@
 ---
 id: 665
 title: "🌶️ Veggie-Vulkan-Spaghetti mit geröstetem Brokkoli & Paprika-Crunch"
+seoTitle: "Veggie-Vulkan-Spaghetti mit Brokkoli & Paprika-Crunch"
 description: "Veggie-Vulkan-Spaghetti mit geröstetem Brokkoli und Paprika-Crunch: scharfes, fleischloses Rezept für 2–3 Personen – perfekt für die Date Night."
 excerpt: "Vegetarische Spaghetti mit Ofengemüse und einer süß-scharfen Sauce aus Tomatenmark, Sojasauce, Chili und einem Hauch Zimt – in 35 Minuten auf dem Tisch."
 published: "2025-07-23T09:44:54"

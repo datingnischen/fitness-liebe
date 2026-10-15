@@ -34,7 +34,7 @@ export function homeCopy(market: MarketCode) {
     {
       title: "Wir verlieben sportliche Singles – fitness-liebe.de",
       description:
-        "Finde sportliche Singles in deiner Umgebung: fitness-liebe.de ist die Partnervermittlung für Fitness-Fans – mit geprüften Profilen, Magazin zu Training, Ernährung und Fitness-Dating und kostenlosem Start.",
+        "Finde sportliche Singles in deiner Umgebung: die Partnervermittlung für Fitness-Fans mit geprüften Profilen, Fitness-Magazin und kostenlosem Start.",
       heading: "in deiner Umgebung.",
       lead: "Laufrunde, Yogamatte oder Hantelbank: Bei fitness-liebe.de triffst du Menschen, die Bewegung genauso lieben wie du – für eine ernsthafte Beziehung mit gemeinsamem Puls.",
     },
@@ -42,14 +42,14 @@ export function homeCopy(market: MarketCode) {
       at: {
         title: "Sportliche Singles in Österreich kennenlernen – fitness-liebe.de",
         description:
-          "Finde sportliche Singles in Österreich, von Wien über Graz bis Innsbruck: fitness-liebe.de ist die Partnervermittlung für Fitness-Fans – mit geprüften Profilen, Fitness-Magazin und kostenlosem Start.",
+          "Sportliche Singles in Österreich, von Wien bis Innsbruck: die Partnervermittlung für Fitness-Fans mit geprüften Profilen und kostenlosem Start.",
         heading: "in Österreich.",
         lead: "Laufrunde an der Donau, Skitour in den Alpen oder Hantelbank im Studio: Bei fitness-liebe.de triffst du Menschen in Österreich, die Bewegung genauso lieben wie du – für eine ernsthafte Beziehung mit gemeinsamem Puls.",
       },
       ch: {
         title: "Sportliche Singles in der Schweiz kennenlernen – fitness-liebe.de",
         description:
-          "Finde sportliche Singles in der Schweiz, von Zürich über Bern bis Basel: fitness-liebe.de ist die Partnervermittlung für Fitness-Fans – mit geprüften Profilen, Fitness-Magazin und kostenlosem Start.",
+          "Sportliche Singles in der Schweiz, von Zürich bis Basel: die Partnervermittlung für Fitness-Fans mit geprüften Profilen und kostenlosem Start.",
         heading: "in der Schweiz.",
         lead: "Joggen am See, Biken in den Bergen oder Hantelbank im Studio: Bei fitness-liebe.de triffst du Menschen in der Schweiz, die Bewegung genauso lieben wie du – für eine ernsthafte Beziehung mit gemeinsamem Puls.",
       },

@@ -125,9 +125,24 @@ export function platformPageUrl(pathname: string): string | null {
  */
 export function marketAlternates(market: MarketCode, pathname = "/", markets: readonly MarketCode[] = marketsForPath(pathname)) {
   const languages: Record<string, string> = {};
-  for (const code of markets) languages[getMarket(code).locale] = publicUrl(code, pathname);
-  if (markets.includes(DEFAULT_MARKET)) languages["x-default"] = publicUrl(DEFAULT_MARKET, pathname);
+  const live = liveMarkets(markets);
+  // hreflang nur, wenn es mehr als ein erreichbares Land gibt.
+  if (live.length > 1) {
+    for (const code of live) languages[getMarket(code).locale] = publicUrl(code, pathname);
+    if (live.includes(DEFAULT_MARKET)) languages["x-default"] = publicUrl(DEFAULT_MARKET, pathname);
+  }
   return { canonical: publicUrl(market, pathname), languages };
+}
+
+/**
+ * Länder, deren Seiten auf der Live-Domain erreichbar sind. nginx reicht /at/… und /ch/… (noch) nicht an Vercel durch
+ * (Trello f9GyP6Vn, Punkt 5): hreflang- und Sitemap-Verweise dorthin liefen ins 404 (Seobility 2026-10-15).
+ * Sobald nginx die Länderpfade durchreicht, hier "at" und "ch" ergänzen.
+ */
+export const LIVE_MARKETS: readonly MarketCode[] = ["de"];
+
+export function liveMarkets(markets: readonly MarketCode[]): MarketCode[] {
+  return markets.filter((code) => LIVE_MARKETS.includes(code));
 }
 
 /** Registrierung auf der ICONY-Plattform; AID steuert die Attribution (magazin, location …). */

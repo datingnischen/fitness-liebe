@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { AUTHOR_PROFILE_PATHS, getAuthorPosts, getAuthorProfile, getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
@@ -32,8 +34,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const shouldNoindex = isNoindexAuthorArchive(slug);
 
   return {
-    title: profile.name,
-    description: profile.bio.slice(0, 155),
+    title: seoTitle(profile.name),
+    description: clampMetaDescription(profile.bio),
     alternates: marketAlternates(market, canonicalPath),
     robots: shouldNoindex
       ? {
@@ -135,7 +137,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
 
           <div className="author-hero-simple-copy">
             <span className="eyebrow">Autorenprofil</span>
-            <h1>{profile.name}</h1>
+            <h1>{isEditorialTeamPage ? `${profile.name} von fitness-liebe.de` : profile.name}</h1>
             <p className="author-profile-role">{profile.role}</p>
             <p className="author-profile-intro">{profile.intro || profile.bio}</p>
 
@@ -202,11 +204,11 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
             {latestPost ? (
               <div className="author-side-card author-latest-post-clean">
                 <span className="eyebrow">Neuester Beitrag</span>
-                <h3>{latestPost.title}</h3>
+                <h3><Link className="card-link" href={`/magazin/${latestPost.slug}`}>{latestPost.title}</Link></h3>
                 <p>{stripHtml(latestPost.excerpt || latestPost.content).slice(0, 170)}…</p>
                 <div className="meta-row">
                   {getUpdatedDate(latestPost) ? <span>{formatUpdatedDate(latestPost)}</span> : null}
-                  <Link href={`/magazin/${latestPost.slug}`}>Jetzt lesen</Link>
+                  <span aria-hidden="true">Jetzt lesen</span>
                 </div>
               </div>
             ) : null}
@@ -223,7 +225,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
           </div>
           <div className="author-post-grid">
             {highlightedPosts.map((post) => (
-              <Link key={post.id} href={`/magazin/${post.slug}`} className="author-post-card">
+              <article key={post.id} className="author-post-card">
                 {post.featuredImage ? (
                   <div className="author-post-card-media">
                     <img src={post.featuredImage} alt={post.featuredImageAlt || post.title} loading="lazy" decoding="async" />
@@ -236,10 +238,10 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
                     {getUpdatedDate(post) ? <span>{formatUpdatedDate(post)}</span> : null}
                     {post.categories[0] ? <span>{post.categories[0].name}</span> : null}
                   </div>
-                  <h3>{post.title}</h3>
+                  <h3><Link className="card-link" href={`/magazin/${post.slug}`}>{post.title}</Link></h3>
                   <p>{stripHtml(post.excerpt || post.content).slice(0, 165)}…</p>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
         </section>

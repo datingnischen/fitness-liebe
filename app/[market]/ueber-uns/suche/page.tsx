@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import { MarketLink } from "@/components/market-link";
 import { SiteSearchForm } from "@/components/site-search-form";
 import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH } from "@/lib/about-section";
@@ -18,8 +20,8 @@ type PageProps = { params: MarketParams; searchParams: Promise<{ q?: string | st
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
   return {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: seoTitle(TITLE),
+    description: clampMetaDescription(DESCRIPTION),
     // Suchergebnisse gehören nicht in den Index; canonical immer auf die Suche ohne Query.
     robots: { index: false, follow: true },
     alternates: { canonical: publicUrl(market, SITE_SEARCH_PATH) },
@@ -110,7 +112,7 @@ export default async function SiteSearchPage({ params, searchParams }: PageProps
     <main className="shell shell-narrow site-search-page">
       <section className="hero-card hero-brand">
         <span className="eyebrow">Über uns · Suche</span>
-        <h1>Was suchst du?</h1>
+        <h1>Was suchst du auf fitness-liebe.de?</h1>
         <p>Durchsuche das Magazin, unsere Fitnesswelten und die Städteseiten – zum Beispiel nach „Krafttraining“, „Rezepte“ oder deiner Stadt.</p>
         <SiteSearchForm market={market} defaultValue={query} autoFocus={!query} />
       </section>

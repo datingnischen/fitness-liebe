@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import { FaqBrowser } from "@/components/faq-browser";
 import { faqCopy, faqSections, plainAnswer } from "@/lib/faq-content";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -13,8 +15,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const market = await resolveMarket(params);
   const copy = faqCopy(market);
   return {
-    title: copy.title,
-    description: copy.description,
+    title: seoTitle(copy.title),
+    description: clampMetaDescription(copy.description),
     alternates: marketAlternates(market, "/faq"),
     openGraph: { title: copy.title, description: copy.description, url: publicUrl(market, "/faq") },
   };

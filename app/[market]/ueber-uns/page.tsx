@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { ExpertTrustCard } from "@/components/expert-trust-card";
 import { SiteSearchForm } from "@/components/site-search-form";
@@ -19,8 +21,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const market = await resolveMarket(params);
   const { title: TITLE, description: DESCRIPTION } = aboutCopy(market, BASE_INTRO.paragraphs.join(" "));
   return {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: seoTitle(TITLE),
+    description: clampMetaDescription(DESCRIPTION),
     alternates: marketAlternates(market, ABOUT_OVERVIEW_PATH),
     openGraph: { title: TITLE, description: DESCRIPTION, url: aboutOverviewCanonical(market) },
   };

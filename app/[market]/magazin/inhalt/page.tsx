@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { formatUpdatedLabel, getMagazinePages, getMagazinePosts } from "@/lib/magazine";
 import { buildMagazineIndex, countIndexLinks } from "@/lib/magazine-index";
@@ -17,8 +19,8 @@ type PageProps = { params: MarketParams };
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
   return {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: seoTitle(TITLE),
+    description: clampMetaDescription(DESCRIPTION),
     alternates: marketAlternates(market, "/magazin/inhalt"),
     openGraph: { title: TITLE, description: DESCRIPTION, url: publicUrl(market, "/magazin/inhalt"), type: "website" },
   };

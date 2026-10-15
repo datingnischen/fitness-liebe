@@ -3,11 +3,13 @@ import { readdir } from "node:fs/promises";
 import test from "node:test";
 import { getMarketCityPages, getMarketPartnersucheHub, getMarketPartnersucheIntro, hasCityPages, marketsWithCity } from "../lib/market-partnersuche.ts";
 import {
+  LIVE_MARKETS,
   MARKET_CODES,
   contentMarket,
   hasMagazine,
   marketsForPath,
   internalPath,
+  liveMarkets,
   localizeHref,
   marketAlternates,
   marketFromPathname,
@@ -80,19 +82,17 @@ test("only DE has its own magazine; AT/CH link to it instead of duplicating it",
   assert.equal(contentMarket("at", "/magazin/thema/training"), "de");
   assert.equal(contentMarket("at", "/magazinfoo"), "at");
   assert.deepEqual(marketsForPath("/magazin/cardio-training"), ["de"]);
-  assert.deepEqual(Object.keys(marketAlternates("de", "/magazin").languages), ["de-DE", "x-default"]);
+  // Nur ein Land → keine hreflang-Verweise (ein einzelnes de-DE + x-default wäre ohne Mehrwert).
+  assert.deepEqual(Object.keys(marketAlternates("de", "/magazin").languages), []);
 });
 
-test("hreflang lists every country plus x-default", () => {
+test("hreflang lists only live-reachable countries (AT/CH answer 404 behind nginx until it forwards them)", () => {
   const alternates = marketAlternates("at", "/social-media");
   assert.equal(alternates.canonical, "https://fitness-liebe.de/at/social-media/");
-  assert.deepEqual(alternates.languages, {
-    "de-DE": "https://fitness-liebe.de/social-media/",
-    "de-AT": "https://fitness-liebe.de/at/social-media/",
-    "de-CH": "https://fitness-liebe.de/ch/social-media/",
-    "x-default": "https://fitness-liebe.de/social-media/",
-  });
-  assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), ["de-DE", "x-default"]);
+  assert.deepEqual(LIVE_MARKETS, ["de"]);
+  assert.deepEqual(alternates.languages, {});
+  assert.deepEqual(liveMarkets(["de", "at", "ch"]), ["de"]);
+  assert.deepEqual(Object.keys(marketAlternates("de", "/partnersuche/berlin", marketsWithCity("berlin")).languages), []);
 });
 
 test("city pages exist only where they are imported", () => {
@@ -118,5 +118,8 @@ test("all content routes live below app/[market]", async () => {
   const top = (await readdir(new URL("../app/", import.meta.url), { withFileTypes: true }))
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name);
-  assert.deepEqual(top, ["[market]"]);
+  // Einzige Ausnahme: /magazin/sitemap.xml, die ICONYs sitemap.php hinter nginx referenziert.
+  assert.deepEqual(top.sort(), ["[market]", "magazin"]);
+  const magazin = await readdir(new URL("../app/magazin/", import.meta.url));
+  assert.deepEqual(magazin, ["sitemap.xml"]);
 });

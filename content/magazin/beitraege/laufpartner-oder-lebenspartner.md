@@ -54,7 +54,7 @@ imageAlt: "Laufpartner oder Lebenspartner Warum Joggen verbindet (1)"
 <li><strong>Natürlich bleiben:</strong> Kein Showlaufen, kein Leistungsdruck und kein ständiger Vergleich.</li>
 <li><strong>Offen ausklingen lassen:</strong> Wenn es passt, könnt ihr den Lauf danach mit einem Kaffee, Smoothie oder Spaziergang verlängern.</li>
 </ol>
-<p>Ein kleines <a href="https://fitness-liebe.de/magazin/mit-dem-joggen-anfangen/">Warm-up</a> oder gemeinsames Stretching am Ende sorgt für Nähe und Leichtigkeit. Vielleicht ergibt sich danach spontan ein Smoothie oder Spaziergang – Hauptsache, es fühlt sich ungezwungen an. So wird das Jogging-Date zu einer echten Verbindungschance, bei der Herz und Bewegung im gleichen Takt schlagen.</p>
+<p>Ein kleines <a href="/magazin/warm-up/">Warm-up</a> oder gemeinsames Stretching am Ende sorgt für Nähe und Leichtigkeit. Vielleicht ergibt sich danach spontan ein Smoothie oder Spaziergang – Hauptsache, es fühlt sich ungezwungen an. So wird das Jogging-Date zu einer echten Verbindungschance, bei der Herz und Bewegung im gleichen Takt schlagen.</p>
 <h2>Häufige Fragen zum Jogging-Date</h2>
 <h3>Muss man beim ersten Jogging-Date besonders sportlich sein?</h3>
 <p>Nein. Im Artikel steht nicht die Leistung im Mittelpunkt, sondern ein lockeres Tempo, Rücksicht und die Möglichkeit, sich dabei zu unterhalten.</p>

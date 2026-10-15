@@ -2250,7 +2250,13 @@ body {
     padding: 32px 24px 26px;
   }
 
+  /* Leiste einmal im DOM: mobil vor den Artikeltext, nicht klebend; der Radar kommt unten als eigene Sektion. */
   .magazine-detail-side {
+    position: static;
+    order: -1;
+  }
+
+  .magazine-detail-side .magazine-radar-card {
     display: none;
   }
 
@@ -3121,3 +3127,44 @@ body {
 .faq-answer { padding-bottom: 12px; }
 .faq-answer p { margin: 0 0 8px; }
 .faq-empty { margin: 0; }
+
+/* Karten mit nur einem Link (Titel): Linktext bleibt eindeutig, die ganze Karte über ::after klickbar */
+.related-article-card,
+.author-post-card,
+.author-latest-post-clean,
+.fitnesswelt-card {
+  position: relative;
+}
+
+.card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.card-link:hover {
+  color: var(--brand);
+}
+
+.card-link:focus-visible {
+  outline: none;
+}
+
+.related-article-card:focus-within,
+.author-post-card:focus-within,
+.author-latest-post-clean:focus-within,
+.fitnesswelt-card:focus-within {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.fitnesswelt-card:hover .fitnesswelt-card-cta span {
+  transform: translateX(4px);
+}

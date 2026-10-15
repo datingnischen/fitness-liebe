@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { notFound } from "next/navigation";
 import { AuthorProfileFacts } from "@/components/author-profile-facts";
@@ -47,9 +49,7 @@ const PROFILE_DESCRIPTIONS: Record<string, string> = {
 
 // Gepflegte AIOSEO-Beschreibung zuerst, sonst der Auszug – an einer Wortgrenze gekürzt.
 function metaDescription(entry: MagazineEntry) {
-  if (entry.seoDescription) return entry.seoDescription;
-  const text = stripHtml(entry.excerpt || entry.content);
-  return text.length > 155 ? `${text.slice(0, 154).replace(/\s+\S*$/, "")} …` : text;
+  return clampMetaDescription(entry.seoDescription || stripHtml(entry.excerpt || entry.content));
 }
 
 // Kurzer Einstieg im Hero: gepflegter Auszug vollständig, sonst der Textanfang mit Auslassung.
@@ -167,15 +167,16 @@ function RelatedArticles({ world, posts }: { world: Fitnesswelt; posts: Magazine
         {posts.map((post) => {
           const cover = getEntryCoverImage(post);
           return (
-            <Link key={post.id} href={`/magazin/${post.slug}`} className="related-article-card">
+            // Nur der Titel ist verlinkt; die Karte bleibt über .card-link::after klickbar.
+            <article key={post.id} className="related-article-card">
               <span className="related-article-media">
-                {cover ? <img src={cover} alt="" loading="lazy" decoding="async" /> : <span>{world.emoji}</span>}
+                {cover ? <img src={cover} alt={post.featuredImageAlt || post.title} loading="lazy" decoding="async" /> : <span>{world.emoji}</span>}
               </span>
               <span className="related-article-body">
                 <small>{getReadingMinutes(post.content)} Min. Lesezeit</small>
-                <strong>{post.title}</strong>
+                <strong><Link className="card-link" href={`/magazin/${post.slug}`}>{post.title}</Link></strong>
               </span>
-            </Link>
+            </article>
           );
         })}
       </div>
@@ -203,10 +204,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const entry = await getMagazineEntryBySlug(slug);
   if (!entry) return {};
 
-  const description = PROFILE_DESCRIPTIONS[slug] ?? metaDescription(entry);
+  const description = clampMetaDescription(PROFILE_DESCRIPTIONS[slug] ?? metaDescription(entry));
 
   return {
-    title: entry.seoTitle || entry.title,
+    title: seoTitle(entry.seoTitle || entry.title),
     description,
     alternates: marketAlternates(market, `/magazin/${slug}`),
     robots: NOINDEX_MAGAZINE_PAGES.has(slug) ? { index: false, follow: true } : undefined,
@@ -400,10 +401,6 @@ export default async function MagazineDetailPage({ params }: PageProps) {
         </section>
       ) : null}
 
-      <section className="content-section magazine-mobile-conversion">
-        <MagazineConversionRail title={entry.title} variant={sidebarVariant} />
-      </section>
-
       <section className="content-section magazine-detail-content-section">
         <div className="magazine-detail-layout">
           <div className="magazine-detail-main">
@@ -413,6 +410,7 @@ export default async function MagazineDetailPage({ params }: PageProps) {
               {contentAfterRecipe ? <div dangerouslySetInnerHTML={{ __html: contentAfterRecipe }} /> : null}
             </section>
           </div>
+          {/* Einmal im DOM (Seobility „doppelte Überschriften/Textblöcke“): mobil rückt die Leiste per CSS (order) vor den Text. */}
           <aside className="magazine-detail-side" aria-label="Singlebörse und Conversion-Module">
             <MagazineConversionRail title={entry.title} variant={sidebarVariant} showRadar />
           </aside>

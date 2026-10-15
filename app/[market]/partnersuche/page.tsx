@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import { notFound } from "next/navigation";
 import { CitySearchFallback } from "@/components/city-search-fallback";
 import { MarketLink } from "@/components/market-link";
@@ -22,8 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (intro) {
     // Ohne eigene Stadtseiten dünn: aus dem Index, Canonical auf die eigene Adresse.
     return {
-      title: intro.title,
-      description: intro.description,
+      title: seoTitle(intro.title),
+      description: clampMetaDescription(intro.description),
       alternates: { canonical: publicUrl(intro.market, "/partnersuche") },
       robots: { index: false, follow: true },
       openGraph: { title: intro.title, description: intro.description, url: publicUrl(intro.market, "/partnersuche") },
@@ -32,8 +34,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const found = hub!;
   const market: MarketCode = found.market;
   return {
-    title: found.title,
-    description: found.description,
+    title: seoTitle(found.title),
+    description: clampMetaDescription(found.description),
     alternates: marketAlternates(market, "/partnersuche"),
     openGraph: { title: found.title, description: found.description, url: publicUrl(market, "/partnersuche") },
   };

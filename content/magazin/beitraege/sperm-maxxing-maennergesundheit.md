@@ -1,6 +1,7 @@
 ---
 id: 1079
 title: "Sperm-Maxxing: Was Männergesundheit wirklich mit Dating zu tun hat"
+seoTitle: "Sperm-Maxxing: Was Männergesundheit mit Dating zu tun hat"
 description: "Sperm-Maxxing macht männliche Fruchtbarkeit zum Trend. Was Lebensstil wirklich bringt, wann ärztlicher Rat hilft und wie man beim Dating darüber spricht."
 excerpt: "Sperm-Maxxing macht männliche Fruchtbarkeit zum Selbstoptimierungsprojekt. Der Artikel ordnet den Trend medizinisch vorsichtig ein und zeigt, was Lebensstil, Kommunikation und ärztliche Abklärung wirklich beitragen können."
 published: "2026-07-14T05:02:58"

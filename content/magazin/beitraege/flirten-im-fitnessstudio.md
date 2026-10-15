@@ -1,6 +1,7 @@
 ---
 id: 972
 title: "Flirten im Fitnessstudio: So zeigst du Interesse ohne aufdringlich zu wirken"
+seoTitle: "Flirten im Fitnessstudio: Interesse zeigen ohne Druck"
 description: "Flirten im Fitnessstudio mit Gefühl: passende Momente, lockerer Smalltalk, Körpersprache richtig deuten und ein Nein sofort respektieren."
 excerpt: "Ein respektvoller Flirt im Gym braucht mehr als Blickkontakt. Entscheidend sind passende Momente, soziale Aufmerksamkeit und die Bereitschaft, ein Nein sofort zu akzeptieren."
 published: "2026-05-28T11:57:18"

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import { notFound } from "next/navigation";
 import { IconySinglesWidget } from "@/components/icony-singles-widget";
 import { MarketLink } from "@/components/market-link";
@@ -24,8 +26,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const city = isMarketCode(market) ? getMarketCityPage(market, slug) : null;
   if (!city) return {};
   return {
-    title: city.title,
-    description: city.description,
+    title: seoTitle(city.title),
+    description: clampMetaDescription(city.description),
     alternates: marketAlternates(city.market, city.path, marketsWithCity(slug)),
     openGraph: {
       title: city.title,

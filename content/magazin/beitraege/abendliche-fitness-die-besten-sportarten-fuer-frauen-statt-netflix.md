@@ -1,6 +1,7 @@
 ---
 id: 833
 title: "Abendliche Fitness: Die besten Sportarten für Frauen statt Netflix"
+seoTitle: "Abendliche Fitness: Sportarten für Frauen statt Netflix"
 description: "Sport am Abend statt Netflix: die besten Sportarten für Frauen nach Feierabend, drei einfache Routinen und ein Startplan für heute Abend."
 excerpt: "Der beste Sport am Abend für Frauen: Fit bleiben statt Netflix Der Abend ist für viele der wohlverdiente"
 published: "2026-04-13T15:39:05"

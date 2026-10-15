@@ -12,7 +12,7 @@ export function PublishedBookFeature() {
         <div className="published-book-cover">
           <img
             src={staticAsset("/images/books/dating-ohne-bullshit-cover.webp")}
-            alt=""
+            alt="Buchcover: Dating ohne Bullshit von Christian M. Haas"
             width={1748}
             height={2480}
             loading="lazy"

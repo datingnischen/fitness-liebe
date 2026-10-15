@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { getAllMagazineEntries, getEntryCoverImage, type MagazineEntry } from "@/lib/magazine";
 import { buildMagazineFaqGraph } from "@/lib/magazine-faq";
@@ -26,8 +28,8 @@ type PageProps = { params: MarketParams };
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const market = await resolveMarket(params);
   return {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: seoTitle(TITLE),
+    description: clampMetaDescription(DESCRIPTION),
     alternates: marketAlternates(market, PAGE_PATH),
     openGraph: { title: TITLE, description: DESCRIPTION, url: publicUrl(market, PAGE_PATH), type: "website" },
   };
@@ -180,17 +182,17 @@ export default async function FitnessweltenPage({ params }: PageProps) {
               const cover = entry ? getEntryCoverImage(entry) : undefined;
               return (
                 <article key={article.slug} className="fitnesswelt-card">
-                  <Link href={`/magazin/${article.slug}`} className="fitnesswelt-card-media" tabIndex={-1} aria-hidden="true">
+                  <div className="fitnesswelt-card-media">
                     {cover ? (
-                      <img src={cover} alt="" loading="lazy" decoding="async" />
+                      <img src={cover} alt={entry?.featuredImageAlt || article.name} loading="lazy" decoding="async" />
                     ) : (
                       <span className="fitnesswelt-card-fallback">{world.emoji}</span>
                     )}
                     <span className="fitnesswelt-card-tagline">{article.tagline}</span>
-                  </Link>
+                  </div>
                   <div className="fitnesswelt-card-body">
                     <h3>
-                      <Link href={`/magazin/${article.slug}`}>{article.name}</Link>
+                      <Link className="card-link" href={`/magazin/${article.slug}`}>{article.name}</Link>
                     </h3>
                     <p>{article.teaser}</p>
                     <ul className="fitnesswelt-card-traits" aria-label={`Stichworte zu ${article.name}`}>
@@ -198,9 +200,9 @@ export default async function FitnessweltenPage({ params }: PageProps) {
                         <li key={trait}>{trait}</li>
                       ))}
                     </ul>
-                    <Link className="fitnesswelt-card-cta" href={`/magazin/${article.slug}`}>
-                      {article.cta} <span aria-hidden="true">→</span>
-                    </Link>
+                    <span className="fitnesswelt-card-cta" aria-hidden="true">
+                      {article.cta} <span>→</span>
+                    </span>
                   </div>
                 </article>
               );

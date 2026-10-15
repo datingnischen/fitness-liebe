@@ -3,7 +3,7 @@ import { ABOUT_OVERVIEW_PATH, ABOUT_SOCIAL_MEDIA_PATH } from "@/lib/about-sectio
 import { getKnownAuthorSlugs, isNoindexAuthorArchive } from "@/lib/author-profiles";
 import { FITNESSWELTEN } from "@/lib/fitnesswelten";
 import { getMarketCityPages, marketsWithCity } from "@/lib/market-partnersuche";
-import { MARKET_CODES, marketAlternates, marketsForPath, publicUrl, type MarketCode } from "@/lib/markets";
+import { MARKET_CODES, liveMarkets, marketAlternates, marketsForPath, publicUrl, type MarketCode } from "@/lib/markets";
 import { NOINDEX_MAGAZINE_PAGES, getMagazinePages, getMagazinePosts } from "@/lib/magazine";
 
 
@@ -12,7 +12,9 @@ type Route = Omit<Entry, "url" | "alternates"> & { path: string; markets?: reado
 
 // Jede Seite steht einmal je Land in der Sitemap, mit hreflang-Verweisen auf die anderen Länder.
 function localized(route: Route): Entry[] {
-  const { path, markets = marketsForPath(path), ...entry } = route;
+  const { path, markets: routeMarkets = marketsForPath(path), ...entry } = route;
+  // Nur auf der Live-Domain erreichbare Länder (AT/CH liefern hinter nginx noch 404, lib/markets.ts LIVE_MARKETS).
+  const markets = liveMarkets(routeMarkets);
   return markets.map((market) => ({
     ...entry,
     url: publicUrl(market, path),

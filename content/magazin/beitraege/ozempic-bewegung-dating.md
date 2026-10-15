@@ -1,6 +1,7 @@
 ---
 id: 1072
 title: "Ozempic & Co.: Warum Abnehmen allein beim Dating nicht alles verändert"
+seoTitle: "Ozempic & Co.: Warum Abnehmen beim Dating nicht reicht"
 description: "Ozempic & Co. verändern das Gewicht, aber nicht automatisch das Dating. Warum Bewegung, Haltung und Energie für deine Ausstrahlung zählen."
 excerpt: "Gewichtsverlust verändert nicht automatisch das Dating-Selbstbild. Warum Bewegung, Haltung, Energie und ehrliche Selbstwahrnehmung bei Ozempic & Co. wichtig bleiben."
 published: "2026-07-05T05:04:30"

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { seoTitle } from "@/lib/seo-title";
+import { clampMetaDescription } from "@/lib/meta-description";
 import Link from "@/components/local-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -22,6 +24,15 @@ type PageProps = {
 
 const REGISTER_URL = REGISTRATION_URL;
 
+// Längere, beschreibende H1 (Seobility meldet zu kurze Überschriften); Navigation, Titel und Linktexte nutzen weiter den Themennamen.
+const H1_OVERRIDES: Record<string, string> = {
+  "fitness-dating": "Fitness-Dating & Flirten für Sportliche",
+  "fit-als-paar": "Fit als Paar: gemeinsam sportlich aktiv",
+  training: "Training & Workouts für sportliche Singles",
+  ernaehrung: "Ernährung & Gesundheit für Sportliche",
+  rezepte: "Fitness-Rezepte für Training und Alltag",
+};
+
 function teaser(post: MagazineEntry, length: number) {
   const text = stripHtml(post.excerpt || post.content);
   return text.length > length ? `${text.slice(0, length).replace(/\s+\S*$/, "")} …` : text;
@@ -36,10 +47,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const topic = isMarketCode(market) ? await getMagazineTopic(slug) : null;
   if (!topic || !isMarketCode(market)) return {};
 
-  const description = `${topic.intro}`.slice(0, 155);
+  const description = clampMetaDescription(topic.intro);
 
   return {
-    title: `${topic.name} – Fitness-Magazin`,
+    title: seoTitle(`${topic.name} – Fitness-Magazin`),
     description,
     alternates: marketAlternates(market, `/magazin/thema/${slug}`),
     openGraph: {
@@ -115,7 +126,7 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
           <span className="eyebrow">
             <span aria-hidden="true">{emoji}</span> Magazin-Thema
           </span>
-          <h1>{category.name}</h1>
+          <h1>{H1_OVERRIDES[slug] ?? category.name}</h1>
           <p>{intro}</p>
           <div className="button-row">
             <a className="button button-primary" href="#artikel">
@@ -162,20 +173,21 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
         </header>
 
         {featured ? (
+          // Nur der Titel ist verlinkt (eindeutiger Linktext); die Karte bleibt über .card-link::after komplett klickbar.
           <article className="thema-featured">
-            <Link href={`/magazin/${featured.slug}`} className="thema-card-media thema-featured-media" tabIndex={-1} aria-hidden="true">
+            <div className="thema-card-media thema-featured-media">
               <CoverImage post={featured} emoji={emoji} eager />
               <ReadingBubble post={featured} />
-            </Link>
+            </div>
             <div className="thema-featured-copy">
               <PostMeta post={featured} label="Neuester Artikel" />
               <h3>
-                <Link href={`/magazin/${featured.slug}`}>{featured.title}</Link>
+                <Link className="card-link" href={`/magazin/${featured.slug}`}>{featured.title}</Link>
               </h3>
               <p>{teaser(featured, 260)}</p>
-              <Link className="button button-primary thema-featured-cta" href={`/magazin/${featured.slug}`}>
+              <span className="button button-primary thema-featured-cta" aria-hidden="true">
                 Jetzt lesen
-              </Link>
+              </span>
             </div>
           </article>
         ) : (
@@ -186,14 +198,14 @@ export default async function MagazineCategoryPage({ params }: PageProps) {
           <div className="thema-grid">
             {rest.map((post) => (
               <article key={post.id} className="thema-card">
-                <Link href={`/magazin/${post.slug}`} className="thema-card-media" tabIndex={-1} aria-hidden="true">
+                <div className="thema-card-media">
                   <CoverImage post={post} emoji={emoji} />
                   <ReadingBubble post={post} />
-                </Link>
+                </div>
                 <div className="thema-card-body">
                   <PostMeta post={post} />
                   <h3>
-                    <Link href={`/magazin/${post.slug}`}>{post.title}</Link>
+                    <Link className="card-link" href={`/magazin/${post.slug}`}>{post.title}</Link>
                   </h3>
                   <p>{teaser(post, 150)}</p>
                   <span className="thema-card-more" aria-hidden="true">
