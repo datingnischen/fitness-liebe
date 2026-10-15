@@ -256,7 +256,8 @@ export function SiteFooter({ market = "de" }: Props) {
           <PulseLine className="fl-footer-cta-pulse" peakAt={400} />
           <div className="fl-footer-cta-copy">
             <p className="fl-footer-kicker">Partnervermittlung für Fitness-Fans</p>
-            <h2>Triff sportliche Singles, die deine Leidenschaft für Bewegung teilen.</h2>
+            {/* Footer-Texte ohne Überschriften-Tag: sie stehen auf jeder Seite und verwässern sonst die Gliederung. */}
+            <p className="fl-footer-cta-title">Triff sportliche Singles, die deine Leidenschaft für Bewegung teilen.</p>
             <p>Über 750.000 Mitglieder, jedes Profil vom Supportteam geprüft – und der Start ist kostenlos.</p>
           </div>
           <a className="fl-footer-cta-button" href={register}>
@@ -295,7 +296,7 @@ export function SiteFooter({ market = "de" }: Props) {
           <nav className="fl-footer-nav" aria-label="Footer Navigation">
             {footerColumns.map((column) => (
               <div className="fl-footer-column" key={column.title}>
-                <h2>{column.title}</h2>
+                <p className="fl-footer-column-title">{column.title}</p>
                 <ul>
                   {column.links.map((link) => (
                     <li key={link.label}>

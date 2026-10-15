@@ -2663,9 +2663,10 @@ body {
   opacity: 0.75;
 }
 
-.fl-footer-cta h2 {
+.fl-footer-cta .fl-footer-cta-title {
   margin: 0;
   color: inherit;
+  font-weight: 700;
   font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.2rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -2794,7 +2795,7 @@ body {
   gap: 32px 28px;
 }
 
-.fl-footer-column h2 {
+.fl-footer-column .fl-footer-column-title {
   margin: 0 0 18px;
   color: #fff;
   font-size: 0.8rem;
