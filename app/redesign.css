@@ -1726,6 +1726,33 @@ html.fl-menu-open .sticky-cta {
   line-height: 1.8;
 }
 
+/* Vergleichstabellen in Beiträgen: auf schmalen Bildschirmen seitlich scrollbar statt Seitenüberlauf. */
+.magazine-detail-main .rich-content table {
+  display: block;
+  max-width: 100%;
+  margin: 18px 0 24px;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.magazine-detail-main .rich-content th,
+.magazine-detail-main .rich-content td {
+  min-width: 150px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  color: #3b4049;
+  text-align: left;
+  vertical-align: top;
+}
+
+.magazine-detail-main .rich-content th {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 700;
+}
+
 .magazine-detail-main .rich-content ul {
   display: grid;
   gap: 8px;

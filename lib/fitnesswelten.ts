@@ -56,6 +56,7 @@ export const FITNESSWELTEN: Fitnesswelt[] = [
       "laufpartner-oder-lebenspartner",
       "ozempic-bewegung-dating",
       "sperm-maxxing-maennergesundheit",
+      "fiets-dating",
     ],
     keywords: /dat(e|ing)|flirt|single|tinder|match|verlieb|anziehend|gymder|wooing/i,
     highlights: [

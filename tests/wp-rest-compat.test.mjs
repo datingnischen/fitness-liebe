@@ -10,7 +10,8 @@ import { proxy } from "../proxy.ts";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFileSync(new URL(path, root), "utf8");
 const get = (route, query = "") => handleWpRest(route, new URLSearchParams(query));
-const POSTS = (await getMagazinePosts()).length;
+// Nur Beiträge mit Titelbild: ohne Bild bleiben sie aus den ICONY-Teasern draußen.
+const POSTS = (await getMagazinePosts()).filter((post) => post.featuredImage).length;
 
 test("posts: Teaser-Abruf wie bei ICONY liefert drei Beiträge im WordPress-Format mit Gesamtzahl-Headern", () => {
   const result = get("/wp/v2/posts", "per_page=3&_embed=1&orderby=date&order=desc");

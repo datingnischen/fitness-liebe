@@ -174,7 +174,8 @@ function buildSource(): WpSource {
       media,
       link: publicUrl("de", `/magazin/${entry.slug}`),
     };
-  });
+  // Beiträge mit `image: null` (Titelbild bei Codex beauftragt) erscheinen erst mit Bild in den ICONY-Teasern.
+  }).filter((post) => post.media);
 
   const terms = categories.map((category): WpTerm => ({
     id: category.id,
