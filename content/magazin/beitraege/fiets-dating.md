@@ -8,7 +8,7 @@ published: "2026-10-21T09:00:00"
 updated: "2026-10-21T09:00:00"
 category: "allgemein"
 author: "christian-m-haas"
-image: null
+image: "/magazin/wp-content/uploads/2026/10/fiets-dating-1024x683.jpg"
 imageAlt: "Ein Paar fährt auf Fahrrädern nebeneinander über einen ruhigen Radweg am See und lacht sich an"
 ---
 
