@@ -12,6 +12,11 @@ image: "/magazin/wp-content/uploads/2025/11/10-Fitness-Dating-Ideen-fuer-Fruehli
 imageAlt: "Lachendes Paar in weißer Sportkleidung mit Golfschlägern bei einem aktiven Date auf dem Platz"
 ---
 
+<p><!-- audio-summary:start --></p>
+<h2>Artikel kurz anhören</h2>
+<p>Die wichtigsten Punkte kurz und verständlich zusammengefasst.</p>
+<p><audio controls preload="none"><source src="/magazin/wp-content/uploads/2026/10/fitness-dating-ideen-audio-zusammenfassung.mp3" type="audio/mpeg">Dein Browser unterstützt das Audio-Element nicht.</audio><br />
+<!-- audio-summary:end --></p>
 <p>Kino, Restaurant, Bar: Das kann man machen, muss man aber nicht. Wer gern in Bewegung ist, hat bessere Optionen. Bei einem aktiven Date hast du sofort etwas zu tun, das Gespräch kommt oft von allein, und du siehst, wie dein Gegenüber mit kleinen Herausforderungen umgeht. Hier findest du 15 Fitness-Dating-Ideen für jedes Level und jede Jahreszeit, dazu Tipps fürs erste Treffen, Gesprächsstoff, Etikette und eine kurze Checkliste.</p>
 <h2>Kurzantwort: Welche Fitness-Dates funktionieren am besten?</h2>
 <p>Am besten funktionieren Dates, bei denen ihr euch unterhalten könnt, das Tempo flexibel bleibt und niemand sich beweisen muss: ein lockerer Spaziergang oder eine Radtour, Bouldern mit Anfängerrouten, ein Tanzkurs oder gemeinsames Kochen nach dem Sport. Wähle etwas, das für beide machbar ist, und plane danach einen ruhigen Ausklang bei einem Getränk ein.</p>
