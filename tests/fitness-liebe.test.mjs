@@ -152,12 +152,15 @@ test("ICONY trust and legal pages link absolutely to the live domain", async () 
 
 test("no template leftovers from tierisch-verliebt in app code", async () => {
   const roots = ["app", "components", "lib"];
+  // Ausnahme: Die ICONY-GA4-Komponente ist eine unveränderte Kopie aus agent-skills/templates/icony-ga4
+  // und enthält die Host→GA4-Zuordnung aller ICONY-Domains (darunter tierisch-verliebt.*), kein Vorlagenrest.
+  const allowed = new Set(["components/icony-ga4.tsx"]);
   const offenders = [];
   async function walk(dir) {
     for (const entry of await readdir(new URL(`${dir}/`, repoRoot), { withFileTypes: true })) {
       const path = `${dir}/${entry.name}`;
       if (entry.isDirectory()) await walk(path);
-      else if (/\.(tsx?|css)$/.test(entry.name) && /tierisch|tierlieb|Tierwelt|Hunderass|Katzenrass/i.test(await read(path))) {
+      else if (!allowed.has(path) && /\.(tsx?|css)$/.test(entry.name) && /tierisch|tierlieb|Tierwelt|Hunderass|Katzenrass/i.test(await read(path))) {
         offenders.push(path);
       }
     }

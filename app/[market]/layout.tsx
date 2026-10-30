@@ -9,6 +9,7 @@ import { MARKET_CODES, SITE_ORIGIN, getMarket, isMarketCode } from "@/lib/market
 import { staticAsset, assetHost } from "@/lib/static-asset";
 import { Analytics } from "@vercel/analytics/next";
 import { vercelAnalyticsProps } from "@/lib/vercel-analytics";
+import { IconyGa4 } from "@/components/icony-ga4";
 
 type Props = Readonly<{ children: React.ReactNode; params: Promise<{ market: string }> }>;
 
@@ -40,6 +41,7 @@ export default async function MarketLayout({ children, params }: Props) {
         <SiteFooter market={market} />
         <StickyCTAButton />
         <Analytics {...vercelAnalyticsProps(assetHost)} />
+        <IconyGa4 />
       </body>
     </html>
   );
