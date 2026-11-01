@@ -131,6 +131,16 @@ export default async function PartnersucheCityPage({ params }: PageProps) {
                   </p>
                 </details>
               ) : null}
+              {city.sources?.length ? (
+                <details className="city-sources">
+                  <summary>Quellen</summary>
+                  <ul>
+                    {city.sources.map((source) => (
+                      <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
             </article>
           </div>
         </section>

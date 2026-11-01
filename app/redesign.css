@@ -1367,6 +1367,12 @@ html.fl-menu-open .sticky-cta {
   font-size: 13px;
 }
 
+.city-sources ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
 .city-sources a {
   color: inherit;
   text-decoration: underline;

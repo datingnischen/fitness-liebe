@@ -1,4 +1,5 @@
 import data from "../data/partnersuche-markets.json" with { type: "json" };
+import ownData from "../data/partnersuche-eigene-staedte.json" with { type: "json" };
 import { MARKET_CODES, type MarketCode } from "#markets";
 
 export type MarketCityPage = {
@@ -14,6 +15,8 @@ export type MarketCityPage = {
   imageAlt?: string | null;
   contentHtml: string;
   sourceAttributionUrl?: string | null;
+  /** Belege eigener Stadtseiten, auf der Seite zugeklappt. */
+  sources?: { title: string; url: string }[];
   registrationUrl: string;
   searchUrl: string;
   icony: {
@@ -52,7 +55,25 @@ type HubCopy = {
 };
 
 // Stadtseiten gibt es je Land nur, wenn sie in data/partnersuche-markets.json importiert sind.
-const imports = data as Partial<Record<MarketCode, RawMarket>>;
+// Eigene Seiten ohne ICONY-Vorlage (z. B. Kassel) kommen aus data/partnersuche-eigene-staedte.json dazu.
+const imports = mergeOwnPages(
+  data as Partial<Record<MarketCode, RawMarket>>,
+  ownData as Partial<Record<MarketCode, MarketCityPage[]>>,
+);
+
+function mergeOwnPages(
+  base: Partial<Record<MarketCode, RawMarket>>,
+  own: Partial<Record<MarketCode, MarketCityPage[]>>,
+): Partial<Record<MarketCode, RawMarket>> {
+  const merged = { ...base };
+  for (const market of MARKET_CODES) {
+    const extra = own[market];
+    const current = merged[market];
+    if (!extra?.length || !current) continue;
+    merged[market] = { ...current, pages: [...current.pages, ...extra] };
+  }
+  return merged;
+}
 
 const HUB_COPY: Partial<Record<MarketCode, HubCopy>> = {
   de: {

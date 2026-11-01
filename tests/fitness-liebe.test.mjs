@@ -36,6 +36,7 @@ const EXPECTED_CITIES = [
   "nuernberg",
   "leipzig",
   "dresden",
+  "kassel",
 ];
 
 test("every curated article belongs to exactly one Fitnesswelt", () => {
@@ -90,7 +91,7 @@ test("magazine index groups posts by Fitnesswelt and hides legal pages", () => {
   assert.deepEqual(sections.at(-1).items.map((item) => item.label), ["Christian M. Haas"]);
 });
 
-test("publishes the 15 ICONY city pages with location attribution", () => {
+test("publishes the 15 ICONY city pages plus own pages with location attribution", () => {
   const pages = getMarketCityPages("de");
   assert.deepEqual(pages.map((page) => page.slug), EXPECTED_CITIES);
   for (const page of pages) {
@@ -194,4 +195,15 @@ test("fixed pages show no visible date, articles use the update date", async () 
   assert.match(detail, /datePublished: entry\.date/);
   const thema = await read("app/[market]/magazin/thema/[slug]/page.tsx");
   assert.ok(!thema.includes("<span>Neuester Artikel</span>") && !thema.includes("Intl.DateTimeFormat"), "Hub zeigt Datum des neuesten Artikels");
+});
+
+test("own Kassel page cites its sources in a collapsed block", async () => {
+  const kassel = getMarketCityPages("de").find((page) => page.slug === "kassel");
+  assert.equal(kassel.icony.zip, "34117");
+  assert.ok(kassel.sources.length >= 10);
+  for (const source of kassel.sources) assert.match(source.url, /^https:\/\//);
+  assert.match(kassel.contentHtml, /Herkules/);
+  assert.match(kassel.contentHtml, /Kassel Marathon/);
+  const page = await readFile(new URL("../app/[market]/partnersuche/[slug]/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /<details className="city-sources">\s*<summary>Quellen<\/summary>/);
 });
