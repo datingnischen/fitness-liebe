@@ -18,3 +18,9 @@ Titelbild für die neue eigene Stadtseite https://fitness-liebe.de/partnersuche/
 
 ## Prüfen
 `npm test`, Build, danach https://fitness-liebe.vercel.app/partnersuche/kassel/ bei 1440 und 375 px.
+
+## Umsetzung durch Codex (2026-11-02)
+
+- Built-in ImageGen; finale Datei `public/partnersuche/kassel.webp`, 1600 × 900, 256.534 Bytes.
+- Auslieferung über `https://fitness-liebe.vercel.app/app-assets/partnersuche/kassel.webp`; `imageCredit` wird im Hero sichtbar ausgegeben.
+- Prompt: "Photorealistic editorial 16:9 hero for Fitness-Liebe Kassel: fictional athletic couple aged 30–45 jogging uphill along a park path in Bergpark Wilhelmshöhe; recognizable octagonal monument with pyramid and Hercules statue behind them. Natural daylight, friendly mood, realistic anatomy, running clothes with yellow/orange accents; no logos, text or watermarks. Keep subjects central for responsive cropping. Illustrative AI scene, not documentary photography."

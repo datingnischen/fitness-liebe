@@ -82,7 +82,9 @@ export default async function PartnersucheCityPage({ params }: PageProps) {
         <svg className="city-stage-pulse" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
           <path d="M0 80h520l22-40 28 74 26-96 28 104 20-42h556" />
         </svg>
-        {city.imageUrl && city.sourceAttributionUrl ? (
+        {city.imageUrl && city.imageCredit ? (
+          <p className="city-stage-credit">Bild: {city.imageCredit}</p>
+        ) : city.imageUrl && city.sourceAttributionUrl ? (
           <p className="city-stage-credit">
             Bild: <a href={city.sourceAttributionUrl} rel="nofollow noopener">Pixabay</a>
           </p>

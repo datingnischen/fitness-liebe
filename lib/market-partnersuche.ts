@@ -13,6 +13,7 @@ export type MarketCityPage = {
   lead: string;
   imageUrl?: string | null;
   imageAlt?: string | null;
+  imageCredit?: string | null;
   contentHtml: string;
   sourceAttributionUrl?: string | null;
   /** Belege eigener Stadtseiten, auf der Seite zugeklappt. */
