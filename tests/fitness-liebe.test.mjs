@@ -207,3 +207,14 @@ test("own Kassel page cites its sources in a collapsed block", async () => {
   const page = await readFile(new URL("../app/[market]/partnersuche/[slug]/page.tsx", import.meta.url), "utf8");
   assert.match(page, /<details className="city-sources">\s*<summary>Quellen<\/summary>/);
 });
+
+test("Kassel page links the Kassel quiz once at the end of the guide, only on Kassel", () => {
+  const pages = getMarketCityPages("de");
+  const kassel = pages.find((entry) => entry.slug === "kassel");
+  const link = kassel.contentHtml.match(/<a [^>]*href="https:\/\/kasseler-singles\.de\/#quiz"[^>]*>Quiz für Kasseler Singles<\/a>/);
+  assert.ok(link, "Quiz-Hinweis fehlt");
+  assert.doesNotMatch(link[0], /sponsored|nofollow/);
+  assert.ok(kassel.contentHtml.lastIndexOf("<h2>") < kassel.contentHtml.indexOf("kasseler-singles.de/#quiz"), "Hinweis gehört ins letzte Kapitel");
+  const others = pages.filter((entry) => entry.slug !== "kassel" && entry.contentHtml.includes("kasseler-singles.de"));
+  assert.deepEqual(others.map((entry) => entry.slug), []);
+});
