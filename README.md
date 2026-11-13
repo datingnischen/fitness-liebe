@@ -13,6 +13,7 @@ Headless-Frontend für fitness-liebe.de nach dem Muster der anderen Nischenproje
   - `data/magazin-wp-inventar.json`: Slug-Inventar von WordPress, gegen das `tests/magazine-content.test.mjs` prüft
   - Neuer Beitrag = Datei in `content/magazin/beitraege/` anlegen (Vorlage: ein bestehender Beitrag), committen, pushen;
     `published`/`updated` als ISO-Zeitstempel, `imageAlt` nie leer, Bild nach `public/magazin/wp-content/uploads/<jahr>/<monat>/`
+  - Zeitstempel: nie runde oder immer gleiche Uhrzeiten, höchstens zwei Beiträge je Erscheinungstag, keine Sammel-Aktualisierung vieler Beiträge an einem Tag. Werte liefert `node scripts/zeitstempel.mjs <slug> [JJJJ-MM-TT] [--update]`; Prüfsperre: `tests/magazine-timestamps.test.mjs`.
   - `scripts/import_wordpress.py` ist das einmalige Importwerkzeug (liest die öffentliche REST-API, überschreibt Korrekturen)
 - **Stadtseiten:** ICONY `/partnersuche/<stadt>/`, importiert nach `data/partnersuche-markets.json`
   (`python scripts/import_partnersuche.py`)

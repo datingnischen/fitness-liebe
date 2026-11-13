@@ -3,7 +3,7 @@ id: 825
 title: "10 Tipps: Lecker essen und schlank bleiben ohne Verzicht"
 description: "Lecker essen und schlank bleiben ohne Verzicht: 10 alltagstaugliche Tipps zu Portionen, Protein, gesunden Fetten und bewusstem Genuss."
 excerpt: "Lecker essen und schlank bleiben: So gelingt der Spagat! Viele Fitnessbegeisterte kennen das Dilemma: Man möchte sich gesund"
-published: "2026-04-13T18:18:51"
+published: "2026-04-10T18:18:51"
 updated: "2026-06-12T12:27:08"
 category: "allgemein"
 author: "redaktion"
