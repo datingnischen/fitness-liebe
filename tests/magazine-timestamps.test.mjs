@@ -28,7 +28,6 @@ const berlinOffsetHours = (local) => {
   };
   return local >= `${lastSunday(2)}T02:00:00` && local < `${lastSunday(9)}T03:00:00` ? 2 : 1;
 };
-const toGmt = (local) => new Date(Date.parse(`${local}Z`) - berlinOffsetHours(local) * 3_600_000).toISOString().slice(0, 19);
 const isRound = (stamp) => /T\d\d:(00|30):00$/.test(stamp) || /T00:00:\d\d$/.test(stamp);
 const local = (value) => value.slice(0, 19);
 const nowBerlin = (() => {
