@@ -50,7 +50,7 @@ test("posts: Teaser-Abruf wie bei ICONY liefert drei Beiträge im WordPress-Form
 test("date ist veröffentlicht, modified ist aktualisiert, *_gmt ist UTC aus Europe/Berlin", () => {
   const post = get("/wp/v2/posts", "slug=fitness-dating").body[0];
   assert.equal(post.date, "2025-10-09T11:20:09");
-  assert.equal(post.modified, "2026-09-11T10:03:05");
+  assert.equal(post.modified, "2026-09-11T15:50:55");
   assert.equal(post.date_gmt, "2025-10-09T09:20:09", "Sommerzeit");
   assert.equal(berlinToUtc("2026-01-15T12:00:00"), "2026-01-15T11:00:00", "Winterzeit");
 });

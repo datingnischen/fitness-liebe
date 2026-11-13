@@ -3,7 +3,7 @@ id: 710
 title: "Christian M. Haas – Dating-Experte mit sportlicher Leidenschaft"
 excerpt: "Christian M. Haas – Dating-Experte & Sport-Enthusiast Sport begleitet Christian M. Haas seit seiner Kindheit. Bereits mit vier Jahren begann er mit dem Fußballspielen und schaffte es in mehrere Auswahlmannschaften, in denen er schon"
 published: "2025-10-09T13:17:52"
-updated: "2026-09-25T09:13:35"
+updated: "2026-09-25T13:50:59"
 author: "redaktion"
 ---
 

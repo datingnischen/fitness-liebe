@@ -4,7 +4,7 @@ title: "Gazi Avakhti – Fitness-Experte und Personaltrainer"
 seoTitle: "Gazi Avakhti - Fitness-Experte | Fitness-Liebe.de"
 excerpt: "Gazi Avakthi – Personaltrainer & Erfinder des GA Shaker+ Gazi Avakthi, Personaltrainer und Erfinder des GA Shaker+ Über Gazi Avakthi Gazi Avakthi ist ehemaliger Fußballprofi und seit 2008 als selbstständiger Personaltrainer tätig. In dieser"
 published: "2025-08-29T10:36:51"
-updated: "2026-09-04T00:04:11"
+updated: "2026-09-04T17:24:11"
 author: "redaktion"
 ---
 
