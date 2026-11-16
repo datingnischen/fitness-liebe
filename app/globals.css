@@ -3169,3 +3169,12 @@ body {
 .fitnesswelt-card:hover .fitnesswelt-card-cta span {
   transform: translateX(4px);
 }
+
+.faq-hero-image {
+  display: block;
+  width: 100%;
+  max-width: 42rem;
+  height: auto;
+  margin-top: 1.5rem;
+  border-radius: 1rem;
+}
