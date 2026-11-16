@@ -78,13 +78,15 @@ test("builds the Christian CMS-gated profile and book graph", () => {
 
 test("suppresses the graph outside the exact Christian CMS marker boundary", () => {
   assert.equal(buildChristianBookProfileGraph({ ...base, slug: "ordinary-post", content: markerContent }), null);
-  assert.equal(buildChristianBookProfileGraph({ ...base, slug: "christian", content: "<p>Kein Marker</p>" }), null);
-  assert.equal(buildChristianBookProfileGraph({ ...base, slug: "christian", content: `${markerContent}${markerContent}` }), null);
-  assert.equal(buildChristianBookProfileGraph({
-    ...base,
-    slug: "christian",
-    content: "<!-- dating-ohne-bullshit-book:start --><img src=\"javascript:alert(1)\"><!-- dating-ohne-bullshit-book:end -->",
-  }), null);
+  for (const content of [
+    "<p>Kein Marker</p>",
+    `${markerContent}${markerContent}`,
+    '<!-- dating-ohne-bullshit-book:start --><img src="javascript:alert(1)"><!-- dating-ohne-bullshit-book:end -->',
+  ]) {
+    const graph = buildChristianBookProfileGraph({ ...base, slug: "christian", content });
+    assert.ok(graph["@graph"].some((node) => node["@type"] === "Person"));
+    assert.ok(!graph["@graph"].some((node) => node["@type"] === "Book"));
+  }
 });
 
 test("uses the safe JSON-LD serializer", () => {

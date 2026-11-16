@@ -81,7 +81,6 @@ function extractBoundedBookImage(content: string) {
 export function buildChristianBookProfileGraph(input: ChristianBookProfileInput) {
   if (input.slug !== input.christianSlug) return null;
   const bookImage = extractBoundedBookImage(input.content);
-  if (!bookImage) return null;
 
   const personId = CHRISTIAN_PERSON_ID;
   const pageId = `${input.canonicalUrl}#profile-page`;
@@ -139,7 +138,7 @@ export function buildChristianBookProfileGraph(input: ChristianBookProfileInput)
         publishingPrinciples: input.aboutPageUrl,
         knowsAbout: input.knowsAbout?.length ? input.knowsAbout : undefined,
       },
-      {
+      ...(bookImage ? [{
         "@type": "Book",
         "@id": `${input.canonicalUrl}#book-${PUBLISHED_BOOK.isbn}`,
         name: PUBLISHED_BOOK.name,
@@ -154,7 +153,7 @@ export function buildChristianBookProfileGraph(input: ChristianBookProfileInput)
         publisher: { "@type": "Organization", name: PUBLISHED_BOOK.publisher },
         url: PUBLISHED_BOOK.amazonUrl,
         image: bookImage,
-      },
+      }] : []),
     ],
   };
 }
