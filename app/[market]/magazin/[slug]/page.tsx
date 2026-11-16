@@ -1,3 +1,4 @@
+import { CHRISTIAN_NAME, christianPerson } from "@/lib/christian-person.mjs";
 import type { Metadata } from "next";
 import { seoTitle } from "@/lib/seo-title";
 import { clampMetaDescription } from "@/lib/meta-description";
@@ -299,7 +300,9 @@ export default async function MagazineDetailPage({ params }: PageProps) {
     pageName: `Häufige Fragen zu ${decodeHtmlEntities(entry.title)}`,
   });
   const articleAuthor = authorProfile
-    ? { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: publicUrl(market, authorProfile.profileUrl) }
+    ? authorProfile.name === CHRISTIAN_NAME
+      ? christianPerson()
+      : { "@type": authorProfile.slug === "redaktion" ? "Organization" : "Person", name: authorProfile.name, url: publicUrl(market, authorProfile.profileUrl) }
     : undefined;
   const recipeNode = recipe
     ? buildRecipeNode({

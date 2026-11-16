@@ -242,7 +242,7 @@ type RecipeGraphInput = {
   image?: string;
   datePublished?: string;
   dateModified?: string;
-  author?: Record<string, string>;
+  author?: Record<string, string | string[]>;
   inLanguage: string;
 };
 

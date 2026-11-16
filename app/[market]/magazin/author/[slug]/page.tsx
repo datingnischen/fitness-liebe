@@ -1,3 +1,4 @@
+import { CHRISTIAN_NAME, christianPerson } from "@/lib/christian-person.mjs";
 import type { Metadata } from "next";
 import { seoTitle } from "@/lib/seo-title";
 import { clampMetaDescription } from "@/lib/meta-description";
@@ -104,6 +105,7 @@ export default async function MagazineAuthorPage({ params }: PageProps) {
                 image: profile.imageUrl,
                 jobTitle: profile.role,
                 sameAs: profile.links?.filter((link) => link.external).map((link) => link.href) ?? [],
+                ...(profile.name === CHRISTIAN_NAME ? christianPerson() : {}),
                 knowsAbout: profile.expertise,
               },
         },
